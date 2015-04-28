@@ -1,0 +1,13 @@
+ERA Interim, Daily fields: http://apps.ecmwf.int/datasets/data/interim_full_daily/
+
+retrieval
+
+Stream:	Atmospheric model
+Parameter:	Total precipitation
+Dataset:	interim_full_daily
+Type of level:	Surface
+Step:	12
+Time:	00:00:00, 12:00:00
+Date:	19891001 to 20140831
+Type:	Forecast
+Class:	ERA Interim
