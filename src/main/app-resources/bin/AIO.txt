@@ -1,0 +1,4 @@
+IberianPeninsula:44.0/-10.0/35.5/3.5
+Maghreb:37.5/-19.0/12.0/25.5
+Turkey: 42.5/25.5/36/45.0
+Southern Africa:-9/21/-31.5/41

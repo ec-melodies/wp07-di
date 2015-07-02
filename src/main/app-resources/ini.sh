@@ -19,7 +19,7 @@ export PYTHONPATH=$Lib
 export GDAL_DATA=/application/gdal
  
 # run the job
-grass64 -text /data/GRASS_data/World/National/
+grass64 -text /data/GRASSdb_ISD/World/Local/
 # or
 # grass70 ~/grassdata/nc_spm_08_grass7/user1
  
