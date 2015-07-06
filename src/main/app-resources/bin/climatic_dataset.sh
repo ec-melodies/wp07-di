@@ -1,48 +1,90 @@
-###climatic datasets
+#!/bin/bash
+# Produce Climatic maps 
+# CERENA
 
-export INDIR=/data/ewmcf/
-export OUTDIR=$HOME/data/ewmcf/output
+
+##climatic datasets
+
+export INDIR=//ewmcf/INPUT
+export OUTDIR=//ewmcf/OUTPUT
  
 mkdir $INDIR
-mkdir $INDIR
+mkdir $OUTDIR
 
-for file in $INDIR/???.grib  ; do 
- 
-export  filename=$(basename $file .grib)
+cd $INDIR
 
-cat <<EOF | python -
+# step 1#
+######import data from ecmwf###
+# sudo pip install https://software.ecmwf.int/wiki/download/attachments/23694554/ecmwf-api-client-python.tgz
 
-from setuptools import setup, find_packages
+cat <<EOF | python - 
 
-import ecmwfapi
+##!/usr/bin/python 2.7.6
+##
 
+date= "1989-10-01/to/2014-09-30"
+area= "44.0/-10.0/35.5/3.5"
+target= "teste_Iberian8914.grib"
 
-setup(
-    name="ecmwf-api-client",
-    version=ecmwfapi.__version__,
-    description=ecmwfapi.__doc__,
-    author="ECMWF",
-    author_email="software.support@ecmwf.int",
-    url="https://software.ecmwf.int/stash/projects/PRDEL/repos/ecmwf-api-client/browse",
-
-    # entry_points={
-    #     "console_scripts": [
-    #         "mars = XXX:main",
-    #     ],
-    # },
-
-    packages=find_packages(),
-    zip_safe=False,
-)
+from ecmwfapi import ECMWFDataServer
+server = ECMWFDataServer()
+server.retrieve({
+    "class": "ei",
+    "dataset": "interim",
+    "date": date,
+    "expver": "1",
+    "levtype": "sfc",
+    "param": "228.128",
+    "step": "12",
+    "area": area,
+    "grid": "0.75/0.75",
+    "stream": "oper",
+    "target": target,
+    "time": "00/12",
+    "type": "fc",
+})
 
 EOF
 
- 
+cd $OUTDIR
+
+cat <<EOF | python 
+##!/usr/bin/python 2.7.6
+##
+
+date= "1989-10-01"
+area= "44.0/-10.0/35.5/3.5"
+target= "OUT000.grib"
+
+from ecmwfapi import ECMWFDataServer
+server = ECMWFDataServer()
+server.retrieve({
+    "class": "ei",
+    "dataset": "interim",
+    "date": date,
+    "expver": "1",
+    "levtype": "sfc",
+    "param": "228.128",
+    "step": "12",
+    "area": area,
+    "grid": "0.75/0.75",
+    "stream": "oper",
+    "target": target,
+    "time": "00",
+    "type": "fc",
+})
+EOF
+
+#!/usr/bin/gdal 1.11.1
+gdal_translate -of AAIGrid $OUTDIR/OUT000.grib $OUTDIR/OUT000.asc  
+head $OUTDIR/OUT000.asc -n 5 > $OUTDIR/OUT002.asc
+
 R --vanilla --no-readline   -q  <<'EOF'
- 
+
+##!/usr/bin/R version  3.2.1
+
 INDIR = Sys.getenv(c('INDIR'))
 OUTDIR = Sys.getenv(c('OUTDIR'))
-filename = Sys.getenv(c('filename'))
 
 ## load the package
 require("zoo")
@@ -53,16 +95,11 @@ require("matrixStats")
 ####console setting
 ###
 options(max.print=99999999) 
-options("scipen"=100, "digits"=4)
-
-# step 1#
-######import data from ecmwf###
-###criar uma ligação ao servidor ecmwf
+#options("scipen"=100, "digits"=4)
 
 ###read data###
 
-file.grib<-readGDAL("PATH"+"file.grib")
-
+file.grib<-readGDAL(list.files(path=INDIR, pattern="*.grib"))
 
 #####RL1-Amount of days per year with precipitation below 1 mm##########
 
@@ -155,8 +192,20 @@ Cs_static2<-function(x)
 Cs_sa2_2014<-Cs_static2(RL1_mean_sa_2014)
 
 ##################################export data ######################
-climatic_df<-data.frame(Cd_sa_2014,Cs_sa2_2014,xy_sa)
+CS_df2<-matrix(Cs_sa2_2014,nrow =13,ncol =20)
+CD_df2<-matrix(Cd_sa_2014,nrow =13,ncol =20)
 
+write.table(CS_df2,paste(path=INDIR,'CS001.txt',sep = ""), sep = " ",row.names=F,col.names=F)
+write.table(CD_df2,paste(path=INDIR,'CD002.txt',sep = ""), sep = " ",row.names=F,col.names=F)
 
 EOF
+
+### ASCII to geoMS
+
+head OUT002.asc > $OUTDIR/OUTCD001002.asc
+head OUT002.asc > $OUTDIR/OUTCS001001.asc
+
+cat INPUTCS001.txt >> $OUTDIR/OUTCS001001.asc
+cat INPUTCD002.txt >> $OUTDIR/OUTCD001002.asc
+
 
