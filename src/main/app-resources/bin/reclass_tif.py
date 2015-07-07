@@ -12,21 +12,9 @@ from osgeo._gdalconst import *
 from os import listdir
 from os.path import isfile, join
 
+from sys import argv
 
-"""
-[190, 1]
-[14, 15, 16, 20, 21 22 = 2 
-[11 12 13 = 3
-[32 40 41 42 50 60 70 90 91 92 100 101 102 = 4
-[30 31 110 130 131 132 133 134 135 136 = 5
-[120 140 141 142 143 144 145 = 6
-[150 151 152 153 = 7
-230 = 8
-#200 201 202 203 = 9
-#160 161 162 170 180 181 182 183 184 185 186 187 188 = 10
-#210 = 11
-#*	= NULL
-"""
+OUTDIR = argv
 
 def __OpenArray__( array, prototype_ds = None, xoff=0, yoff=0 ):
     ds = gdal.Open( gdalnumeric.GetArrayFilename(array) )
@@ -92,6 +80,6 @@ def reclassify_tif(ipath):
     tup = open_tif_tuple(ipath+'.tif')
     newtup = reclass_tif(tup)
     save_tif_tuple2gtiff(ipath[:-4]+'_reclassify',newtup,ipath+'.tif')
-    
-reclassify_tif('GLOBCOVER_Moz.tif')
+	
+reclassify_tif(OUTDIR)
 
