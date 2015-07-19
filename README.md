@@ -17,11 +17,11 @@ Biophysical Factors
 - Soil, which refers to the relative status of the soil in specific Land Cover classes.
 
 The intermediate indicators: 
-a) Local static draught degradation [CS(x)] (mean value of RL1)
-b) Local dynamic draught degradation [CD(x)] (trend of RL1)
-c) Local vegetation status [V(x)]
-d) Local soil status [S(x)]
-e) Vegetation and Soil status [B(x)]
+- a) Local static draught degradation [CS(x)] (mean value of RL1)
+- b) Local dynamic draught degradation [CD(x)] (trend of RL1)
+- c) Local vegetation status [V(x)]
+- d) Local soil status [S(x)]
+- e) Vegetation and Soil status [B(x)]
 
 The ISD is F(CD(x), CS(X) and B(x)) and it is classified as follows:
 1. Low Susceptibility (0 to 0.64)
