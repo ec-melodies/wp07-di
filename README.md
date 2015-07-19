@@ -1,4 +1,4 @@
-# wp07-di
+# wp07-di The Indicator of Susceptibility to Desertification (ISD) 
 
 The Indicator of Susceptibility to Desertification (ISD) is a geographic map
 representing the susceptibility to desertification of the covered areas with a range
