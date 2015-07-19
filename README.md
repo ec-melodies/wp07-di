@@ -8,13 +8,13 @@ dynamic drift towards the advancement of desertification processes.
 This indicator is comprised of two fundamental components:
 
 Climate
-o Static component, which refers to the mean number of droughts over a period of 20 years.
-o Dynamic component, which refers to the trend of droughts over a 10
+- Static component, which refers to the mean number of droughts over a period of 20 years.
+- Dynamic component, which refers to the trend of droughts over a 10
 years period.
 
 Biophysical Factors
-o Vegetation, which refers to the relative status of the vegetation in specific Land Cover classes.
-o Soil, which refers to the relative status of the soil in specific Land Cover classes.
+- Vegetation, which refers to the relative status of the vegetation in specific Land Cover classes.
+- Soil, which refers to the relative status of the soil in specific Land Cover classes.
 
 The intermediate indicators: 
 a) Local static draught degradation [CS(x)] (mean value of RL1)
