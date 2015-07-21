@@ -1,12 +1,11 @@
-#!/bin/bash
-# Produce Climatic maps 
-# CERENA
-
 
 ##climatic datasets
 
-export INDIR=//ewmcf/INPUT
-export OUTDIR=//ewmcf/OUTPUT
+export DIR=/media/sf_geodata/Melodies/sandbox/ewmcf_ioa3
+mkdir $DIR
+
+export INDIR=$DIR/INPUT
+export OUTDIR=$DIR/OUTPUT
  
 mkdir $INDIR
 mkdir $OUTDIR
@@ -23,8 +22,8 @@ cat <<EOF | python -
 ##
 
 date= "1989-10-01/to/2014-09-30"
-area= "44.0/-10.0/35.5/3.5"
-target= "teste_Iberian8914.grib"
+area= "42.5/25.5/36.0/45.0"
+target= "TK8914.grib"
 
 from ecmwfapi import ECMWFDataServer
 server = ECMWFDataServer()
@@ -46,42 +45,11 @@ server.retrieve({
 
 EOF
 
-cd $OUTDIR
-
-cat <<EOF | python 
-##!/usr/bin/python 2.7.6
-##
-
-date= "1989-10-01"
-area= "44.0/-10.0/35.5/3.5"
-target= "OUT000.grib"
-
-from ecmwfapi import ECMWFDataServer
-server = ECMWFDataServer()
-server.retrieve({
-    "class": "ei",
-    "dataset": "interim",
-    "date": date,
-    "expver": "1",
-    "levtype": "sfc",
-    "param": "228.128",
-    "step": "12",
-    "area": area,
-    "grid": "0.75/0.75",
-    "stream": "oper",
-    "target": target,
-    "time": "00",
-    "type": "fc",
-})
-EOF
-
-#!/usr/bin/gdal 1.11.1
-gdal_translate -of AAIGrid $OUTDIR/OUT000.grib $OUTDIR/OUT000.asc  
-head $OUTDIR/OUT000.asc -n 5 > $OUTDIR/OUT002.asc
+cd $INDIR
 
 R --vanilla --no-readline   -q  <<'EOF'
 
-##!/usr/bin/R version  3.2.1
+#R version  3.2.1
 
 INDIR = Sys.getenv(c('INDIR'))
 OUTDIR = Sys.getenv(c('OUTDIR'))
@@ -89,8 +57,9 @@ OUTDIR = Sys.getenv(c('OUTDIR'))
 ## load the package
 require("zoo")
 require("rgdal")
+require("raster")
 require("sp")
-require("matrixStats")
+#require("matrixStats")
 
 ####console setting
 ###
@@ -192,20 +161,32 @@ Cs_static2<-function(x)
 Cs_sa2_2014<-Cs_static2(RL1_mean_sa_2014)
 
 ##################################export data ######################
-CS_df2<-matrix(Cs_sa2_2014,nrow =13,ncol =20)
-CD_df2<-matrix(Cd_sa_2014,nrow =13,ncol =20)
+#STY
+CS_df1<-cbind(Cs_sa2_2014,data.frame(xy_sa))
+coordinates(CS_df1)=~x+y
+proj4string(CS_df1)=CRS("+init=epsg:4326") # set it to lat-long
+CS_df1 = spTransform(CS_df1,CRS("+init=epsg:4326"))
+gridded(CS_df1) = TRUE
+r = raster(CS_df1)
+projection(r) = CRS("+init=epsg:4326")
+writeRaster(r,paste(path=INDIR,'Cx_comp.tif',sep = ""))
 
-write.table(CS_df2,paste(path=INDIR,'CS001.txt',sep = ""), sep = " ",row.names=F,col.names=F)
-write.table(CD_df2,paste(path=INDIR,'CD002.txt',sep = ""), sep = " ",row.names=F,col.names=F)
+#DYM
+Cd_df1<-cbind(Cd_sa_2014,data.frame(xy_sa))
+coordinates(CS_df1)=~x+y
+proj4string(CS_df1)=CRS("+init=epsg:4326") # set it to lat-long
+Cd_df1 = spTransform(Cd_df1,CRS("+init=epsg:4326"))
+gridded(Cd_df1 ) = TRUE
+rD3 = raster(Cd_df1)
+projection(r) = CRS("+init=epsg:4326"))
+writeRaster(rD3,paste(path=INDIR,'Dx_comp.tif',sep = ""))
 
 EOF
 
 ### ASCII to geoMS
 
-head OUT002.asc > $OUTDIR/OUTCD001002.asc
-head OUT002.asc > $OUTDIR/OUTCS001001.asc
+gdal_translate  -of AAIGrid  Cx_comp.tif   Cx003.asc 
+gdal_translate  -of AAIGrid  Dx_comp.tif   Dx003.asc 
 
-cat INPUTCS001.txt >> $OUTDIR/OUTCS001001.asc
-cat INPUTCD002.txt >> $OUTDIR/OUTCD001002.asc
-
+echo "DONE"
 
