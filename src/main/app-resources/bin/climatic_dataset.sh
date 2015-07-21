@@ -1,7 +1,7 @@
 
 ##climatic datasets
 
-export DIR=/media/sf_geodata/Melodies/sandbox/ewmcf_ioa3
+export DIR=/ewmcf_ioa
 mkdir $DIR
 
 export INDIR=$DIR/INPUT
