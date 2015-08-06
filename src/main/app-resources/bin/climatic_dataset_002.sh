@@ -225,8 +225,8 @@ sdf <- stack(file_out)
 sdf01110 <-cbind(xy, sdf$values)
 sdf01111 <-cbind(xy,z,sdf$values)
 
-write.table(sdf01110,paste(path=OUTDIR001,'/' ,'Dx01110_sp.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
-write.table(sdf01111,paste(path=OUTDIR001,'/' ,'Dx01111_sp.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
+write.table(sdf01110,paste(path=OUTDIR001,'/' ,'Dx01110.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
+write.table(sdf01111,paste(path=OUTDIR001,'/' ,'Dx01111.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
 
 EOF
 #add space
