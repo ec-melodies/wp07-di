@@ -11,26 +11,24 @@ Bin=/application/bin
 # basepath=/usr/lib64/qt-3.3/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:
 
  
-# define environment variables
-export GRASS_BATCH_JOB=/application/main.sh
+# # define environment variables
+# export GRASS_BATCH_JOB=/application/main.sh
 
-export PATH=$PATH:$Bin:$Lib
-export PYTHONPATH=$Lib
-export GDAL_DATA=/application/gdal
+# export PATH=$PATH:$Bin:$Lib
+# export PYTHONPATH=$Lib
+# export GDAL_DATA=/application/gdal
  
-# run the job
-grass64 -text /data/GRASSdb_ISD/World/Local/
-# or
-# grass70 ~/grassdata/nc_spm_08_grass7/user1
+# # run the job
+# grass64 -text /data/GRASSdb_ISD/World/Local/
+# # or
+# # grass70 ~/grassdata/nc_spm_08_grass7/user1
  
-# switch back to interactive mode
-unset GRASS_BATCH_JOB
+# # switch back to interactive mode
+# unset GRASS_BATCH_JOB
 
 ##########################
 # Define parameter path + filename
-export DIR=/home/melodies-ist/data/
-export sDIR=/home/melodies-ist/wp07-di/src/main/app-resources/bin/
-
+export DIR=~/data/
 
 #input: PROVA -V, SPOT_VGT, land cover, ecwmf
 export INDIR=$DIR/INPUT
