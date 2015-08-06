@@ -26,4 +26,33 @@ grass64 -text /data/GRASSdb_ISD/World/Local/
 # switch back to interactive mode
 unset GRASS_BATCH_JOB
 
+##########################
+# Define parameter path + filename
+export DIR=/home/melodies-ist/data/
+export sDIR=/home/melodies-ist/wp07-di/src/main/app-resources/bin/
+
+
+#input: PROVA -V, SPOT_VGT, land cover, ecwmf
+export INDIR=$DIR/INPUT
+
+#output directorio
+export OUTDIR=$DIR/ISD007/
+mkdir -p $OUTDIR
+
+export -p NVDIR=$OUTDIR/VM001/class_NDV001/
+export -p SBDIR=$OUTDIR/SM001/class_SOIL001/
+export -p LDIR=$OUTDIR/COKC
+export -p OUTDIR001=$OUTDIR/CM001
+
+export CDIR=$OUTDIR/SM001
+export VDIR=$OUTDIR/VM001
+
+mkdir -p $OUTDIR001
+mkdir -p $NVDIR
+mkdir -p $SBDIR
+mkdir -p $LDIR
+
+cd $INDIR
+
+
 
