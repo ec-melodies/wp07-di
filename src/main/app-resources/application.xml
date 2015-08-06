@@ -6,11 +6,11 @@
     </jobTemplate>
   </jobTemplates>
   
-    <jobTemplates>
+<!--     <jobTemplates>
     <jobTemplate id="template">
       <streamingExecutable>/application/bin/ISD1_CxDx/climatic_dataset_000.sh</streamingExecutable>
     </jobTemplate>
-  </jobTemplates>
+  </jobTemplates> -->
   
     <jobTemplates>
     <jobTemplate id="template">
@@ -24,7 +24,7 @@
     </jobTemplate>
   </jobTemplates>
   
-    <jobTemplates>
+<!--     <jobTemplates>
     <jobTemplate id="template">
       <streamingExecutable>/application/bin/ISD2_Vx/vgt_to_geoms_001.sh</streamingExecutable>
     </jobTemplate>
@@ -40,7 +40,7 @@
     <jobTemplate id="template">
       <streamingExecutable>/application/bin/ISD2_Vx/vgt_to_geoms_003.sh</streamingExecutable>
     </jobTemplate>
-  </jobTemplates>
+  </jobTemplates> -->
  
     <workflow id="workflow" title="Basic Workflow" abstract="Basic workflow archetype">
     <workflowVersion>1.0</workflowVersion>
