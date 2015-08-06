@@ -2,14 +2,51 @@
 <application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="application">
   <jobTemplates>
     <jobTemplate id="template">
-      <streamingExecutable>/application/node/run</streamingExecutable>
+      <streamingExecutable>/application/bin/ini.sh</streamingExecutable>
     </jobTemplate>
   </jobTemplates>
+  
+    <jobTemplates>
+    <jobTemplate id="template">
+      <streamingExecutable>/application/bin/ISD1_CxDx/climatic_dataset_000.sh</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates>
+  
+    <jobTemplates>
+    <jobTemplate id="template">
+      <streamingExecutable>/application/bin/ISD1_CxDx/climatic_dataset_001.sh</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates>
+  
+    <jobTemplates>
+    <jobTemplate id="template">
+      <streamingExecutable>/application/bin/ISD1_CxDx/climatic_dataset_002.sh</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates>
+  
+    <jobTemplates>
+    <jobTemplate id="template">
+      <streamingExecutable>/application/bin/ISD2_Vx/vgt_to_geoms_001.sh</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates>
+
+    <jobTemplates>
+    <jobTemplate id="template">
+      <streamingExecutable>/application/bin/ISD2_Vx/vgt_to_geoms_002.sh</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates>
+
+    <jobTemplates>
+    <jobTemplate id="template">
+      <streamingExecutable>/application/bin/ISD2_Vx/vgt_to_geoms_003.sh</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates>
+ 
     <workflow id="workflow" title="Basic Workflow" abstract="Basic workflow archetype">
     <workflowVersion>1.0</workflowVersion>
     <node id="node">
       <job id="template"/>
-      <sources>
+	  <sources>
         <source refid="string:list">input-1,input-2</source>
       </sources>
     </node>

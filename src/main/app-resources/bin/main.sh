@@ -1,7 +1,6 @@
-chmod u+x /application/bin/main.py
-python /application/bin/main.py
+#chmod u+x /application/bin/main.py
+#python /application/bin/main.py
 
-bash /application/bin/ISD1_CxDx/climatic_dataset_000.sh 
 bash /application/bin/ISD1_CxDx/climatic_dataset_000.sh 
 bash /application/bin/ISD1_CxDx/climatic_dataset_001.sh 
 bash /application/bin/ISD1_CxDx/climatic_dataset_002.sh 
