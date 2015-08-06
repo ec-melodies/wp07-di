@@ -52,7 +52,6 @@ mkdir -p $NVDIR
 mkdir -p $SBDIR
 mkdir -p $LDIR
 
-cd $INDIR
 
 
 
