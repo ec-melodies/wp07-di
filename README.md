@@ -17,8 +17,8 @@ Biophysical Factors
 - Soil, which refers to the relative status of the soil in specific Land Cover classes.
 
 The intermediate indicators: 
--  Local static draught degradation [CS(x)] (mean value of RL1)
--  Local dynamic draught degradation [CD(x)] (trend of RL1)
+-  Local static degradation [CS(x)] 
+-  Local dynamic degradation [CD(x)] 
 -  Local vegetation status [V(x)]
 -  Local soil status [S(x)]
 -  Vegetation and Soil status [B(x)]
