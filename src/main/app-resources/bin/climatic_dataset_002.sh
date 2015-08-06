@@ -230,11 +230,11 @@ write.table(sdf01111,paste(path=OUTDIR001,'/' ,'Dx01111_sp.dat',sep = ""),  row.
 
 EOF
 #add space
-sed -i -e 's/^/ /' $OUTDIR001/Dx01110_sp.dat 
-sed -i -e 's/^/ /' $OUTDIR001/Dx01111_sp.dat 
+sed -i -e 's/^/ /' $OUTDIR001/Dx01110.dat 
+sed -i -e 's/^/ /' $OUTDIR001/Dx01111.dat 
 #To convert the line endings in a text file from UNIX to DOS format (LF to CRLF)
 
-sed -i 's/$/\r/' $OUTDIR001/Dx01110_sp.dat 
-sed -i 's/$/\r/' $OUTDIR001/Dx01111_sp.dat
+sed -i 's/$/\r/' $OUTDIR001/Dx01110.dat 
+sed -i 's/$/\r/' $OUTDIR001/Dx01111.dat
 
 echo "DONE"
