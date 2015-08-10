@@ -1,0 +1,6 @@
+# python
+# gdal
+# R
+# pktools
+# geoms executavel
+# ecwmfapi

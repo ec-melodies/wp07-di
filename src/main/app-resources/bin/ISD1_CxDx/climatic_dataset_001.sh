@@ -22,12 +22,8 @@
 # OUTDIR001 = Sys.getenv(c('OUTDIR001'))
 # setwd(INDIR)
 
-
-y1="1989"
-y2="2014"
-
-export y1
-export y2
+# source the ciop functions (e.g. ciop-log, ciop-getparam)
+source ${ciop_job_include}
 
 ######
 R --vanilla --no-readline   -q  <<'EOF'

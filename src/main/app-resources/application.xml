@@ -1,55 +1,225 @@
 <?xml version="1.0" encoding="us-ascii"?>
 <application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="application">
+ 
+  <!-- BEAM BandMaths operator job template  -->
   <jobTemplates>
-    <jobTemplate id="template">
-      <streamingExecutable>/application/bin/ISD5_node/ini.sh</streamingExecutable>
-    </jobTemplate>
-  </jobTemplates>
-  
-<!--     <jobTemplates>
-    <jobTemplate id="template">
+    <jobTemplate id="ecmwfapi">
       <streamingExecutable>/application/bin/ISD1_CxDx/climatic_dataset_000.sh</streamingExecutable>
+      <defaultParameters>
+        <parameter id="y1">1989</parameter>
+        <parameter id="y2">2014</parameter>
+	<parameter id="uly">43.8979</parameter>
+	<parameter id="ulx">-9.7309</parameter>
+	<parameter id="lry">35.9438</parameter>
+	<parameter id="lrx">3.4086</parameter>  
+        <parameter id="target">ecmwf_tp.grib</parameter>
+      </defaultParameters>    
     </jobTemplate>
-  </jobTemplates> -->
-  
+  </jobTemplates> 
+ 
+  <!-- BEAM BandMaths operator job template  -->
     <jobTemplates>
-    <jobTemplate id="template">
+    <jobTemplate id="static_cx">
       <streamingExecutable>/application/bin/ISD1_CxDx/climatic_dataset_001.sh</streamingExecutable>
     </jobTemplate>
   </jobTemplates>
   
+  <!-- BEAM BandMaths operator job template  -->
     <jobTemplates>
-    <jobTemplate id="template">
+    <jobTemplate id="dynamic_dx">
       <streamingExecutable>/application/bin/ISD1_CxDx/climatic_dataset_002.sh</streamingExecutable>
     </jobTemplate>
   </jobTemplates>
-  
+
+
+  <!-- BEAM BandMaths operator job template  -->
 <!--     <jobTemplates>
-    <jobTemplate id="template">
+    <jobTemplate id="vgt_vx">
       <streamingExecutable>/application/bin/ISD2_Vx/vgt_to_geoms_001.sh</streamingExecutable>
+      <defaultParameters>
+        <parameter id="y3">2000</parameter>
+        <parameter id="y4">2010</parameter>
+	<parameter id="y5">2014</parameter>
+	<parameter id="uly">43.8979</parameter>
+	<parameter id="ulx">-9.7309</parameter>
+	<parameter id="lry">35.9438</parameter>
+	<parameter id="lrx">3.4086</parameter>
+	<parameter id="drive">Gtiff</parameter>
+	<parameter id="cloud%">30</parameter> 
+	<parameter id="Band">NDVI</parameter> 
+      </defaultParameters>    
     </jobTemplate>
-  </jobTemplates>
-
-    <jobTemplates>
-    <jobTemplate id="template">
+  </jobTemplates> -->
+<!-- BEAM BandMaths operator job template  -->
+<!--    <jobTemplates>
+    <jobTemplate id="bsoil_sx">
       <streamingExecutable>/application/bin/ISD2_Vx/vgt_to_geoms_002.sh</streamingExecutable>
+        <parameter id="y3">2000</parameter>
+        <parameter id="y4">2010</parameter>
+	<parameter id="y5">2014</parameter>
+	<parameter id="uly">43.8979</parameter>
+	<parameter id="ulx">-9.7309</parameter>
+	<parameter id="lry">35.9438</parameter>
+	<parameter id="lrx">3.4086</parameter>
+	<parameter id="drive">Gtiff</parameter>
+	<parameter id="cloud%">30</parameter>
+	<parameter id="Band">NIR</parameter> 
+	<parameter id="Band">RED</parameter> 
     </jobTemplate>
-  </jobTemplates>
-
-    <jobTemplates>
-    <jobTemplate id="template">
+  </jobTemplates>-->
+<!-- BEAM BandMaths operator job template  -->
+<!--  <jobTemplates>
+    <jobTemplate id="lulc">
+      <streamingExecutable>/application/bin/ISD3_ReClass/reclass_landuse.py</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates> -->
+  <!-- BEAM BandMaths operator job template  -->
+<!--    <jobTemplates>
+    <jobTemplate id="byph_bx">
       <streamingExecutable>/application/bin/ISD2_Vx/vgt_to_geoms_003.sh</streamingExecutable>
     </jobTemplate>
   </jobTemplates> -->
- 
-    <workflow id="workflow" title="Basic Workflow" abstract="Basic workflow archetype">
+  
+  <!-- BEAM BandMaths operator job template  -->
+<!--    <jobTemplates>
+    <jobTemplate id="node_cor_bx">        
+      <streamingExecutable>/application/bin/ISD4_Bx/ssdir_cor.sh</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates> -->
+    
+  <!-- BEAM BandMaths operator job template  -->
+<!--    <jobTemplates>
+    <jobTemplate id="geoms_cx">      
+      <streamingExecutable>/application/bin/ISD4_Bx/geoms.exe</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates> 
+    -->
+  <!-- BEAM BandMaths operator job template  -->
+<!--    <jobTemplates>
+    <jobTemplate id="geoms_cx">     
+      <streamingExecutable>/application/bin/ISD4_Bx/geoms.exe</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates>--> 
+    
+  <!-- BEAM BandMaths operator job template  -->
+<!--     <jobTemplates>
+    <jobTemplate id="isd_cx">     
+      <streamingExecutable>/application/bin/ISD6_ISD/isd_cx.sh</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates>--> 
+    
+  <!-- BEAM BandMaths operator job template  -->
+<!--    <jobTemplates>
+    <jobTemplate id="isd_dx">      
+      <streamingExecutable>/application/bin/ISD6_ISD/isd_dx.sh</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates>--> 
+   
+  <!-- BEAM BandMaths operator job template  -->
+ <!--    <jobTemplates>
+    <jobTemplate id="isd_cxdx">      
+       <streamingExecutable>/application/bin/ISD6_ISD/isd_cxdx.sh</streamingExecutable>
+    </jobTemplate>
+  </jobTemplates>    
+ --> 
+    <workflow id="workflow-isd" title="ISD V.1.0" abstract="Basic workflow archetype">
     <workflowVersion>1.0</workflowVersion>
-    <node id="ISD5_node">
-      <job id="template"/>
+    <node id="node_ecmwfapi">
+      <job id="ecmwfapi"/>
 	  <sources>
-        <source refid="string:list">/application/bin/ISD5_node/list</source>
-		
+        <source refid="string:list">/application/bin/ISD5_node/list</source>		
       </sources>
     </node>
+    
+     <node id="node_static_cx">        
+      <job id="static_cx"></job>      
+      <sources>
+        <source refid="wf:node">/application/bin/ISD5_node/node_ecmwfapi</source>        
+      </sources>
+    </node>
+    
+    <node id="node_dynamic_dx">        
+      <job id="dynamic_dx"></job>      
+      <sources>
+        <source refid="wf:node">/application/bin/ISD5_node/node_ecmwfapi</source>        
+      </sources>
+    </node>
+  
+    <node id="node_lulc">        
+      <job id="lulc"></job>      
+      <sources>
+        <source refid="string:list">/application/bin/ISD5_node/node_lulc</source>        
+      </sources>
+    </node>
+    
+    <node id="node_vgt">        
+      <job id="vgt_vx"></job>      
+      <sources>
+        <source refid="string:list">/application/bin/ISD5_node/node_vgt</source>        
+      </sources>
+    </node>
+    
+     <node id="node_bsoil">        
+      <job id="bsoil_sx"></job>      
+      <sources>
+        <source refid="wf:node">/application/bin/ISD5_node/node_bsoil</source>        
+      </sources>
+    </node>
+    
+    <node id="node_byph_bx">        
+      <job id="byph_bx"></job>      
+      <sources>
+        <source refid="wf:node">/application/bin/ISD5_node/node_vgt</source>
+      </sources>
+      <sources>
+	<source refid="wf:node">/application/bin/ISD5_node/node_bsoil</source>  
+      </sources>
+    </node>
+<!--
+    <node id="node_cor_bx">        
+      <job id="cor_bx"></job>      
+      <sources>
+        <source refid="wf:node">/application/bin/ISD5_node/node_cor</source>
+      </sources>
+    </node>
+    
+    <node id="node_geoms_cx">        
+      <job id="geoms_cx"></job>      
+      <sources>
+        <source refid="wf:node">/application/bin/ISD5_node/ssdirC.par</source>
+      </sources>
+    </node>
+    
+    <node id="node_geoms_dx">        
+      <job id="geoms_cx"></job>      
+      <sources>
+        <source refid="wf:node">/application/bin/ISD5_node/ssdirD.par</source>
+      </sources>
+    </node>
+    
+    <node id="node_isd_cx">        
+      <job id="isd_cx"></job>      
+      <sources>
+        <source refid="wf:node">/application/bin/ISD5_node/node_geoms_cx</source>
+      </sources>
+    </node>
+    
+    <node id="node_isd_dx">        
+      <job id="isd_dx"></job>      
+      <sources>
+        <source refid="wf:node">/application/bin/ISD5_node/node_geoms_dx</source>
+      </sources>
+    </node>
+    
+    <node id="node_isd_cxdx">        
+      <job id="isd_cxdx"></job>      
+      <sources>
+        <source refid="wf:node">/application/bin/ISD5_node/node_geoms_dx</source>
+      </sources>
+      <sources>
+        <source refid="wf:node">/application/bin/ISD5_node/node_geoms_cx</source>
+      </sources>
+      </node> -->
+    
   </workflow>
 </application>

@@ -7,10 +7,12 @@
 
 # Requires:
 # gdalinfo
-# python 2.7.6
-# 
-###Setting enviroments 
+#!/bin/bash
 
+# source the ciop functions (e.g. ciop-log, ciop-getparam)
+source ${ciop_job_include}
+
+###Setting enviroments 
 # quadricula 
 ulx="-9.5110"
 uly="38.9876"
@@ -67,4 +69,4 @@ server.retrieve({
 
 EOF
 
-gdalinfo $INDIR/ecmwf_tp.grib > README_ecmwf_tp.txt
+gdalinfo $INDIR/ecmwf_tp.grib > $INDIR/README_ecmwf_tp.txt
