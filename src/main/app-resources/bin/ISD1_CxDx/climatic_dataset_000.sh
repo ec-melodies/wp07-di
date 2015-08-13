@@ -9,23 +9,35 @@
 # python
 
 
+#!/bin/bash
+############################################################################
+#	
+# PURPOSE: Accessing ECMWF data servers in batch
+#
+#############################################################################
+# Requires:
+# gdalinfo
+# python
+
+
 cat <<EOF | python - 
 
-#python 2.7.6
+#python 2.6.6
 
 import os
+import cioppy 
 
-y1=int(os.getenv('y1'))
-y2=int(os.getenv('y2'))
+y1=ciop.getparam(int('y1'))
+y2=ciop.getparam(int('y2'))
 
-ulx=float(os.getenv('ulx'))
-uly=float(os.getenv('uly'))
-lrx=float(os.getenv('lrx'))
-lry=float(os.getenv('lry'))
+ulx=ciop.getparam(float('ulx'))
+uly=ciop.getparam(float('uly'))
+lrx=ciop.getparam(float('lrx'))
+lry=ciop.getparam(float('lry'))
 
 date= "%d-10-01/to/%d-09-30" % (y1,y2)
 area="%.3f/%.3f/%.3f/%.3f" % (uly,ulx,lry,lrx)
-target= "ecmwf_pt.grib"
+target= ciop.publish('/tmp/ecmwf_pt.grib', metalink = True)
 
 from ecmwfapi import ECMWFDataServer
 server = ECMWFDataServer()
@@ -44,6 +56,7 @@ server.retrieve({
     "time": "00/12",
     "type": "fc",
 })
+
 
 EOF
 
