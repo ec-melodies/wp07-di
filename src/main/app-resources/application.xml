@@ -127,7 +127,7 @@
     <node id="node_ecmwfapi">
       <job id="ecmwfapi"/>
 	  <sources>
-        <source refid="string:list">/application/bin/ISD5_node/list</source>		
+        <source refid="string:list">/application/bin/ISD5_node/node_ecmwfapi</source>		
       </sources>
     </node>
     

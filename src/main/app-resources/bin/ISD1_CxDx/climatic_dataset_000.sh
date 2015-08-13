@@ -49,6 +49,6 @@ server.retrieve({
 
 EOF
 
-gdalinfo $INDIR/ecmwf_pt.grib > $OUTDIR001/README_ECMWF_001.txt
+#gdalinfo $INDIR/ecmwf_pt.grib > $OUTDIR001/README_ECMWF_001.txt
 
 echo "DONE"
