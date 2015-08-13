@@ -1,4 +1,3 @@
-
 #!/bin/bash
 ############################################################################
 #	
@@ -12,7 +11,7 @@
 
 cat <<EOF | python - 
 
-#python 2.6.6
+#Python 2.7.10 :: Continuum Analytics, Inc.
 
 import os
 import cioppy 
