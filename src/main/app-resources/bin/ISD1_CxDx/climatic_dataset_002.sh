@@ -1,7 +1,7 @@
 #!/bin/sh
 ############################################################################
 #	
-# PURPOSE:	Local dynamic draught degradation CD(x)
+# PURPOSE:	Local dynamic degradation CD(x)
 #
 #############################################################################
 
@@ -16,6 +16,7 @@
 # require("raster")
 # require("sp")
 # require("gtools")
+
 ###Setting enviroments 
 
 # INDIR = Sys.getenv(c('INDIR'))
@@ -23,7 +24,8 @@
 # setwd(INDIR)
 
 # source the ciop functions (e.g. ciop-log, ciop-getparam)
-source ${ciop_job_include}
+# source ${ciop_job_include}
+
 
 R --vanilla --no-readline   -q  <<'EOF'
 
@@ -219,19 +221,21 @@ dt<-paste(path=OUTDIR001,'/',pattern="Dx001.txt",sep ="")
 file_out<-read.table(dt)
 sdf <- stack(file_out)
 
-sdf01110 <-cbind(xy, sdf$values)
 sdf01111 <-cbind(xy,z,sdf$values)
 
-write.table(sdf01110,paste(path=OUTDIR001,'/' ,'Dx01110.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
 write.table(sdf01111,paste(path=OUTDIR001,'/' ,'Dx01111.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
 
 EOF
 #add space
-sed -i -e 's/^/ /' $OUTDIR001/Dx01110.dat 
-sed -i -e 's/^/ /' $OUTDIR001/Dx01111.dat 
+
+awk 'NR > 1 { print $1 }' $HDIR/header.txt > $OUTDIR001/Dx0111104.dat
+cat $OUTDIR001/Dx0111103.dat >> $OUTDIR001/Dx0111104.dat
+
+sed -i -e 's/^/ /' $OUTDIR001/Dx0111104.dat 
 #To convert the line endings in a text file from UNIX to DOS format (LF to CRLF)
 
-sed -i 's/$/\r/' $OUTDIR001/Dx01110.dat 
-sed -i 's/$/\r/' $OUTDIR001/Dx01111.dat
+sed -i 's/$/\r/' $OUTDIR001/Dx0111104.dat
 
 echo "DONE"
+
+

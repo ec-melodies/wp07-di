@@ -23,7 +23,7 @@
 # setwd(INDIR)
 
 # source the ciop functions (e.g. ciop-log, ciop-getparam)
-source ${ciop_job_include}
+# source ${ciop_job_include}
 
 ######
 R --vanilla --no-readline   -q  <<'EOF'
@@ -109,14 +109,11 @@ r = raster(CS_df1)
 projection(r) = CRS("+init=epsg:4326")
 
 writeRaster(r,file=paste(OUTDIR001,'/', 'Cx001.tif',sep = ""),overwrite=TRUE)
-writeRaster(r,paste(OUTDIR001, '/', 'Cx001.tif',sep = ""),overwrite=TRUE)
+
 
 EOF
 
-### ASCII to geoMS
-
-#cp $DIR/Cx_003.tif $OUTDIR001/Cx_003.tif
-#rm $DIR/Cx_003.tif
+### ASCII 
 
 gdal_translate  -of AAIGrid  $OUTDIR001/Cx001.tif   $OUTDIR001/Cx001.asc 
 gdalinfo $OUTDIR001/Cx001.asc > $OUTDIR001/ReadMe_Cx001.txt
@@ -155,26 +152,27 @@ dt<-paste(path=OUTDIR001,'/',pattern="Cx001.tif",sep ="")
 file001<-readGDAL(dt)
 xy001=geometry(file001)
 xy<-data.frame(xy001)
-
 dt<-paste(path=OUTDIR001,'/',pattern="Cx001.txt",sep ="")
 file002<-read.table(dt)
-sdf <- stack(file002)
+
+file003<-as.data.frame(t(file002))
+sdf003<-stack(file003)
+
 z<- rep(0,dim(xy)[1])
 
-sdf01110 <-cbind(xy, sdf$values)
-sdf01111 <-cbind(xy,z,sdf$values)
+sdf0111103 <-cbind(xy,z,sdf003$values)
 
-write.table(sdf01110,paste(path=OUTDIR001,'/' ,'Cx01110.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
-write.table(sdf01111,paste(path=OUTDIR001,'/' ,'Cx01111.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
+write.table(sdf0111103,paste(path=OUTDIR001,'/' ,'Cx0111103.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
 
 EOF
+
+awk 'NR > 1 { print $1 }' $HDIR/header.txt > $OUTDIR001/Cx0111104.dat
+cat $OUTDIR001/Cx0111103.dat >> $OUTDIR001/Cx0111104.dat
+
 #add space
-sed -i -e 's/^/ /' $OUTDIR001/Cx01110.dat
-sed -i -e 's/^/ /' $OUTDIR001/Cx01111.dat
+sed -i -e 's/^/ /' $OUTDIR001/Cx0111104.dat
 #To convert the line endings in a text file from UNIX to DOS format (LF to CRLF)
-sed -i 's/$/\r/' $OUTDIR001/Cx01110.dat 
-sed -i 's/$/\r/' $OUTDIR001/Cx01111.dat
+sed -i 's/$/\r/' $OUTDIR001/Cx0111104.dat
 
 echo "DONE"
 
-#openev $OUTDIR001/Cx001.tif

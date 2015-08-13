@@ -1,40 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 ############################################################################
 #	
 # PURPOSE: Accessing ECMWF data servers in batch
 #
 #############################################################################
-
 # Requires:
 # gdalinfo
-#!/bin/bash
+# python
 
-# source the ciop functions (e.g. ciop-log, ciop-getparam)
-source ${ciop_job_include}
-
-###Setting enviroments 
-# quadricula 
-ulx="-9.5110"
-uly="38.9876"
-lrx="-7.0172"
-lry="38.1229"
-
-export ulx
-export uly
-export lrx
-export lry
-
-#ano hidrologico
-y1="1989"
-y2="2014"
-
-export y1
-export y2
 
 cat <<EOF | python - 
 
-##!/usr/bin/python 2.7.6
-##
+#python 2.7.6
+
 import os
 
 y1=int(os.getenv('y1'))
@@ -47,7 +25,7 @@ lry=float(os.getenv('lry'))
 
 date= "%d-10-01/to/%d-09-30" % (y1,y2)
 area="%.3f/%.3f/%.3f/%.3f" % (uly,ulx,lry,lrx)
-target= "ecmwf_tp.grib"
+target= "ecmwf_pt.grib"
 
 from ecmwfapi import ECMWFDataServer
 server = ECMWFDataServer()
@@ -60,7 +38,7 @@ server.retrieve({
     "param": "228.128",
     "step": "12",
     "area": area,
-    "grid": "0.25/0.25",
+    "grid": "0.75/0.75",
     "stream": "oper",
     "target": target,
     "time": "00/12",
@@ -69,4 +47,6 @@ server.retrieve({
 
 EOF
 
-gdalinfo $INDIR/ecmwf_tp.grib > $INDIR/README_ecmwf_tp.txt
+gdalinfo $INDIR/ecmwf_pt.grib > $OUTDIR001/README_ECMWF_001.txt
+
+echo "DONE"
