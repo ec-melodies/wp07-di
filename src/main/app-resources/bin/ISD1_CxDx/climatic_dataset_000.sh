@@ -17,11 +17,13 @@ cat <<EOF | /opt/anaconda/bin/python -
 #Python 2.7.10 :: Continuum Analytics, Inc.
 
 import os
-inport sys
+import sys
 import cioppy
 
 # import the ciop functions (e.g. copy, log)
-
+sys.path.append('/opt/anaconda/bin/')
+ciop = cioppy.Cioppy()
+ 
 tdir=os.path.join('/data/INPUT/')
 rtdir=os.environ['HOME']+tdir
 
@@ -59,6 +61,6 @@ server.retrieve({
 
 EOF
 
-gdalinfo $INDIR/ecmwf_pt.grib > $OUTDIR001/README_ECMWF_001.txt
+gdalinfo $INDIR/ecmwf.grib > $OUTDIR001/README_ECMWF_001.txt
 
 echo "DONE"
