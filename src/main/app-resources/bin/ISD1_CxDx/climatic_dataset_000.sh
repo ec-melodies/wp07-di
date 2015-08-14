@@ -32,11 +32,11 @@ ulx=ciop.getparam(float('ulx'))
 uly=ciop.getparam(float('uly'))
 lrx=ciop.getparam(float('lrx'))
 lry=ciop.getparam(float('lry'))
-ecmwf=os.path.join(rtdir,'ecmwf.grib')
+target001=os.path.join(rtdir,'ecmwf.grib')
     
 date= "%d-10-01/to/%d-09-30" % (y1,y2)
 area="%.3f/%.3f/%.3f/%.3f" % (uly,ulx,lry,lrx)
-target= ciop.publish('ecmwf', metalink = True)
+target002= ciop.publish('target001', metalink = True)
 
 from ecmwfapi import ECMWFDataServer
 server = ECMWFDataServer()
@@ -51,7 +51,7 @@ server.retrieve({
     "area": area,
     "grid": "0.75/0.75",
     "stream": "oper",
-    "target": target,
+    "target": target001,
     "time": "00/12",
     "type": "fc",
 })

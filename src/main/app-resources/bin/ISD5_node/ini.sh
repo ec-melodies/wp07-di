@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # verify 
-cat /application/bin/ISD5_node/main.sh
+# cat /application/bin/ISD5_node/main.sh
  
 # define variables
 Lib=/application/lib
@@ -30,27 +30,32 @@ anaconda=/opt/anaconda/bin/
 
 ##########################
 # Define parameter path + filename
-export DIR=~/data/
+export DIR=~/data
+mkdir -p $DIR
 
 #input: PROVA -V, SPOT_VGT, land cover, ecwmf
-export INDIR=$DIR/INPUT
+#export INDIR=$DIR/INPUT
+export INDIR=~/data/INPUT
+cd $INDIR
 
 #auxiliar data files (tmp): The intermediate indicators:
-export OUTDIR=$DIR/ISD007/
+export OUTDIR=$DIR/ISD010/
 mkdir -p $OUTDIR
 
 export -p NVDIR=$OUTDIR/VM001/class_NDV001/
 export -p SBDIR=$OUTDIR/SM001/class_SOIL001/
-
+export -p HDIR=/application/bin/ISD5_node/
 export -p OUTDIR001=$OUTDIR/CM001
 
-export CDIR=$OUTDIR/SM001
-export VDIR=$OUTDIR/VM001
+export -p CDIR=$OUTDIR/SM001
+export -p VDIR=$OUTDIR/VM001
+export -p PDIR=$OUTDIR/PM001
+export -p ZDIR=$OUTDIR/GEOMS
 
 mkdir -p $OUTDIR001
 mkdir -p $NVDIR
 mkdir -p $SBDIR
-
+mkdir -p $PDIR
 
 #output: The Indicator of Susceptibility to Desertification (ISD)
 export -p LDIR=$OUTDIR/COKC
