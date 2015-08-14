@@ -8,13 +8,22 @@
 # gdalinfo
 # python
 
+bash /application/bin/ISD5_node/ini.sh
 
-cat <<EOF | python - 
+export PATH=/opt/anaconda/bin/:$PATH
+
+cat <<EOF | /opt/anaconda/bin/python - 
 
 #Python 2.7.10 :: Continuum Analytics, Inc.
 
 import os
-import cioppy 
+inport sys
+import cioppy
+
+# import the ciop functions (e.g. copy, log)
+
+tdir=os.path.join('/data/INPUT/')
+rtdir=os.environ['HOME']+tdir
 
 y1=ciop.getparam(int('y1'))
 y2=ciop.getparam(int('y2'))
@@ -23,10 +32,11 @@ ulx=ciop.getparam(float('ulx'))
 uly=ciop.getparam(float('uly'))
 lrx=ciop.getparam(float('lrx'))
 lry=ciop.getparam(float('lry'))
-
+ecmwf=os.path.join(rtdir,'ecmwf.grib')
+    
 date= "%d-10-01/to/%d-09-30" % (y1,y2)
 area="%.3f/%.3f/%.3f/%.3f" % (uly,ulx,lry,lrx)
-target= ciop.publish('/tmp/ecmwf_pt.grib', metalink = True)
+target= ciop.publish('ecmwf', metalink = True)
 
 from ecmwfapi import ECMWFDataServer
 server = ECMWFDataServer()
@@ -49,6 +59,6 @@ server.retrieve({
 
 EOF
 
-#gdalinfo $INDIR/ecmwf_pt.grib > $OUTDIR001/README_ECMWF_001.txt
+gdalinfo $INDIR/ecmwf_pt.grib > $OUTDIR001/README_ECMWF_001.txt
 
 echo "DONE"
