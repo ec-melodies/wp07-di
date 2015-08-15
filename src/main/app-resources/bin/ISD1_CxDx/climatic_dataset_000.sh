@@ -1,45 +1,50 @@
-#!/bin/bash
-############################################################################
-#	
-# PURPOSE: Accessing ECMWF data servers in batch
-#
-#############################################################################
+#!/bin/sh
+#-------------------------------------------------------------------------------------# 
+# PURPOSE: Accessing ECMWF data servers in batch (ecmwfapi)
+#-------------------------------------------------------------------------------------# 
 # Requires:
 # gdalinfo
 # python
-
+# ciop
+#-------------------------------------------------------------------------------------# 
+# source the ciop functions
+source ${ciop_job_include}
+#-------------------------------------------------------------------------------------# 
+# Set environment variable 
+#-------------------------------------------------------------------------------------# 
 bash /application/bin/ISD5_node/ini.sh
-
 export PATH=/opt/anaconda/bin/:$PATH
-
+#-------------------------------------------------------------------------------------#
 cat <<EOF | /opt/anaconda/bin/python - 
-
 #Python 2.7.10 :: Continuum Analytics, Inc.
 
 import os
 import sys
 import cioppy
-
+#-------------------------------------------------------------------------------------# 
 # import the ciop functions (e.g. copy, log)
 sys.path.append('/opt/anaconda/bin/')
 ciop = cioppy.Cioppy()
- 
-tdir=os.path.join('/data/INPUT/')
-rtdir=os.environ['HOME']+tdir
 
+# the parameters value from workflow
 y1=ciop.getparam(int('y1'))
 y2=ciop.getparam(int('y2'))
-
 ulx=ciop.getparam(float('ulx'))
 uly=ciop.getparam(float('uly'))
 lrx=ciop.getparam(float('lrx'))
 lry=ciop.getparam(float('lry'))
-target001=os.path.join(rtdir,'ecmwf.grib')
-    
+deg=ciop.getparam(float('deg'))
+
+#-------------------------------------------------------------------------------------#
+tdir=os.path.join('/data/INPUT/')
+rtdir=os.environ['HOME']+tdir
+target001=os.path.join(rtdir,'ecmwf.grib') 
+os.chdir(rtdir)
+
 date= "%d-10-01/to/%d-09-30" % (y1,y2)
 area="%.3f/%.3f/%.3f/%.3f" % (uly,ulx,lry,lrx)
-target002= ciop.publish('target001', metalink = True)
-
+grid="%.3f/%.3f" % (deg,deg)
+#-------------------------------------------------------------------------------------#
 from ecmwfapi import ECMWFDataServer
 server = ECMWFDataServer()
 server.retrieve({
@@ -51,16 +56,27 @@ server.retrieve({
     "param": "228.128",
     "step": "12",
     "area": area,
-    "grid": "0.75/0.75",
+    "grid": grid,
     "stream": "oper",
     "target": target001,
     "time": "00/12",
     "type": "fc",
 })
 
+#-------------------------------------------------------------------------------------# 
+# here we publish the results
+#-------------------------------------------------------------------------------------# 
+target002= ciop.publish(target001, metalink = True)
 
 EOF
 
-gdalinfo $INDIR/ecmwf.grib > $OUTDIR001/README_ECMWF_001.txt
-
+#-------------------------------------------------------------------------------------#
+export INDIR=~/data/INPUT
+export DIR=~/data
+export OUTDIR=$DIR/ISD007/
+mkdir -p $OUTDIR
+export -p OUTDIR=$OUTDIR/CM001
+#-------------------------------------------------------------------------------------#
+gdalinfo $INDIR/ecmwf.grib > $OUTDIR/README_ECMWF.txt
 echo "DONE"
+#-------------------------------------------------------------------------------------#
