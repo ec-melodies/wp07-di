@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 <application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="application">
  
-  <!-- BEAM BandMaths operator job template  -->
+  <!-- Accessing ECMWF data servers in batch (ecmwfapi)  -->
   <jobTemplates>
     <jobTemplate id="ecmwfapi">
       <streamingExecutable>/application/bin/ISD1_CxDx/climatic_dataset_000.sh</streamingExecutable>
@@ -12,22 +12,30 @@
 	<parameter id="ulx">-9.7309</parameter>
 	<parameter id="lry">35.9438</parameter>
 	<parameter id="lrx">3.4086</parameter>  
-        <parameter id="target">ecmwf_tp.grib</parameter>
+	<parameter id="deg">0.75</parameter>
       </defaultParameters>    
     </jobTemplate>
   </jobTemplates> 
  
-  <!-- BEAM BandMaths operator job template  -->
+  <!-- Local static degradation CS(x)  -->
     <jobTemplates>
     <jobTemplate id="static_cx">
       <streamingExecutable>/application/bin/ISD1_CxDx/climatic_dataset_001.sh</streamingExecutable>
+      <defaultParameters>
+        <parameter id="y1">1989</parameter>
+        <parameter id="y2">2014</parameter>
+      </defaultParameters>    
     </jobTemplate>
   </jobTemplates>
   
-  <!-- BEAM BandMaths operator job template  -->
+  <!-- Local dynamic degradation D(x)  -->
     <jobTemplates>
     <jobTemplate id="dynamic_dx">
       <streamingExecutable>/application/bin/ISD1_CxDx/climatic_dataset_002.sh</streamingExecutable>
+       <defaultParameters>
+        <parameter id="y1">1989</parameter>
+        <parameter id="y2">2014</parameter>
+      </defaultParameters>   
     </jobTemplate>
   </jobTemplates>
 
@@ -124,7 +132,7 @@
  --> 
     <workflow id="workflow-isd" title="ISD V.1.0" abstract="Basic workflow archetype">
     <workflowVersion>1.0</workflowVersion>
-    <node id="node_ecmwfapi">
+    <node id="node_ecmwfapi01">
       <job id="ecmwfapi"/>
 	  <sources>
         <source refid="string:list">/application/bin/ISD5_node/node_ecmwfapi</source>		
@@ -134,14 +142,14 @@
      <node id="node_static_cx">        
       <job id="static_cx"></job>      
       <sources>
-        <source refid="wf:node">/application/bin/ISD5_node/node_ecmwfapi</source>        
+        <source refid="wf:node">/application/bin/ISD5_node/node_ecmwfapi01</source>        
       </sources>
     </node>
     
     <node id="node_dynamic_dx">        
       <job id="dynamic_dx"></job>      
       <sources>
-        <source refid="wf:node">/application/bin/ISD5_node/node_ecmwfapi</source>        
+        <source refid="wf:node">/application/bin/ISD5_node/node_ecmwfapi01</source>        
       </sources>
     </node>
   
