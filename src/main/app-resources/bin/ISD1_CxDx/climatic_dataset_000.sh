@@ -14,10 +14,11 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
+export DIR=~/data
+export OUTDIR=$DIR/ISD001/
 #-------------------------------------------------------------------------------------#
 cat <<EOF | /opt/anaconda/bin/python - 
 #Python 2.7.10 :: Continuum Analytics, Inc.
-
 import os
 import sys
 import cioppy
@@ -25,7 +26,6 @@ import cioppy
 # import the ciop functions (e.g. copy, log)
 sys.path.append('/opt/anaconda/bin/')
 ciop = cioppy.Cioppy()
-
 # the parameters value from workflow
 y1=ciop.getparam(int('y1'))
 y2=ciop.getparam(int('y2'))
@@ -34,13 +34,11 @@ uly=ciop.getparam(float('uly'))
 lrx=ciop.getparam(float('lrx'))
 lry=ciop.getparam(float('lry'))
 deg=ciop.getparam(float('deg'))
-
 #-------------------------------------------------------------------------------------#
 tdir=os.path.join('/data/INPUT/')
 rtdir=os.environ['HOME']+tdir
 target001=os.path.join(rtdir,'ecmwf.grib') 
 os.chdir(rtdir)
-
 date= "%d-10-01/to/%d-09-30" % (y1,y2)
 area="%.3f/%.3f/%.3f/%.3f" % (uly,ulx,lry,lrx)
 grid="%.3f/%.3f" % (deg,deg)
@@ -62,21 +60,14 @@ server.retrieve({
     "time": "00/12",
     "type": "fc",
 })
-
 #-------------------------------------------------------------------------------------# 
 # here we publish the results
 #-------------------------------------------------------------------------------------# 
-target002= ciop.publish(target001, metalink = True)
-
+ciop.publish(target001, metalink = True)
 EOF
-
 #-------------------------------------------------------------------------------------#
-export INDIR=~/data/INPUT
-export DIR=~/data
-export OUTDIR=$DIR/ISD007/
-mkdir -p $OUTDIR
-export -p OUTDIR=$OUTDIR/CM001
-#-------------------------------------------------------------------------------------#
-gdalinfo $INDIR/ecmwf.grib > $OUTDIR/README_ECMWF.txt
+export -p CMDIR=$OUTDIR/CM001
+gdalinfo $INDIR/ecmwf.grib > $CMDIR/README_ECMWF.txt
 echo "DONE"
+exit 0
 #-------------------------------------------------------------------------------------#
