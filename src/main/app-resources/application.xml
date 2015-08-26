@@ -40,8 +40,8 @@
   </jobTemplates>
 
 
-  <!-- Local vegetation status V(x)  -->
-     <jobTemplates>
+   <!-- Local vegetation status V(x)  -->
+    <!-- <jobTemplates>
     <jobTemplate id="vgt_vx">
       <streamingExecutable>/application/bin/ISD2_Vx/vgt_to_geoms_001.sh</streamingExecutable>
       <defaultParameters>
@@ -57,7 +57,7 @@
 	<parameter id="Band">NDVI</parameter> 
       </defaultParameters>    
     </jobTemplate>
-  </jobTemplates> 
+  </jobTemplates> -->
 <!-- BEAM BandMaths operator job template  -->
   
 <!--    <jobTemplates>
