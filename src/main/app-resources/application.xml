@@ -8,10 +8,10 @@
       <defaultParameters>
         <parameter id="y1">1989</parameter>
         <parameter id="y2">2014</parameter>
-	<parameter id="uly">43.8979</parameter>
-	<parameter id="ulx">-9.7309</parameter>
-	<parameter id="lry">35.9438</parameter>
-	<parameter id="lrx">3.4086</parameter>  
+	<parameter id="uly">44.25</parameter>
+	<parameter id="ulx">-9.75</parameter>
+	<parameter id="lry">36.75</parameter>
+	<parameter id="lrx">3.00</parameter>  
 	<parameter id="deg">0.75</parameter>
       </defaultParameters>    
     </jobTemplate>
@@ -40,8 +40,8 @@
   </jobTemplates>
 
 
-  <!-- BEAM BandMaths operator job template  -->
-<!--     <jobTemplates>
+  <!-- Local vegetation status V(x)  -->
+     <jobTemplates>
     <jobTemplate id="vgt_vx">
       <streamingExecutable>/application/bin/ISD2_Vx/vgt_to_geoms_001.sh</streamingExecutable>
       <defaultParameters>
@@ -57,8 +57,9 @@
 	<parameter id="Band">NDVI</parameter> 
       </defaultParameters>    
     </jobTemplate>
-  </jobTemplates> -->
+  </jobTemplates> 
 <!-- BEAM BandMaths operator job template  -->
+  
 <!--    <jobTemplates>
     <jobTemplate id="bsoil_sx">
       <streamingExecutable>/application/bin/ISD2_Vx/vgt_to_geoms_002.sh</streamingExecutable>
@@ -130,7 +131,7 @@
     </jobTemplate>
   </jobTemplates>    
  --> 
-    <workflow id="workflow-isd" title="ISD V.1.0" abstract="Basic workflow archetype">
+     <workflow id="workflow-isd" title="ISD V.1.0" abstract="Basic workflow archetype">
     <workflowVersion>1.0</workflowVersion>
     <node id="node_ecmwfapi01">
       <job id="ecmwfapi"/>
@@ -153,7 +154,7 @@
       </sources>
     </node>
   
-    <node id="node_lulc">        
+<!--    <node id="node_lulc">        
       <job id="lulc"></job>      
       <sources>
         <source refid="string:list">/application/bin/ISD5_node/node_lulc</source>        

@@ -1,0 +1,7 @@
+Cx01111.dat Bx01000.dat CR01000.dat
+hard secondary cor 
+4 1 1     
+x sec sec    
+y    
+z    
+val

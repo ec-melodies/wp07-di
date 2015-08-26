@@ -7,23 +7,24 @@
 # python
 # ciop
 #-------------------------------------------------------------------------------------# 
-# source the ciop functions
+source the ciop functions
 source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # Set environment variable 
 #-------------------------------------------------------------------------------------# 
 bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
-export DIR=~/data
-export OUTDIR=$DIR/ISD001/
+export -p INDIR=~/data/INPUT
+export -p OUTDIR=$DIR/ISD001/
 #-------------------------------------------------------------------------------------#
-cat <<EOF | /opt/anaconda/bin/python - 
+# cat <<EOF | /opt/anaconda/bin/python - 
+cat <<EOF | python - 
 #Python 2.7.10 :: Continuum Analytics, Inc.
 import os
 import sys
-import cioppy
+# import cioppy
 #-------------------------------------------------------------------------------------# 
-# import the ciop functions (e.g. copy, log)
+import the ciop functions (e.g. copy, log)
 sys.path.append('/opt/anaconda/bin/')
 ciop = cioppy.Cioppy()
 # the parameters value from workflow
@@ -41,7 +42,7 @@ target001=os.path.join(rtdir,'ecmwf.grib')
 os.chdir(rtdir)
 date= "%d-10-01/to/%d-09-30" % (y1,y2)
 area="%.3f/%.3f/%.3f/%.3f" % (uly,ulx,lry,lrx)
-grid="%.3f/%.3f" % (deg,deg)
+grid="%.2f/%.2f" % (deg,deg)
 #-------------------------------------------------------------------------------------#
 from ecmwfapi import ECMWFDataServer
 server = ECMWFDataServer()
@@ -66,8 +67,8 @@ server.retrieve({
 ciop.publish(target001, metalink = True)
 EOF
 #-------------------------------------------------------------------------------------#
-export -p CMDIR=$OUTDIR/CM001
-gdalinfo $INDIR/ecmwf.grib > $CMDIR/README_ECMWF.txt
+cp $INDIR/ecmwf.grib $OUTDIR/ecmwf.grib 
+gdalinfo $OUTDIR/ecmwf.grib > $OUTDIR/README_ECMWF.txt
 echo "DONE"
 exit 0
 #-------------------------------------------------------------------------------------#

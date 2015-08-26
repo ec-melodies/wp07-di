@@ -21,16 +21,16 @@ source ${ciop_job_include}
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
 bash /application/bin/ISD5_node/ini.sh
+export PATH=/opt/anaconda/bin/:$PATH
 export DIR=~/data
-export INDIR=$DIR/INPUT
-export OUTDIR=$DIR/ISD001/
+export OUTDIR=/tmp/data/ISD001/
 export -p CMDIR=$OUTDIR/CM001
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
 #R version  3.2.1
 
 INDIR = Sys.getenv(c('INDIR'))
-OUTDIR001 = Sys.getenv(c('OUTDIR001'))
+CMDIR = Sys.getenv(c('CMDIR'))
 
 # load the package
 require("zoo")
@@ -56,11 +56,11 @@ RL1001<-as.matrix(Day_2to1_sa2[,c(-dim(Day_2to1_sa2)[2])])
 RL100401<- as.data.frame(t(RL1001))
 
 #-------------------------------------------------------------------------------------# 
-#y1=1989
-#y2=2014
+y1=1989
+y2=2014
 #-------------------------------------------------------------------------------------# 
-y1=ciop.getparam(int('y1'))
-y2=ciop.getparam(int('y2'))
+#y1=ciop.getparam(int('y1'))
+#y2=ciop.getparam(int('y2'))
 #-------------------------------------------------------------------------------------# 
 y10=substr(y1, start = 3, stop = 4)
 y20=substr(y2, start = 3, stop = 4)
@@ -148,17 +148,17 @@ Cd_df10 = spTransform(Cd_df10,CRS("+init=epsg:4326"))
 gridded(Cd_df10) = TRUE
 rD3 = raster(Cd_df10)
 projection(rD3) = CRS("+init=epsg:4326")
-writeRaster(rD3,paste(OUTDIR001, '/' ,'Dx001.tif',sep = ""),overwrite=TRUE)
+writeRaster(rD3,paste(CMDIR, '/' ,'Dx001.tif',sep = ""),overwrite=TRUE)
 
 EOF
 #-------------------------------------------------------------------------------------# 
-gdal_translate  -of AAIGrid  $OUTDIR001/Dx001.tif   $OUTDIR001/Dx001.asc 
-gdalinfo $OUTDIR001/Dx001.asc > $OUTDIR001/ReadMe_Dx001.txt
-awk '$1 ~ /^[0-9]/' $OUTDIR001/Dx001.asc > $OUTDIR001/Dx001.txt
+gdal_translate  -of AAIGrid  $CMDIR/Dx001.tif   $CMDIR/Dx001.asc 
+gdalinfo $CMDIR/Dx001.asc > $CMDIR/ReadMe_Dx001.txt
+awk '$1 ~ /^[0-9]/' $CMDIR/Dx001.asc > $CMDIR/Dx001.txt
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
-INDIR = Sys.getenv(c('OUTDIR001'))
-OUTDIR001 = Sys.getenv(c('OUTDIR001'))
+INDIR = Sys.getenv(c('CMDIR'))
+CMDIR = Sys.getenv(c('CMDIR'))
 
 ## load the package
 require("zoo")
@@ -177,24 +177,30 @@ xy_sa=geometry(file)
 xy<-data.frame(xy_sa)
 z<- rep(0,dim(xy)[1])
 
-dt<-paste(path=OUTDIR001,'/',pattern="Dx001.txt",sep ="")
+dt<-paste(path=CMDIR,'/',pattern="Dx001.txt",sep ="")
 file_out<-read.table(dt)
 sdf <- stack(file_out)
 sdf01111 <-cbind(xy,z,sdf$values)
-write.table(sdf01111,paste(path=OUTDIR001,'/' ,'Dx01111.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
+write.table(sdf01111,paste(path=CMDIR,'/' ,'Dx0111103.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
 
 EOF
 #-------------------------------------------------------------------------------------# 
-export -p HDIR=/application/bin/ISD5_node/
+#export -p HDIR=/application/bin/ISD5_node/
 #-------------------------------------------------------------------------------------# 
-awk 'NR > 1 { print $1 }' $HDIR/header.txt > $OUTDIR001/Dx0111104.dat
-cat $OUTDIR001/Dx0111103.dat >> $OUTDIR001/Dx0111104.dat
-#-------------------------------------------------------------------------------------# 
-sed -i -e 's/^/ /' $OUTDIR001/Dx0111104.dat 
+# HDIR=~/data/scripts_teste/
+# export HDIR
+awk 'NR > 1 { print $1 }' $HDIR/header.txt > $CMDIR/Dx0111104.dat
+cat $CMDIR/Dx0111103.dat >> $CMDIR/Dx0111104.dat
+#-------------------------------------------------------------------------------------#
+echo "convert lf to crlf" 
+sed -i -e 's/^/ /' $CMDIR/Dx0111104.dat 
 #To convert the line endings in a text file from UNIX to DOS format (LF to CRLF)
-sed -i 's/$/\r/' $OUTDIR001/Dx0111104.dat
+sed -i 's/$/\r/' $CMDIR/Dx0111104.dat
 #-------------------------------------------------------------------------------------# 
 # here we publish the results
 #-------------------------------------------------------------------------------------# 
-Dx0111104=ciop.publish($OUTDIR001/Dx0111104.dat)
+#Dx0111104=ciop.publish($CMDIR/Dx0111104.dat)
 echo "DONE"
+exit 0
+
+
