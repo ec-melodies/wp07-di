@@ -184,7 +184,6 @@
 	<source refid="wf:node">/application/bin/ISD5_node/node_bsoil</source>  
       </sources>
     </node>
-<!--
     <node id="node_cor_bx">        
       <job id="cor_bx"></job>      
       <sources>
