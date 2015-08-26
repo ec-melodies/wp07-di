@@ -17,12 +17,12 @@ export PATH=/opt/anaconda/bin/:$PATH
 export -p INDIR=~/data/INPUT
 export -p OUTDIR=$DIR/ISD001/
 #-------------------------------------------------------------------------------------#
-# cat <<EOF | /opt/anaconda/bin/python - 
-cat <<EOF | python - 
+cat <<EOF | /opt/anaconda/bin/python - 
+#cat <<EOF | python - 
 #Python 2.7.10 :: Continuum Analytics, Inc.
 import os
 import sys
-# import cioppy
+import cioppy
 #-------------------------------------------------------------------------------------# 
 import the ciop functions (e.g. copy, log)
 sys.path.append('/opt/anaconda/bin/')
@@ -64,7 +64,7 @@ server.retrieve({
 #-------------------------------------------------------------------------------------# 
 # here we publish the results
 #-------------------------------------------------------------------------------------# 
-ciop.publish(target001, metalink = True)
+# ciop.publish(target001, metalink = True)
 EOF
 #-------------------------------------------------------------------------------------#
 cp $INDIR/ecmwf.grib $OUTDIR/ecmwf.grib 
