@@ -16,29 +16,31 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-export PATH=/opt/anaconda/bin/:$PATH
-source ${ciop_job_include}
+# export PATH=/opt/anaconda/bin/:$PATH
+# source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-bash /application/bin/ISD5_node/ini.sh
-export DIR=~/data/ISD
-export INDIR=$DIR/INPUT
-export OUTDIR=$DIR/ISD001
-export -p CMDIR=$OUTDIR/CM001
+# bash /application/bin/ISD5_node/ini.sh
+export -p DIR=~/data/ISD/
 export PATH=/opt/anaconda/bin/:$PATH
+export -p INDIR=~/data/INPUT/
+export -p OUTDIR=$DIR/ISD000/
+export -p CMDIR=$OUTDIR/CM001
 
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
 #R version  3.2.1
 
-INDIR = Sys.getenv(c('INDIR'))
+INDIR = Sys.getenv(c('CMDIR'))
 CMDIR = Sys.getenv(c('CMDIR'))
 setwd(INDIR)
 getwd()
 #-------------------------------------------------------------------------------------# 
-y1=rciop.getparam(c('y1'))
-y2=rciop.getparam(c('y2'))
+#y1=rciop.getparam(c('y1'))
+#y2=rciop.getparam(c('y2'))
+y1=1989
+y2=2014
 #-------------------------------------------------------------------------------------# 
 # load the package
 require("zoo")
@@ -58,6 +60,8 @@ file.grib<-readGDAL(list.files(path=INDIR, pattern="*.grib"))
 file.grib_df_t<-t(data.frame(file.grib))
 Day_2to1_file.grib<-rollapply(file.grib_df_t, FUN=sum,by=2,width=2,na.rm = TRUE)
 xy001=geometry(file.grib)
+
+rm(file.grib)
 
 Day_2to1_sa2<-data.frame(t(Day_2to1_file.grib))
 RL1001<-as.matrix(Day_2to1_sa2[,c(-dim(Day_2to1_sa2)[2])])
@@ -108,53 +112,7 @@ gdalinfo $CMDIR/Cx001.asc > $CMDIR/ReadMe_Cx001.txt
 #cat $CMDIR/Cx001.asc | awk '{if($1 == "NODATA_value") print}'| awk 'NR > 6 { print }' $CMDIR/Cx001.asc> $CMDIR/Cx001.txt ; 
 #cat $CMDIR/Cx001.asc | awk '{if($1 != "NODATA_value") print}'| awk 'NR > 5 { print }' $CMDIR/Cx001.asc> $CMDIR/Cx001.txt 
 awk '$1 ~ /^[0-9]/' $CMDIR/Cx001.asc > $CMDIR/Cx001.txt
+
+
 #-------------------------------------------------------------------------------------# 
-R --vanilla --no-readline   -q  <<'EOF'
 
-INDIR = Sys.getenv(c('CMDIR'))
-CMDIR = Sys.getenv(c('CMDIR'))
-setwd(CMDIR)
-getwd()
-# load the package
-require("zoo")
-require("rgdal")
-require("raster")
-require("sp")
-require("rciop")
-
-options(max.print=99999999) 
-options("scipen"=100, "digits"=4)
-
-dt<-paste(path=CMDIR,'/',pattern="Cx001.tif",sep ="")
-file001<-readGDAL(dt)
-xy001=geometry(file001)
-xy<-data.frame(xy001)
-z<- rep(0,dim(xy)[1])
-
-dt<-paste(path=CMDIR,'/',pattern="Cx001.txt",sep ="")
-file002<-read.table(dt)
-file003<-as.data.frame(t(file002))
-sdf003<-stack(file003)
-
-sdf0111103 <-cbind(xy,z,sdf003$values)
-write.table(sdf0111103,paste(path=CMDIR,'/' ,'Cx0111103.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
-
-EOF
-#-------------------------------------------------------------------------------------# 
-# export -p HDIR=/application/bin/ISD5_node/
-#-------------------------------------------------------------------------------------#
-#HDIR=~/data/scripts_teste/
-#export $HDIR
-awk 'NR > 1 { print $1 }' $HDIR/header.txt > $CMDIR/Cx0111104.dat
-cat $CMDIR/Cx0111103.dat >> $CMDIR/Cx0111104.dat
-#add space
-sed -i -e 's/^/ /' $CMDIR/Cx0111104.dat
-#To convert the line endings in a text file from UNIX to DOS format (LF to CRLF)
-sed -i 's/$/\r/' $CMDIR/Cx0111104.dat
-#-------------------------------------------------------------------------------------# 
-# here we publish the results
-#-------------------------------------------------------------------------------------# 
-#ciop.publish($CMDIR/Cx0111104.dat)
-#-------------------------------------------------------------------------------------# 
-echo "DONE"
-exit 0

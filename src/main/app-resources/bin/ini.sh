@@ -33,26 +33,28 @@ if [ ! -d "$DIR" ]; then
 fi
 #-------------------------------------------------------------------------------------# 
 #input: PROVA -V, SPOT_VGT, land cover, ecwmf
-#export INDIR=$DIR/INPUT
-INDIR=~/data/INPUT
+export INDIR=$DIR/INPUT
 #-------------------------------------------------------------------------------------# 
 #auxiliar data files (tmp): The intermediate indicators:
-OUTDIR=$DIR/ISD001/
+export OUTDIR=$DIR/ISD000/
 
 #-------------------------------------------------------------------------------------# 
-NVDIR=$OUTDIR/VM001/class_NDV001/
-SBDIR=$OUTDIR/SM001/class_SOIL001/
-HDIR=/application/bin/ISD5_node/
-CMDIR=$OUTDIR/CM001
-CDIR=$OUTDIR/SM001
-VDIR=$OUTDIR/VM001
-PDIR=$OUTDIR/PM001
-ZDIR=$OUTDIR/GEOMS
-LAND=$INDIR/LANDCOVER
-ISDC=$ZDIR/Cx
-ISDD=$ZDIR/Dx
-HDIR=$DIR/scripts
-ADIR=$DIR/AOI
+export -p NVDIR=$OUTDIR/VM001/class_NDV001/
+export -p SBDIR=$OUTDIR/SM001/class_SOIL001/
+export -p HDIR=/application/bin/ISD5_node/
+export -p CMDIR=$OUTDIR/CM001/AOI
+export -p SPPV00101=$OUTDIR/SPPV001/AOI1/VX
+export -p SPPV00102=$OUTDIR/SPPV001/AOI1/SX
+export -p CDIR=$OUTDIR/SM001
+export -p VDIR=$OUTDIR/VM001
+export -p PDIR=$OUTDIR/PM001
+export -p ZDIR=$OUTDIR/GEOMS
+export -p LAND=$INDIR/LANDCOVER
+export -p LAND000=$INDIR/LANDCOVER/LANDCOVER000
+export -p ISDC=$ZDIR/Cx
+export -p ISDD=$ZDIR/Dx
+export -p HDIR=~/wp07-di/src/main/app-resources/bin/ISD5_node/
+export -p ADIR=$DIR/AOI
 #-------------------------------------------------------------------------------------# 
 mkdir -p $OUTDIR
 mkdir -p $CMDIR
@@ -64,8 +66,10 @@ mkdir -p $PDIR
 mkdir -p $ZDIR
 mkdir -p $ISDC
 mkdir -p $ISDD
+mkdir -p $SPPV00101
+mkdir -p $SPPV00102
 #-------------------------------------------------------------------------------------# 
 #output: The Indicator of Susceptibility to Desertification (ISD)
-LDIR=$OUTDIR/COKC
+export LDIR=$OUTDIR/COKC
 mkdir -p $LDIR
 #-------------------------------------------------------------------------------------# 

@@ -18,26 +18,35 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-bash /application/bin/ISD5_node/ini.sh
+#bash /application/bin/ISD5_node/ini.sh
 export DIR=~/data/ISD/
+
+export -p OUTDIR=$DIR/ISD000/
+
+export -p ZDIR=$OUTDIR/GEOMS/
+export -p ISDC=$ZDIR/Cx
 export -p ISDD=$ZDIR/Dx
-export -p HDIR=$DIR/scripts
+
+export -p HDIR=/home/melodies-ist/wp07-di/src/main/app-resources/bin/ISD7_geoms/
+export -p HXDIR=/home/melodies-ist/wp07-di/src/main/app-resources/bin/ISD5_node/
+
 export -p LDIR=$OUTDIR/COKC
-export -p ADIR=$DIR/AOI
+export -p ADIR=$OUTDIR/=$DIR/INPUT/AOI
 #-------------------------------------------------------------------------------------# 
 bash $HDIR/vgt_to_geoms_004.sh
-#wine64 /application/bin/ISD7_geoms/geoms.exe $LDIR/ssdirCx.par
-wine64 $HDIR/geoms.exe $HDIR/ssdirDx.par
+#wine64 /application/bin/ISD7_geoms/geoms.exe $LDIR/ssdirDx.par
+wine64 $HDIR/geoms.exe $HXDIR/ssdirDx.par
 #-------------------------------------------------------------------------------------# 
-awk 'NR > 3 { print }' $ISDD/ISD_Kriging_Variance.out > $ISDD/ISDvarDx001.txt
-# awk 'NR > 3 { print }' $ZDIR/ISD_Cx_Krig_var.out > $ZDIR/ISDvarCx001.txt
+#awk 'NR > 3 { print }' $ISDD/ISD_Kriging_Variance.out > $ISDD/ISDvarDx001.txt
+# awk 'NR > 3 { print }' $ZDIR/ISD_Dx_Krig_var.out > $ZDIR/ISDvarDx001.txt
+awk 'NR > 3 { print }' $ISDD/ISD_Kriging_Mean.out > $ISDD/ISDmeanDx001.txt
 #-------------------------------------------------------------------------------------# 
 # .out file to Gtiff
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
 INDIR = Sys.getenv(c('LDIR'))
 ZDIR = Sys.getenv(c('ISDD'))
-ADIR = Sys.getenv(c('ADIR'))
+ADIR = Sys.getenv(c('ISDD'))
 
 ## load the package
 require("zoo")
@@ -71,12 +80,15 @@ Dx001 = spTransform(Dx00101,CRS("+init=epsg:4326"))
 gridded(Dx00101) = TRUE
 rD3 = raster(Dx00101)
 projection(rD3) = CRS("+init=epsg:4326")
-writeRaster(rD3,paste(ZDIR, '/' ,'ISDvarDx001.tif',sep = ""),overwrite=TRUE)
+writeRaster(rD3,paste(ZDIR, '/' ,'ISDmeanDx001.tif',sep = ""),overwrite=TRUE)
 
+ZDIR="/home/melodies-ist/data/ISD/INPUT/AOI/"
 AOI.sub<-readOGR(paste(ZDIR,sep = ""),"AOI1")
 ISD<-rD3
 isd.sub <- crop(ISD, extent(AOI.sub))
 isd.sub <- mask(isd.sub, AOI.sub)
+
+writeRaster(isd.sub,paste(ADIR, '/' ,'ISDmeanDx001.tif',sep = ""),overwrite=TRUE)
 
 ## Using the OGR KML driver
 ## writeOGR(Dx00101, dsn="ISDvarDx001.kml", layer= "Dx001", driver="KML", dataset_options=c("NameField=name"))

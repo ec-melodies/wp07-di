@@ -7,38 +7,49 @@
 # python
 # ciop
 #-------------------------------------------------------------------------------------# 
-source the ciop functions
-source ${ciop_job_include}
+##source the ciop functions
+##source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # Set environment variable 
 #-------------------------------------------------------------------------------------# 
 bash /application/bin/ISD5_node/ini.sh
+export -p DIR=~/data/ISD/
 export PATH=/opt/anaconda/bin/:$PATH
-export -p INDIR=~/data/INPUT
-export -p OUTDIR=$DIR/ISD001/
+export -p INDIR=~/data/INPUT/
+export -p OUTDIR=$DIR/ISD000/
+export -p CMDIR=$OUTDIR/CM001
 #-------------------------------------------------------------------------------------#
 cat <<EOF | /opt/anaconda/bin/python - 
 #cat <<EOF | python - 
 #Python 2.7.10 :: Continuum Analytics, Inc.
 import os
 import sys
-import cioppy
+#import cioppy
 #-------------------------------------------------------------------------------------# 
-import the ciop functions (e.g. copy, log)
+#import the ciop functions (e.g. copy, log)
 sys.path.append('/opt/anaconda/bin/')
-ciop = cioppy.Cioppy()
+#ciop = cioppy.Cioppy()
 # the parameters value from workflow
-y1=ciop.getparam(int('y1'))
-y2=ciop.getparam(int('y2'))
-ulx=ciop.getparam(float('ulx'))
-uly=ciop.getparam(float('uly'))
-lrx=ciop.getparam(float('lrx'))
-lry=ciop.getparam(float('lry'))
-deg=ciop.getparam(float('deg'))
+#y1=ciop.getparam(int('y1'))
+#y2=ciop.getparam(int('y2'))
+#ulx=ciop.getparam(float('ulx'))
+#uly=ciop.getparam(float('uly'))
+#lrx=ciop.getparam(float('lrx'))
+#lry=ciop.getparam(float('lry'))
+#deg=ciop.getparam(float('deg'))
+
+y1=1989
+y2=2014
+uly=44.25
+ulx=-9.75
+lry=36.75
+lrx=3.00
+deg=0.25
+
 #-------------------------------------------------------------------------------------#
-tdir=os.path.join('/data/INPUT/')
+tdir=os.path.join('/data/ISD/ISD000/CM001/')
 rtdir=os.environ['HOME']+tdir
-target001=os.path.join(rtdir,'ecmwf.grib') 
+target001=os.path.join(rtdir,'ecmwf025_ib.grib') 
 os.chdir(rtdir)
 date= "%d-10-01/to/%d-09-30" % (y1,y2)
 area="%.3f/%.3f/%.3f/%.3f" % (uly,ulx,lry,lrx)
@@ -67,8 +78,8 @@ server.retrieve({
 # ciop.publish(target001, metalink = True)
 EOF
 #-------------------------------------------------------------------------------------#
-cp $INDIR/ecmwf.grib $OUTDIR/ecmwf.grib 
-gdalinfo $OUTDIR/ecmwf.grib > $OUTDIR/README_ECMWF.txt
+#cp $INDIR/ecmwf.grib $OUTDIR/ecmwf.grib 
+gdalinfo $CMDIR/ecmwf.grib > $CMDIR/README_ECMWF.txt
 echo "DONE"
 exit 0
 #-------------------------------------------------------------------------------------#

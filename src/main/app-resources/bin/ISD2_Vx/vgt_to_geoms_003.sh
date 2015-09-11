@@ -16,28 +16,74 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-source ${ciop_job_include}
+#source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
 # bash /application/bin/ISD5_node/ini.sh
 #-------------------------------------------------------------------------------------#
 export PATH=/opt/anaconda/bin/:$PATH
+export INDIR=$DIR/INPUT
+#-------------------------------------------------------------------------------------# 
+#auxiliar data files (tmp): The intermediate indicators:
+export -p DIR=~/data/ISD/
+export -p OUTDIR=$DIR/ISD000/
+export -p NVDIR=$OUTDIR/VM001/class_NDV001/
+export -p SBDIR=$OUTDIR/SM001/class_SOIL001/
+export -p LDIR=$OUTDIR/COKC
+export -p CDIR=$OUTDIR/SM001
+export -p VDIR=$OUTDIR/VM001
+export -p HDIR=~/wp07-di/src/main/app-resources/bin/ISD5_node/
+export -p RECLASS=$OUTDIR/SPPV001/AOI1/VX/
 
-# Check HSD and LSD (for soil and vegetation) 
+#-------------------------------------------------------------------------------------# 
+# # Check HSD and LSD (for soil and vegetation) EStou aqui
+#-------------------------------------------------------------------------------------# 
+for file in $NVDIR/Vx*.tif; do
+filename01=$(basename $file .tif)
+f=${filename01/#Vx/LANDC}  
+j=${f/%_crop/_001}
+for file2 in $j; do
+filename02=$(basename $file2 .tif )
+done;
+echo $filename01 $filename02
 for i in {2,3,4,5,7}; do 
-gdal_calc.py -A $NVDIR/Vx001.tif -B $VDIR/input002001.tif --outfile=$LDIR/Vx003002_0$i.tif --calc="(B==$i)*(A*10000)" --overwrite --NoDataValue=0 --type=UInt32;
+gdal_calc.py -A $NVDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$LDIR/Vx${filename01}_0$i.tif --calc="(B==$i)*(A*10000)" --overwrite --NoDataValue=0 --type=UInt32;
+done;
 done
-# class 6
-gdal_calc.py -A $SBDIR/Sx001.tif -B $CDIR/input002001.tif --outfile=$LDIR/Sx003002_06.tif --calc="(B==$i)*(A*10000)" --overwrite --NoDataValue=0 --type=UInt32;
 
-for i in {1,8,9,10,11}; do 
-gdal_calc.py -A $SBDIR/Sx001.tif -B $CDIR/input002001.tif --outfile=$LDIR/VxSx003002_0$i.tif --calc="(B==$i)*(A*0+5000)" --overwrite  --NoDataValue=0 --type=UInt32;
+for file in $SBDIR/Sx001*.tif; do
+filename01=$(basename $file .tif)
+f=${filename01/#Sx/LANDC}  
+j=${f/%_crop/_001}
+for file2 in $j; do
+filename02=$(basename $file2 .tif )
+done;
+echo $filename01 $filename02
+# class 6
+gdal_calc.py -A $SBDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$LDIR/Sx${filename01}_06.tif --calc="(B==6)*(A*10000)" --overwrite --NoDataValue=0 --type=UInt32;
 done
+
+for file in $SBDIR/Sx001*.tif; do
+filename01=$(basename $file .tif)
+f=${filename01/#Sx/LANDC}  
+j=${f/%_crop/_001}
+for file2 in $j; do
+filename02=$(basename $file2 .tif )
+done;
+echo $filename01 $filename02
+for i in {1,8,9,10,11}; do 
+gdal_calc.py -A $SBDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$LDIR/Vx${filename01}_0$i.tif --calc="(B==$i)*(A*0+5000)" --overwrite  --NoDataValue=0 --type=UInt32;
+done;
+done
+
 #-------------------------------------------------------------------------------------#
-mv $LDIR/VxSx003002_010.tif  $LDIR/VxSx003001_10.tif
-mv $LDIR/VxSx003002_011.tif  $LDIR/VxSx003001_11.tif
+for i in {1..4}; do  
+mv $LDIR/VxSx001_${i}_crop_010.tif  $LDIR/VxSx001_${i}_crop_10.tif
+mv $LDIR/VxSx001_${i}_crop_011.tif  $LDIR/VxSx001_${i}_crop_11.tif
+done
 #-------------------------------------------------------------------------------------#  
+
 R --vanilla --no-readline   -q  <<'EOF'
 
 INDIR = Sys.getenv(c('VDIR'))
@@ -53,9 +99,18 @@ require("rciop")
 list.files(pattern=".tif$") 
  
 # create a list from these files
-list.filenames<-list.files(pattern=".tif$")
+for (j in 1:4){ 
+print(j)
+ww=assign(paste("list.filenames_",j,sep=""),list.files(pattern=paste("x001_",j,".*\\.tif",sep="")))
+}
 
-# load raster data 
+
+# create a list from these files
+for (j in 1:4)
+{ 
+print(j)
+list.filenames=assign(paste("list.filenames_",j,sep=""),list.files(pattern=paste("x001_",j,".*\\.tif",sep="")))
+# load raster data  
 
 rstack003<-stack(raster(list.filenames[1]),
 raster(list.filenames[2]), raster(list.filenames[3]), raster(list.filenames[4]), raster(list.filenames[5]),
@@ -63,7 +118,8 @@ raster(list.filenames[6]), raster(list.filenames[7]), raster(list.filenames[8]),
 raster(list.filenames[10]), raster(list.filenames[11]))
 
 rastD6<-sum(rstack003, na.rm=TRUE)
-writeRaster(rastD6, filename="Bx001.tif", format="GTiff", overwrite=TRUE)
+writeRaster(rastD6, filename=paste("CR001_",j,"_crop.tif", sep=""), format="GTiff", overwrite=TRUE)
+}
 
 EOF
 
@@ -72,68 +128,76 @@ EOF
 #-------------------------------------------------------------------------------------#
 # Sample
 #-------------------------------------------------------------------------------------#
-ulx=$(gdalinfo $CMDIR/Dx001.tif | grep "Upper Left" | awk '{ gsub ("[(),]","") ; print  $3  }')
-uly=$(gdalinfo $CMDIR/Dx001.tif | grep "Upper Left" | awk '{ gsub ("[(),]","") ; print  $4  }')
-lrx=$(gdalinfo $CMDIR/Dx001.tif | grep "Lower Right" | awk '{ gsub ("[(),]","") ; print $3  }')
-lry=$(gdalinfo $CMDIR/Dx001.tif | grep "Lower Right" | awk '{ gsub ("[(),]","") ; print $4  }')
+#ulx=$(gdalinfo $CMDIR/Dx001.tif | grep "Upper Left" | awk '{ gsub ("[(),]","") ; print  $3  }')
+#uly=$(gdalinfo $CMDIR/Dx001.tif | grep "Upper Left" | awk '{ gsub ("[(),]","") ; print  $4  }')
+#lrx=$(gdalinfo $CMDIR/Dx001.tif | grep "Lower Right" | awk '{ gsub ("[(),]","") ; print $3  }')
+#lry=$(gdalinfo $CMDIR/Dx001.tif | grep "Lower Right" | awk '{ gsub ("[(),]","") ; print $4  }')
 # 
-gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $LDIR/Bx001.tif $LDIR/Bx001rc.tif
+#gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $LDIR/Bx001.tif $LDIR/Bx001rc.tif
 
 # pkcrop -ulx $ulx -uly $uly -lrx $lrx -lry $lry -i $LDIR/Bx001.tif -o $LDIR/Bx001rc.tif
 #-------------------------------------------------------------------------------------#
 #  ASCII to geoMS (.OUT or .dat)
 #-------------------------------------------------------------------------------------#
-gdal_translate  -of AAIGrid  $LDIR/Bx001rc.tif   $LDIR/Bx001.asc 
-awk '$1 ~ /^[0-9]/' $LDIR/Bx001.asc > $LDIR/Bx001.txt
-gdalinfo $LDIR/Bx001.asc > $LDIR/ReadMeBx001.txt
-
 export -p LDIR=$OUTDIR/COKC
+
+for file in $LDIR/Bx001_*.tif; do
+filename=$(basename $file .tif)
+gdal_translate  -of AAIGrid  $LDIR/${filename}.tif   $LDIR/${filename}.asc 
+awk '$1 ~ /^[0-9]/' $LDIR/${filename}.asc > $LDIR/${filename}.txt
+#gdalinfo $LDIR/${filename}.asc > $LDIR/ReadMe${filename}.txt
+done
 #-------------------------------------------------------------------------------------#
 R --vanilla --no-readline   -q  <<'EOF'
-
 
 INDIR = Sys.getenv(c('LDIR'))
 OUTDIR = Sys.getenv(c('LDIR'))
 setwd(INDIR)
 
-## load the package
+# load the package
 require("zoo")
 require("rgdal")
 require("raster")
 require("sp")
 
-####console setting
-###
+#console setting
+
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
 
-###read data###
+#read data#
+# list all files from the current directory
+list.files(pattern=".tif$")  
+# create a list from these files
+list.filenames<-list.files(pattern=".tif$")
+list.filenames02<-list.files(pattern=".txt$")
 
+#Bx001_2_crop.txt
 
-dt<-paste(path=OUTDIR,'/',pattern="Bx001.txt",sep ="")
-
-file003<-read.table(dt)
-
+for (j in 1:4){ 
+print(j)
+dt=assign(paste(path=OUTDIR,'/',pattern="Bx001_",j,"_crop.txt",sep =""),list.files(pattern=paste("Bx001_",j,"_crop",".*\\.txt",sep="")))
+print(dt)
+file003<-read.table(paste(path=OUTDIR,'/',dt,sep=""))
 #sdf <- stack(file003)
 #sdf10<-sdf$values
 #sdf01<-sdf$values/10000
-
-##
+#
 file004<-as.data.frame(t(file003))
 sdf003<-stack(file004)
 sdf10003<-sdf003$values
 sdf01003<-sdf003$values/10000
-
 # create a list from these files
-list.filename<-list.files(pattern="Bx001rc.tif$")
-file<-readGDAL(list.filename)
+
+
+list.filename=assign(paste(path=OUTDIR,'/',pattern="Bx001_",j,"_crop.tif",sep =""),list.files(pattern=paste("Bx001_",j,"_crop",".*\\.tif",sep="")))
+file<-readGDAL(paste(path=OUTDIR,'/',list.filename,sep=""))
+
 xy_sa=geometry(file)
 xy<-data.frame(xy_sa)
 z<- rep(0,dim(xy)[1])
-
 sdf10110003 <-cbind(xy, sdf10003)
 sdf01110003 <-cbind(xy, sdf01003)
-
 sdf10111003 <-cbind(xy,z,sdf10003)
 sdf01111003 <-cbind(xy,z,sdf01003)
 
@@ -141,20 +205,23 @@ sdf01111003 <-cbind(xy,z,sdf01003)
 #int
 #write.table(sdf10111003[,c(3:3)],paste(path=OUTDIR,'/' ,'Bx1000003.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
 #float
-write.table(sdf01111003[,c(3:3)],paste(path=OUTDIR,'/' ,'Bx0100003.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
-
+write.table(sdf01111003[,c(4:4)],paste(path=OUTDIR,'/' ,'Bx0100003_',j,'_crop.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
+}
 EOF
 #-------------------------------------------------------------------------------------#
-HDIR=~/data/scripts_teste/
-export HDIR
-awk 'NR > 1 { print $1 }' $HDIR/header.txt > $LDIR/Bx0100004.dat
-cat $LDIR/Bx0100003.dat >> $LDIR/Bx0100004.dat
-
+export -p HDIR=/application/bin/ISD5_node/
+#-------------------------------------------------------------------------------------# 
+for file in $LDIR/*.dat; do 
+filename=$(basename $file .dat )
+awk 'NR > 1 { print $2 }' $HDIR/header.txt > $LDIR/${filename}_01.dat
+cat $file >> $LDIR/${filename}_01.dat
+sed -i '/^[[:space:]]*$/d' $LDIR/${filename}_01.dat 
 # add space
-sed -i -e 's/^/ /' $LDIR/Bx0100004.dat
-
+sed -i -e 's/^/ /' $LDIR/${filename}_01.dat
 # To convert the line endings in a text file from UNIX to DOS format (LF to CRLF)
-sed -i 's/$/\r/' $LDIR/Bx0100004.dat 
+sed -i 's/$/\r/' $LDIR/${filename}_01.dat 
+done
+
 #-------------------------------------------------------------------------------------# 
 # here we publish the results
 #-------------------------------------------------------------------------------------#

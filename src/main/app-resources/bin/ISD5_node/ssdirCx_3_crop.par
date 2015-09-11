@@ -12,7 +12,7 @@
 #-------------------------------------------------------------------------------------# 
 
 [HARDDATAZ1] 
-DATAFILE  = /home/melodies-ist/data/ISD/ISD001/CM001/Dx0111104.dat # Hard Data file
+DATAFILE  = /home/melodies-ist/data/ISD/ISD000/CM001/AOI1/AOI1_CX/Cx0111103_3_03.dat # Hard Data file
 
 COLUMNS   = 4                 # Number of columns in the data file (to eliminate) 
 XCOLUMN   = 1                 # Column number of X coordinate 
@@ -42,7 +42,7 @@ UTPAR   = 1    # Parameter for the utail=2
 # here we define some parameters for the simulation 
 #-------------------------------------------------------------------------------------# 
 [SIMULATION] 
-OUTFILE   = /home/melodies-ist/data/ISD/ISD001/GEOMS/Dx/ISD_   # Filename of the resultant simulations
+OUTFILE   = /home/melodies-ist/data/ISD/ISD000/GEOMS/Cx/ISD_   # Filename of the resultant simulations
 
 NSIMS     = 1                 # Number of Simulations to generate 
 NTRY      = 5                 # Number of simulation for bias correction  
@@ -53,23 +53,23 @@ VARCORR   = 1                 # Average correction flag
 #-------------------------------------------------------------------------------------# 
 [GRID] 
 # NX, NY and NZ are the number of blocks per direction  
-NX        =2520
+NX        =756
 
-NY        =1260
+NY        =420
 
 NZ        =1
 
 # ORIGX, ORIGY and ORIGZ are the start coordinate for each direction 
-ORIGX     =-9.7513889
+ORIGX     =-3.0044643
 
-ORIGY     =36.0013889  
+ORIGY     =36.0044644
 
 ORIGZ     =0.0
 
 # SIZEX, SIZEY and SIZEZ is the size of blocks in each direction  
-SIZEX     =0.002976190476000
+SIZEX     =0.008928571399471
 
-SIZEY     =0.002976190476000
+SIZEY     =0.008928571399471
 
 SIZEZ     =1.0
 
@@ -108,13 +108,13 @@ SANG3   =0                   # Orientation angle parameter of direction I (degre
 # here we define the kriging information, and secondary info when applicable 
 #-------------------------------------------------------------------------------------# 
 [KRIGING] 
-KTYPE     =5              # Kriging type ;0=simple,1=ordinary,2=simple with locally varying mean, 
+KTYPE     =5             # Kriging type ;0=simple,1=ordinary,2=simple with locally varying mean, 
 # 3=external drif, 4=collo-cokrig global CC,5=local CC (KTYPE) 
 COLOCORR =0.8               # Global CC to ktype=4  
-SOFTFILE  =/home/melodies-ist/data/ISD/ISD001/COKC/CRx0100004b.dat   # Filename of the soft data 
+SOFTFILE  =/home/melodies-ist/data/ISD/ISD000/COKC/Bx0100003_3_crop_01.dat   # Filename of the soft data 
 NVARIL  = 1                   # Number of columns in the secundary data file 
 ICOLLVM = 1                  # Column number of secundary variable  
-CCFILE  = /home/melodies-ist/data/ISD/ISD001/PM001/CRx0100004b.dat      # Filename of correlation file for local correlations (ktype=5) 
+CCFILE  = /home/melodies-ist/data/ISD/ISD000/PM001/CRx0100003_3_crop_01.dat     # Filename of correlation file for local correlations (ktype=5) 
 RESCALE = 1
 LVMFILE = NOFILE
 
@@ -131,17 +131,17 @@ TYPE = 1      # Struture type ;1=spherical,2=exponential,3=gaussian (IT(i))
 
 COV  = 01      # C parameter "COV + NUGGET = 1.0" (CC(i))
 
-ANG1 = 90      # Geometric anisotropy angle I (ANG1(i))
+ANG1 = -45      # Geometric anisotropy angle I (ANG1(i))
 
-ANG2 = 0      # Geometric anisotropy angle II (ANG2(i))
+ANG2 = 45      # Geometric anisotropy angle II (ANG2(i))
 
-ANG3 = 0      # Geometric anisotropy angle III (ANG3(i))
+ANG3 = 45      # Geometric anisotropy angle III (ANG3(i))
 
-AA   = 1     # Maximum horizontal range (AA(i))
+AA   = 9.051     # Maximum horizontal range (AA(i))
 
-AA1  = 1     # Minimum horizontal range (AA1)
+AA1  = 6.223     # Minimum horizontal range (AA1)
 
-AA2  = 1    # Vertical range (AA2)
+AA2  = 6.223    # Vertical range (AA2)
 
 #-------------------------------------------------------------------------------------# 
 # here we define parameters for joint DSS  
@@ -175,4 +175,9 @@ MAXCTZ = 100
 #-------------------------------------------------------------------------------------# 
 # here we define parameters for BLOCK KRIGING - if you are not block kriging useblocks should be 0  
 #-------------------------------------------------------------------------------------# 
+[BLOCKS] 
+USEBLOCKS =0  # 1 use, 0 no 
+
+BLOCKSFILE = C:\UserData\Ruben\TEMP\Krigagem\krige\blocos_grid.prn
+MAXBLOCKS = 4
 

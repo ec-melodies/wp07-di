@@ -16,20 +16,22 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-source ${ciop_job_include}
+# source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-bash /application/bin/ISD5_node/ini.sh
+# bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
-export DIR=~/data
-export OUTDIR=/tmp/data/ISD001/
-export -p CMDIR=$OUTDIR/CM001
+export -p DIR=~/data/ISD/
+export -p INDIR=~/data/INPUT/
+export -p OUTDIR=$DIR/ISD000/
+export -p CMDIR=$OUTDIR/CM001/
+export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
 #R version  3.2.1
 
-INDIR = Sys.getenv(c('INDIR'))
+INDIR = Sys.getenv(c('CMDIR'))
 CMDIR = Sys.getenv(c('CMDIR'))
 
 # load the package
@@ -151,56 +153,7 @@ projection(rD3) = CRS("+init=epsg:4326")
 writeRaster(rD3,paste(CMDIR, '/' ,'Dx001.tif',sep = ""),overwrite=TRUE)
 
 EOF
-#-------------------------------------------------------------------------------------# 
-gdal_translate  -of AAIGrid  $CMDIR/Dx001.tif   $CMDIR/Dx001.asc 
-gdalinfo $CMDIR/Dx001.asc > $CMDIR/ReadMe_Dx001.txt
-awk '$1 ~ /^[0-9]/' $CMDIR/Dx001.asc > $CMDIR/Dx001.txt
-#-------------------------------------------------------------------------------------# 
-R --vanilla --no-readline   -q  <<'EOF'
-INDIR = Sys.getenv(c('CMDIR'))
-CMDIR = Sys.getenv(c('CMDIR'))
 
-## load the package
-require("zoo")
-require("rgdal")
-require("raster")
-require("sp")
-require("rciop")
 
-setwd(INDIR)
-
-list.files(pattern="Dx001.tif") 
-# create a list from these files
-list.filename<-list.files(pattern="Dx001.tif$")
-file<-readGDAL(list.filename)
-xy_sa=geometry(file)
-xy<-data.frame(xy_sa)
-z<- rep(0,dim(xy)[1])
-
-dt<-paste(path=CMDIR,'/',pattern="Dx001.txt",sep ="")
-file_out<-read.table(dt)
-sdf <- stack(file_out)
-sdf01111 <-cbind(xy,z,sdf$values)
-write.table(sdf01111,paste(path=CMDIR,'/' ,'Dx0111103.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
-
-EOF
-#-------------------------------------------------------------------------------------# 
-#export -p HDIR=/application/bin/ISD5_node/
-#-------------------------------------------------------------------------------------# 
-# HDIR=~/data/scripts_teste/
-# export HDIR
-awk 'NR > 1 { print $1 }' $HDIR/header.txt > $CMDIR/Dx0111104.dat
-cat $CMDIR/Dx0111103.dat >> $CMDIR/Dx0111104.dat
-#-------------------------------------------------------------------------------------#
-echo "convert lf to crlf" 
-sed -i -e 's/^/ /' $CMDIR/Dx0111104.dat 
-#To convert the line endings in a text file from UNIX to DOS format (LF to CRLF)
-sed -i 's/$/\r/' $CMDIR/Dx0111104.dat
-#-------------------------------------------------------------------------------------# 
-# here we publish the results
-#-------------------------------------------------------------------------------------# 
-#Dx0111104=ciop.publish($CMDIR/Dx0111104.dat)
-echo "DONE"
-exit 0
 
 
