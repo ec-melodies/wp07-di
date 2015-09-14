@@ -31,45 +31,50 @@ export -p HDIR=~/wp07-di/src/main/app-resources/bin/ISD5_node/
 export -p LDIR=$OUTDIR/COKC
 export -p CDIR=$OUTDIR/SM001
 export -p VDIR=$OUTDIR/VM001
-export -p RECLASS=$OUTDIR/SPPV001/AOI1/VX/
+export -p RECLASS=$OUTDIR/SPPV001
 export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------#
 
 for file in $SBDIR/Sx001*.tif; do
 filename01=$(basename $file .tif)
-f=${filename01/#Sx/LANDC}  
-j=${f/%_crop/_001}
+f=${filename01/#Sx001_/LULC_mosaic_}  
+j=${f/%/01}
 for file2 in $j; do
 filename02=$(basename $file2 .tif )
 done;
 echo $filename01 $filename02
 # => For Discriminant classes 0.8:
-for i in {2,3,4,5,6,7}; do 
-gdal_calc.py -A $SBDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$PDIR/CR${filename01}_0$i.tif --calc="(B==$i)*(A*0+8000)" --overwrite  --NoDataValue=0 --type=UInt32;
+for i in {2,3,4,5,6}; do 
+gdal_calc.py -A $SBDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$PDIR/CR${filename01}_0$i.tif --calc="(B==$i)*(A*0+8000)" --overwrite  --NoDataValue=-9999 --type=UInt32;
 done;
 done
 
 for file in $SBDIR/Sx001*.tif; do
 filename01=$(basename $file .tif)
-f=${filename01/#Sx/LANDC}  
-j=${f/%_crop/_001}
+f=${filename01/#Sx001_/LULC_mosaic_}  
+j=${f/%/01}
 for file2 in $j; do
 filename02=$(basename $file2 .tif )
 done;
 echo $filename01 $filename02
 # => For Non-Discriminant classes 0.5:
-for i in {1,8,9,10,11}; do 
-gdal_calc.py -A $SBDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$PDIR/CR${filename01}_0$i.tif --calc="(B==$i)*(A*0+5000)" --overwrite  --NoDataValue=0 --type=UInt32;
+for i in {1,7,8,9,10,11}; do 
+gdal_calc.py -A $SBDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$PDIR/CR${filename01}_0$i.tif --calc="(B==$i)*(A*0)" --overwrite  --NoDataValue=-9999 --type=UInt32;
 done;
 done
 
 
 #-------------------------------------------------------------------------------------#
 export -p PDIR=$OUTDIR/PM001
-for i in {1..4}; do  
-mv $PDIR/CRSx001_${i}_crop_010.tif  $PDIR/CRSx001_${i}_crop_10.tif
-mv $PDIR/CRSx001_${i}_crop_011.tif  $PDIR/CRSx001_${i}_crop_11.tif
-done
+#for i in {1..4}; do  
+#mv $PDIR/CRSx001_${i}_crop_010.tif  $PDIR/CRSx001_${i}_crop_10.tif
+#mv $PDIR/CRSx001_${i}_crop_011.tif  $PDIR/CRSx001_${i}_crop_11.tif
+#done
+
+#for i in {1..4}; do  
+mv $PDIR/CRSx001__010.tif  $PDIR/CRSx001__10.tif
+mv $PDIR/CRSx001__011.tif  $PDIR/CRSx001__11.tif
+#done
 
 #-------------------------------------------------------------------------------------#
 R --vanilla --no-readline   -q  <<'EOF'
@@ -86,26 +91,26 @@ require(raster)
 list.files(pattern=".tif$") 
  
 # create a list from these files
-for (j in 1:4){ 
-print(j)
-ww=assign(paste("list.filenames_",j,sep=""),list.files(pattern=paste("x001_",j,".*\\.tif",sep="")))
-}
+#for (j in 1:4){ 
+#print(j)
+ww=assign(paste("list.filenames_",sep=""),list.files(pattern=paste("x001_",".*\\.tif",sep="")))
+#}
 
 # create a list from these files
-for (j in 1:4)
-{ 
-print(j)
-list.filenames=assign(paste("list.filenames_",j,sep=""),list.files(pattern=paste("x001_",j,".*\\.tif",sep="")))
+#for (j in 1:4)
+#{ 
+#print(j)
+list.filenames=assign(paste("list.filenames_",sep=""),list.files(pattern=paste("x001_",".*\\.tif",sep="")))
 # load raster data  
-
+list.filenames
 rstack003<-stack(raster(list.filenames[1]),
 raster(list.filenames[2]), raster(list.filenames[3]), raster(list.filenames[4]), raster(list.filenames[5]),
 raster(list.filenames[6]), raster(list.filenames[7]), raster(list.filenames[8]), raster(list.filenames[9]),
 raster(list.filenames[10]), raster(list.filenames[11]))
 
 rastD6<-sum(rstack003, na.rm=TRUE)
-writeRaster(rastD6, filename=paste("CR001_",j,"_crop.tif", sep=""), format="GTiff", overwrite=TRUE)
-}
+writeRaster(rastD6, filename=paste("CR001_",".tif", sep=""), format="GTiff", overwrite=TRUE)
+#}
 
 EOF
 #-------------------------------------------------------------------------------------#
@@ -155,9 +160,9 @@ list.files(pattern=".tif$")
 list.filenames<-list.files(pattern=".tif$")
 list.filenames02<-list.files(pattern=".txt$")
 
-for (j in 1:4){ 
-print(j)
-dt=assign(paste(path=OUTDIR,'/',pattern="CR001_",j,"_crop.txt",sep =""),list.files(pattern=paste("CR001_",j,"_crop",".*\\.txt",sep="")))
+#for (j in 1:4){ 
+#print(j)
+dt=assign(paste(path=OUTDIR,'/',pattern="CR001_",".txt",sep =""),list.files(pattern=paste("CR001_",".*\\.txt",sep="")))
 print(dt)
 file003<-read.table(paste(path=OUTDIR,'/',dt,sep=""))
 #-------------------------------------------------------------------------------------#
@@ -172,7 +177,7 @@ sdf01003<-sdf003$values/10000
 
 # create a list from these files
 
-list.filename=assign(paste(path=OUTDIR,'/',pattern="CRSx001_",j,"_crop.tif",sep =""),list.files(pattern=paste("CRSx001_",j,"_crop",".*\\.tif",sep="")))
+list.filename=assign(paste(path=OUTDIR,'/',pattern="CR001_",".tif",sep =""),list.files(pattern=paste("CR001_",".*\\.tif",sep="")))
 file<-readGDAL(paste(path=OUTDIR,'/',list.filename,sep=""))
 
 xy_sa=geometry(file)
@@ -189,9 +194,9 @@ sdf01111003 <-cbind(xy,z,sdf01003)
 #int
 #write.table(sdf1011003[,c(3:3)],paste(path=OUTDIR,'/' ,'CRx1000003.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
 #float
-write.table(sdf01111003[,c(4:4)],paste(path=OUTDIR,'/' ,'CRx0100003_',j,'_crop.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
+write.table(sdf01111003[,c(4:4)],paste(path=OUTDIR,'/' ,'CRx0100003_','.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
 
-}
+#}
 EOF
 
 #-------------------------------------------------------------------------------------#

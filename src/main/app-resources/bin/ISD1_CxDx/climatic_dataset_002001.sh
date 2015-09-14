@@ -26,13 +26,16 @@ export -p DIR=~/data/ISD/
 export -p INDIR=~/data/INPUT/
 export -p OUTDIR=$DIR/ISD000/
 export -p CMDIR=$OUTDIR/CM001/
+export -p CMDIR02=$CMDIR/AOI/AOI_DX
+mkdir -p $CMDIR02
+
 export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
 #R version  3.2.1
 
 INDIR = Sys.getenv(c('CMDIR'))
-CMDIR = Sys.getenv(c('CMDIR'))
+CMDIR = Sys.getenv(c('CMDIR02'))
 
 # load the package
 require("zoo")
@@ -74,6 +77,7 @@ years02 <-as.numeric(format(years, "%m"))
 years00 <-data.frame(years)
 #-------------------------------------------------------------------------------------# 
 RL100403 <- cbind(RL100401,years00)
+setwd(CMDIR)
 #-------------------------------------------------------------------------------------# 
 # 01
 for (i in 1989:2014){
@@ -153,6 +157,17 @@ projection(rD3) = CRS("+init=epsg:4326")
 writeRaster(rD3,paste(CMDIR, '/' ,'Dx001.tif',sep = ""),overwrite=TRUE)
 
 EOF
+#-------------------------------------------------------------------------------------# 
+#gdal_translate  -of AAIGrid  $CMDIR02/Dx001.tif   $CMDIR02/Dx001.asc 
+#gdalinfo $CMDIR02/Dx001.asc > $CMDIR02/ReadMe_Dx001.txt
+
+#-------------------------------------------------------------------------------------# 
+#cat $CMDIR/Cx001.asc | awk '{if($1 == "NODATA_value") print}'| awk 'NR > 6 { print }' $CMDIR/Cx001.asc> $CMDIR/Cx001.txt ; 
+#cat $CMDIR/Cx001.asc | awk '{if($1 != "NODATA_value") print}'| awk 'NR > 5 { print }' $CMDIR/Cx001.asc> $CMDIR/Cx001.txt 
+#awk '$1 ~ /^[0-9]/' $CMDIR02/Dx001.asc > $CMDIR02/Dx001.txt
+
+
+#-------------------------------------------------------------------------------------# 
 
 
 

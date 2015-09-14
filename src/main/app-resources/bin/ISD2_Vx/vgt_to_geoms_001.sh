@@ -29,7 +29,7 @@ export -p DIR=~/data/ISD/
 export -p INDIR=$DIR/INPUT
 
 export -p OUTDIR=$DIR/ISD000
-export -p LAND001=$OUTDIR/SPPV001/AOI1/VX
+export -p LAND001=$OUTDIR/SPPV001
 
 export -p VDIR=$OUTDIR/VM001
 export -p NVDIR=$OUTDIR/VM001/class_NDV001/
@@ -46,20 +46,24 @@ export PATH=/opt/anaconda/bin/:$PATH
 input001=$INDIR/NDV.tif
 
 #input2: Land Cover
-input002=$LAND001/LULC.tif
+input002=$LAND001/LULC_mosaic.tif
 
 
 #-------------------------------------------------------------------------------------#
 # JOB# resample LULC para o mesmo pixel scale do target (SPOT or PROBA-V)
 #-------------------------------------------------------------------------------------#
 #
-for file in $LAND001/LANDC0*.tif; do 
+# 
+rm $LAND001/LULC_mosaic_01.tif
+
+for file in $LAND001/LULC*.tif; do 
 filename=$(basename $file .tif ) 
 echo $filename
-input001=$LAND001/*01_NDV.tif
+gdalinfo $LAND001/${filename}.tif
+input001=$LAND001/NDV01.tif
 input002=$LAND001/${filename}.tif
 z001="$(gdalinfo $input001 | grep "Pixel Size" |  awk  -F, ' {print $(NF-1)}'| awk '{ gsub ("[(),]","") ; print  $4  }')"
-gdalwarp -tr $z001 $z001 -r bilinear $input002 $LAND001/${filename}_001.tif
+gdalwarp -tr $z001 $z001 -r bilinear -overwrite $input002 $LAND001/${filename}_01.tif 
 done
 
 #-------------------------------------------------------------------------------------#
@@ -70,13 +74,15 @@ done
 #lry=$(gdalinfo $VDIR/input002001.tif | grep "Lower Right" | awk '{ gsub ("[(),]","") ; print $4  }')
 
 #-------------------------------------------------------------------------------------#
-# r.factor: PhyVal = DN / ScalingFactor + Offset, Offset=-0.08, Scaling factor=250 
+# r.factor: PhyVal = DN / ScalingFactor + Offset, Offset=-0.08, Scaling factor=250
+# PV = (1/250) * DN + (-0.08) 
 #-------------------------------------------------------------------------------------#
 
-for file in $LAND001/*NDV.tif; do 
+for file in $LAND001/NDV01*.tif; do 
 filename=$(basename $file .tif ) 
 echo $filename
-gdal_calc.py -A $LAND001/${filename}.tif --outfile=$LAND001/${filename}_001.tif --calc="(((A*0.004)-0.08)*10000.0)" --overwrite --NoDataValue=255 --type=UInt32; 
+gdalinfo $LAND001/${filename}.tif
+gdal_calc.py -A $LAND001/${filename}.tif --outfile=$NVDIR/${filename}_001.tif --calc="(((A*0.004)-0.08)*10000.0)" --overwrite --NoDataValue=255 --type=UInt32; 
 done
 
 #pkcrop -ulx $ulx -uly $uly -lrx $lrx -lry $lry -i $VDIR/input001000i.tif -o $VDIR/input001002.tif
@@ -85,80 +91,71 @@ done
 #-------------------------------------------------------------------------------------#
 # JOB#005 Extrair as classes por land cover [1:11] e calc os valores de HSD and LSD
 #-------------------------------------------------------------------------------------#
-for file in $LAND001/*NDV_001.tif; do
+#reclassification:iberian
+for file in $NVDIR/NDV01_001*.tif; do
 filename01=$(basename $file .tif)
-f=${filename01/#AOI1_crop_0/LANDC001}  
-j=${f/%_NDV_001/_001}
+f=${filename01/#NDV01/LULC_mosaic}  
+j=${f/%_001/_01}
 for file2 in $j; do
 filename02=$(basename $file2 .tif )
 done;
 echo $filename01 $filename02
-for i in {1..11}; do  
-gdal_calc.py -A $LAND001/${filename01}.tif -B $LAND001/${filename02}.tif --outfile=$NVDIR/${filename02}_0$i.tif --calc="(B==$i)*(A)" --overwrite --NoDataValue=0 --type=UInt32; 
+gdalinfo $NVDIR/${filename01}.tif
+gdalinfo $LAND001/${filename02}.tif
+
+for i in {2,3,4,6}; do  
+gdal_calc.py -A $NVDIR/${filename01}.tif -B $LAND001/${filename02}.tif --outfile=$NVDIR/${filename02}_0$i.tif --calc="((B==$i)*(A))" --NoDataValue=0 --overwrite --type=UInt32; 
 #zLSD="$(oft-mm -um $VDIR/class_temp/input003001_$i.tif $VDIR/class_temp/input003001_$i.tif| grep "Band 1 min"|  awk '{ gsub ("[(),]","") ; print $5  }')"
 done;
-#gdalinfo $LAND001/${filename01}.tif
-#gdalinfo $LAND001/${filename02}.tif
+
+for i in {1,5,7,8,9,10,11}; do  
+gdal_calc.py -A $NVDIR/${filename01}.tif -B $LAND001/${filename02}.tif --outfile=$NVDIR/NORN_${filename02}_0$i.tif --calc="(B==$i)*(A*0+5000)" --NoDataValue=0 --overwrite --type=UInt32; 
+#zLSD="$(oft-mm -um $VDIR/class_temp/input003001_$i.tif $VDIR/class_temp/input003001_$i.tif| grep "Band 1 min"|  awk '{ gsub ("[(),]","") ; print $5  }')"
+done;
+done
 mv $NVDIR/${filename02}_010.tif $NVDIR/${filename02}_10.tif
 mv $NVDIR/${filename02}_011.tif $NVDIR/${filename02}_11.tif
-done
+
 #-------------------------------------------------------------------------------------#
 # calculo das medias das classes, normalização 
 
 export -p NVDIR=$OUTDIR/VM001/class_NDV001/
 export -p VDIR=$OUTDIR/VM001
-#-------------------------------------------------------------------------------------#
-R --vanilla --no-readline   -q  <<'EOF'
 
-#R version  3.2.1
-# set working directory
-INDIR = Sys.getenv(c('NVDIR'))
-OUTDIR = Sys.getenv(c('VDIR'))
+#reclassification:iberian
+for file in $NVDIR/LULC_mosaic_01_*.tif; do
+filename01=$(basename $file .tif)
+j=LULC_mosaic_01
+for file2 in $j; do
+filename02=$(basename $file2 .tif )
+done;
+echo $filename01 $filename02
+i=${filename01}
 
-setwd(INDIR)
+#gdalinfo $NVDIR/${filename01}.tif
+#gdalinfo $LAND001/${filename02}.tif
 
-require("zoo")
-require("rgdal")
-require("raster")
-require("sp")
-require("rciop")
+min=$(gdalinfo -stats $NVDIR/${filename01}.tif | grep "STATISTICS_MINIMUM" | awk '{ gsub ("STATISTICS_MINIMUM=","") ; print  $0  }')
+max=$(gdalinfo -stats $NVDIR/${filename01}.tif | grep "STATISTICS_MAXIMUM" | awk '{ gsub ("STATISTICS_MAXIMUM=","") ; print  $0  }')
+mean=$(gdalinfo -stats $NVDIR/${filename01}.tif | grep "STATISTICS_MEAN" | awk '{ gsub ("STATISTICS_MEAN=","") ; print  $0  }')
 
-setwd(INDIR)
-getwd()
-    
-# list all files from the current directory
-list.files(pattern=".tif$") 
- 
-# create a list from these files
-for (j in 1:4){ 
-print(j)
-ww=assign(paste("list.filenames_",j,sep=""),list.files(pattern=paste("LANDC001_",j,".*\\.tif",sep="")))
-}
-
-for (j in 1:4){ 
-
-list.filenames=assign(paste("list.filenames_",j,sep=""),list.files(pattern=paste("LANDC001_",j,".*\\.tif",sep="")))
-# create a loop to read in your data
-for (i in 1:length(list.filenames))
-{
-# load raster data 
-rastD = raster(list.filenames[i])
-rastDi = raster(list.filenames[i])
-# calculate Mean
-rastD[rastD <= 0] = -9999
-rastDi[rastDi <= 0] = -9999
-rastD3<-((rastD>-9999)*(rastD[]=(cellStats(brick(rastD), mean))))
-rastD5<-(maxValue(rastDi)-rastD3)/(maxValue(rastDi)-minValue(rastDi))
-print(i)
-writeRaster(rastD5, filename=paste("st0",i,"_classNDV_crop_0",j,".tif", sep=""), format="GTiff", overwrite=TRUE)
-}}
-
-EOF
-#-------------------------------------------------------------------------------------#
-for i in {1..4}; do  
-mv  $NVDIR/st010_classNDV_crop_0$i.tif  $NVDIR/st10_classNDV_crop_0$i.tif
-mv  $NVDIR/st011_classNDV_crop_0$i.tif  $NVDIR/st11_classNDV_crop_0$i.tif
+f=${filename01/#LULC_mosaic_01_0/ }
+i=${f}
+echo $min $max $mean $i
+gdal_calc.py -A  $NVDIR/${filename01}.tif -B $LAND001/${filename02}.tif --outfile=$NVDIR/NORN_${filename01}.tif --calc="(B==$i)*((A*0+(($max-$mean)/($max-$min)))*10000)" --NoDataValue=0 --overwrite --type=UInt32
 done
+
+#-------------------------------------------------------------------------------------#
+#for i in {1..4}; do  
+#mv  $NVDIR/st010_classNDV_crop_0$i.tif  $NVDIR/st10_classNDV_crop_0$i.tif
+#mv  $NVDIR/st011_classNDV_crop_0$i.tif  $NVDIR/st11_classNDV_crop_0$i.tif
+#done
+
+mv  $NVDIR/NORN_LULC_mosaic_01_010.tif  $NVDIR/NORN_LULC_mosaic_01_10.tif
+mv  $NVDIR/NORN_LULC_mosaic_01_011.tif  $NVDIR/NORN_LULC_mosaic_01_11.tif
+
+rm $NVDIR/NORN_LULC_mosaic*.xml
+#-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
 R --vanilla --no-readline   -q  <<'EOF'
 
@@ -176,9 +173,10 @@ require(rciop)
 list.files(pattern=".tif$") 
  
 # create a list from these files
-for (j in 1:4){ 
-print(j)
-list.filenames=assign(paste("list.filenames_",j,sep=""),list.files(pattern=paste("_classNDV_crop_0",j,".*\\.tif",sep="")))
+#for (j in 1:4){ 
+#print(j)
+list.filenames=assign(paste("list.filenames",sep=""),list.files(pattern=paste("NORN_",".*\\.tif",sep="")))
+list.filenames
 # load raster data 
 rstack001<-stack(raster(list.filenames[1]),
 raster(list.filenames[2]),
@@ -192,9 +190,9 @@ raster(list.filenames[9]),
 raster(list.filenames[10]),
 raster(list.filenames[11]))
 rastD6<-sum(rstack001, na.rm=TRUE)
-
-writeRaster(rastD6, filename=paste("Vx001_",j,"_crop.tif", sep=""), format="GTiff", overwrite=TRUE, na.rm=TRUE)
-}
+summary(rastD6)
+writeRaster(rastD6, filename=paste("Vx001_",".tif", sep=""), format="GTiff", overwrite=TRUE, na.rm=TRUE)
+#}
 
 #-------------------------------------------------------------------------------------# 
 # here we publish the results

@@ -25,20 +25,21 @@ export PATH=/opt/anaconda/bin/:$PATH
 export -p DIR=~/data/ISD/
 export -p INDIR=~/data/INPUT/
 export -p OUTDIR=$DIR/ISD000/
-export -p CMDIR=$OUTDIR/CM001/AOI1/AOI1_DX
-export PATH=/opt/anaconda/bin/:$PATH
+export -p CMDIR=$OUTDIR/CM001/
+export -p CMDIR02=$CMDIR/AOI/AOI_DX
+
 #-------------------------------------------------------------------------------------# 
-for file in $CMDIR/*.tif ; do 
+for file in $CMDIR02/*.tif ; do 
 filename=$(basename $file .tif )
-gdal_translate  -of AAIGrid $CMDIR/${filename}.tif $CMDIR/${filename}_Dx001.asc 
-#gdalinfo $CMDIR/${filename}_Dx001.asc > $CMDIR/${filename}_ReadMe_Dx001.txt
-awk '$1 ~ /^[0-9]/' $CMDIR/${filename}_Dx001.asc > $CMDIR/${filename}_Dx001.txt
+gdal_translate  -of AAIGrid $CMDIR02/${filename}.tif $CMDIR02/${filename}.asc 
+#gdalinfo $CMDIR02/${filename}.asc > $CMDIR02/${filename}_ReadMe.txt
+awk '$1 ~ /^[0-9]/' $CMDIR02/${filename}.asc > $CMDIR02/${filename}.txt
 done 
 
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
 INDIR = Sys.getenv(c('CMDIR'))
-CMDIR = Sys.getenv(c('CMDIR'))
+CMDIR = Sys.getenv(c('CMDIR02'))
 
 ## load the package
 require("zoo")
@@ -47,7 +48,7 @@ require("raster")
 require("sp")
 require("rciop")
 
-setwd(INDIR)
+setwd(CMDIR)
 
 
 options(max.print=99999999) 
@@ -77,13 +78,13 @@ EOF
 #-------------------------------------------------------------------------------------# 
 export -p HDIR=/application/bin/ISD5_node/
 #-------------------------------------------------------------------------------------# 
-for file in $CMDIR/*.dat; do 
+for file in $CMDIR02/*.dat; do 
 filename=$(basename $file .dat )
-awk 'NR > 1 { print $1 }' $HDIR/header.txt > $CMDIR/${filename}_01.dat
-cat $file >> $CMDIR/${filename}_01.dat
-sed -i -e 's/^/ /' $CMDIR/${filename}_01.dat
+awk 'NR > 1 { print $1 }' $HDIR/header.txt > $CMDIR02/${filename}_01.dat
+cat $file >> $CMDIR02/${filename}_01.dat
+sed -i -e 's/^/ /' $CMDIR02/${filename}_01.dat
 #To convert the line endings in a text file from UNIX to DOS format (LF to CRLF)
-sed -i 's/$/\r/' $CMDIR/${filename}_01.dat
+sed -i 's/$/\r/' $CMDIR02/${filename}_01.dat
 done
 #-------------------------------------------------------------------------------------# 
 # here we publish the results

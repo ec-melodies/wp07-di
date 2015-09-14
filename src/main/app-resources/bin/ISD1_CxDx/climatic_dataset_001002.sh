@@ -26,19 +26,21 @@ export -p DIR=~/data/ISD/
 export PATH=/opt/anaconda/bin/:$PATH
 export -p INDIR=~/data/INPUT/
 export -p OUTDIR=$DIR/ISD000/
-export -p CMDIR=$OUTDIR/CM001/AOI1/AOI1_CX
+export -p CMDIR=$OUTDIR/CM001/
+export -p CMDIR01=$CMDIR/AOI/AOI_CX
+
 #-------------------------------------------------------------------------------------# 
-for file in $CMDIR/*.tif ; do 
+for file in $CMDIR01/*.tif ; do 
 filename=$(basename $file .tif )
-gdal_translate  -of AAIGrid $CMDIR/${filename}.tif $CMDIR/${filename}_Cx001.asc 
-#gdalinfo $CMDIR/${filename}_Cx001.asc > $CMDIR/${filename}_ReadMe_Cx001.txt
-awk '$1 ~ /^[0-9]/' $CMDIR/${filename}_Cx001.asc > $CMDIR/${filename}_Cx001.txt
+gdal_translate  -of AAIGrid $CMDIR01/${filename}.tif $CMDIR01/${filename}.asc 
+#gdalinfo $CMDIR01/${filename}.asc > $CMDIR01/${filename}_ReadMe.txt
+awk '$1 ~ /^[0-9]/' $CMDIR01/${filename}.asc > $CMDIR01/${filename}.txt
 done 
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
 
 INDIR = Sys.getenv(c('CMDIR'))
-CMDIR = Sys.getenv(c('CMDIR'))
+CMDIR = Sys.getenv(c('CMDIR01'))
 setwd(CMDIR)
 getwd()
 # load the package
@@ -75,14 +77,14 @@ EOF
 #-------------------------------------------------------------------------------------# 
 export -p HDIR=/application/bin/ISD5_node/
 #-------------------------------------------------------------------------------------#
-for file in $CMDIR/*.dat; do 
+for file in $CMDIR01/*.dat; do 
 filename=$(basename $file .dat )
-awk 'NR > 1 { print $1 }' $HDIR/header.txt > $CMDIR/${filename}_01.dat
-cat $file >> $CMDIR/${filename}_01.dat
+awk 'NR > 1 { print $1 }' $HDIR/header.txt > $CMDIR01/${filename}_01.dat
+cat $file >> $CMDIR01/${filename}_01.dat
 #add space
-sed -i -e 's/^/ /' $CMDIR/${filename}_01.dat
+sed -i -e 's/^/ /' $CMDIR01/${filename}_01.dat
 #To convert the line endings in a text file from UNIX to DOS format (LF to CRLF)
-sed -i 's/$/\r/' $CMDIR/${filename}_01.dat
+sed -i 's/$/\r/' $CMDIR01/${filename}_01.dat
 done 
 #-------------------------------------------------------------------------------------# 
 # here we publish the results

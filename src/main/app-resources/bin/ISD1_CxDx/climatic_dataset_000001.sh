@@ -44,12 +44,12 @@ uly=44.25
 ulx=-9.75
 lry=36.75
 lrx=3.00
-deg=0.25
+deg=0.75
 
 #-------------------------------------------------------------------------------------#
 tdir=os.path.join('/data/ISD/ISD000/CM001/')
 rtdir=os.environ['HOME']+tdir
-target001=os.path.join(rtdir,'ecmwf025_ib.grib') 
+target001=os.path.join(rtdir,'ecmwf.grib') 
 os.chdir(rtdir)
 date= "%d-10-01/to/%d-09-30" % (y1,y2)
 area="%.3f/%.3f/%.3f/%.3f" % (uly,ulx,lry,lrx)

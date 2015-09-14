@@ -26,15 +26,17 @@ export -p DIR=~/data/ISD/
 export PATH=/opt/anaconda/bin/:$PATH
 export -p INDIR=~/data/INPUT/
 export -p OUTDIR=$DIR/ISD000/
-export -p CMDIR=$OUTDIR/CM001
+export -p CMDIR=$OUTDIR/CM001/
+export -p CMDIR01=$CMDIR/AOI/AOI_CX
+mkdir -p $CMDIR01
 
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
 #R version  3.2.1
 
 INDIR = Sys.getenv(c('CMDIR'))
-CMDIR = Sys.getenv(c('CMDIR'))
-setwd(INDIR)
+CMDIR = Sys.getenv(c('CMDIR01'))
+setwd(CMDIR)
 getwd()
 #-------------------------------------------------------------------------------------# 
 #y1=rciop.getparam(c('y1'))
@@ -53,6 +55,7 @@ options(max.print=99999999)
 options("scipen"=100, "digits"=4)
 
 #-------------------------------------------------------------------------------------# 
+setwd(INDIR)
 file.grib<-readGDAL(list.files(path=INDIR, pattern="*.grib"))
 #-------------------------------------------------------------------------------------# 
 # RL1-Amount of days per year with precipitation below 1 mm
@@ -71,6 +74,7 @@ RL100401<- as.data.frame(t(RL1001))
 #-------------------------------------------------------------------------------------# 
 RL100501<- as.vector(rowSums(t(RL100401) <0.001))
 RL100601<- RL100501/(strtoi(y2)-strtoi(y1))
+setwd(CMDIR)
 write.table(RL100601,"RL100601.txt",row.names = TRUE, col.names = TRUE, quote = FALSE, append = FALSE) 
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
@@ -105,13 +109,13 @@ writeRaster(r,file=paste(CMDIR,'/', 'Cx001.tif',sep = ""),overwrite=TRUE)
 
 EOF
 #-------------------------------------------------------------------------------------# 
-gdal_translate  -of AAIGrid  $CMDIR/Cx001.tif   $CMDIR/Cx001.asc 
-gdalinfo $CMDIR/Cx001.asc > $CMDIR/ReadMe_Cx001.txt
+#gdal_translate  -of AAIGrid  $CMDIR01/Cx001.tif   $CMDIR01/Cx001.asc 
+#gdalinfo $CMDIR01/Cx001.asc > $CMDIR01/ReadMe_Cx001.txt
 
 #-------------------------------------------------------------------------------------# 
 #cat $CMDIR/Cx001.asc | awk '{if($1 == "NODATA_value") print}'| awk 'NR > 6 { print }' $CMDIR/Cx001.asc> $CMDIR/Cx001.txt ; 
 #cat $CMDIR/Cx001.asc | awk '{if($1 != "NODATA_value") print}'| awk 'NR > 5 { print }' $CMDIR/Cx001.asc> $CMDIR/Cx001.txt 
-awk '$1 ~ /^[0-9]/' $CMDIR/Cx001.asc > $CMDIR/Cx001.txt
+#awk '$1 ~ /^[0-9]/' $CMDIR01/Cx001.asc > $CMDIR01/Cx001.txt
 
 
 #-------------------------------------------------------------------------------------# 

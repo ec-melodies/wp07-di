@@ -62,24 +62,23 @@ require(rciop)
 # create a list from these files
 list.filenames<-list.files(pattern="LULC.txt$")
 
-#for (i in 1:length(list.filenames[])){
-for (i in 1:2){
+for (i in 1:length(list.filenames[])){
 # list all files from the current directory
 LANDCrc <-read.table(paste(path=INDIR,'/', list.filenames[i],sep =""), header=FALSE, sep="", na.strings="NA", dec=",", strip.white=TRUE)
 LANDCrc01<-as.matrix(LANDCrc)
 x00=LANDCrc01 
 # reclassify the values
 reclass_function = function(x00){
-	for(i in c(11,12,13)) {x00 <- ifelse(x00==i,3,x00)}
-	for(i in c(14,15,16,20,21,22)) {x00 <- ifelse(x00==i,2,x00)}
 	for(i in c(160,161,162,170,180,181,182,183,184,185,186,187,188)) {x00 <- ifelse(x00==i,10,x00)}
-	for(i in c(210,220)) {x00 <- ifelse(x00==i,11,x00)}	 					
+	for(i in c(210)) {x00 <- ifelse(x00==i,11,x00)}	 					
 	for(i in c(200,201,202,203)) {x00 <- ifelse(x00==i,9,x00)}
 	for(i in c(230)) {x00 <- ifelse(x00==i,8,x00)}
 	for(i in c(150,151,152,153)) {x00 <- ifelse(x00==i,7,x00)}
 	for(i in c(120,140,141,142,143,144,145)) {x00 <- ifelse(x00==i,6,x00)}
 	for(i in c(30,31,110,130,131,132,133,134,135,136)) {x00 <- ifelse(x00==i,5,x00)}
 	for(i in c(32,40,41,42,50,60,70,90,91,92,100,101,102)) {x00 <- ifelse(x00==i,4,x00)}
+	for(i in c(11,12,13)) {x00 <- ifelse(x00==i,3,x00)}
+	for(i in c(14,15,16,20,21,22)) {x00 <- ifelse(x00==i,2,x00)}
 	for(i in c(190)) {x00 <- ifelse(x00==i,1,x00)}
 	return(x00)}
 

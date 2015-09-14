@@ -12,7 +12,7 @@
 #-------------------------------------------------------------------------------------# 
 
 [HARDDATAZ1] 
-DATAFILE  = /home/melodies-ist/data/ISD/ISD000/CM001/AOI1/AOI1_DX/Dx0111103_3_03.dat # Hard Data file
+DATAFILE  = /home/melodies-ist/data/ISD/ISD000/CM001/AOI1/AOI1_CX/Cx0111103_4_01.dat # Hard Data file
 
 COLUMNS   = 4                 # Number of columns in the data file (to eliminate) 
 XCOLUMN   = 1                 # Column number of X coordinate 
@@ -42,7 +42,7 @@ UTPAR   = 1    # Parameter for the utail=2
 # here we define some parameters for the simulation 
 #-------------------------------------------------------------------------------------# 
 [SIMULATION] 
-OUTFILE   = /home/melodies-ist/data/ISD/ISD000/GEOMS/Dx/ISD_   # Filename of the resultant simulations
+OUTFILE   = /home/melodies-ist/data/ISD/ISD000/GEOMS/Cx/ISD_   # Filename of the resultant simulations
 
 NSIMS     = 1                 # Number of Simulations to generate 
 NTRY      = 5                 # Number of simulation for bias correction  
@@ -55,14 +55,14 @@ VARCORR   = 1                 # Average correction flag
 # NX, NY and NZ are the number of blocks per direction  
 NX        =756
 
-NY        =420
+NY        =504
 
 NZ        =1
 
 # ORIGX, ORIGY and ORIGZ are the start coordinate for each direction 
 ORIGX     =-3.0044643
 
-ORIGY     =36.0044644
+ORIGY     =39.7544644
 
 ORIGZ     =0.0
 
@@ -111,10 +111,10 @@ SANG3   =0                   # Orientation angle parameter of direction I (degre
 KTYPE     =5             # Kriging type ;0=simple,1=ordinary,2=simple with locally varying mean, 
 # 3=external drif, 4=collo-cokrig global CC,5=local CC (KTYPE) 
 COLOCORR =0.8               # Global CC to ktype=4  
-SOFTFILE  =/home/melodies-ist/data/ISD/ISD000/COKC/Bx0100003_3_crop_01.dat   # Filename of the soft data 
+SOFTFILE  =/home/melodies-ist/data/ISD/ISD000/COKC/Bx0100003_4_crop_01.dat   # Filename of the soft data 
 NVARIL  = 1                   # Number of columns in the secundary data file 
 ICOLLVM = 1                  # Column number of secundary variable  
-CCFILE  = /home/melodies-ist/data/ISD/ISD000/PM001/CRx0100003_3_crop_01.dat     # Filename of correlation file for local correlations (ktype=5) 
+CCFILE  = /home/melodies-ist/data/ISD/ISD000/PM001/CRx0100003_4_crop_01.dat     # Filename of correlation file for local correlations (ktype=5) 
 RESCALE = 1
 LVMFILE = NOFILE
 

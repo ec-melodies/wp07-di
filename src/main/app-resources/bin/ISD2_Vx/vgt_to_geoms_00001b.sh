@@ -62,8 +62,8 @@ require(rciop)
 # create a list from these files
 list.filenames<-list.files(pattern="LULC.txt$")
 
+for (i in 3:4){
 #for (i in 1:length(list.filenames[])){
-for (i in 1:2){
 # list all files from the current directory
 LANDCrc <-read.table(paste(path=INDIR,'/', list.filenames[i],sep =""), header=FALSE, sep="", na.strings="NA", dec=",", strip.white=TRUE)
 LANDCrc01<-as.matrix(LANDCrc)
@@ -131,13 +131,15 @@ gc()
 #xy_for_raster("LANDCrc.tif")
 #df_to_raster(LANDCrc01)
 
-
-
 EOF
 
 #-------------------------------------------------------------------------------------#
 
 #gdalinfo $LAND000/LANDC001.tif > $LAND000/ReadMeLANDC001.txt
+
+
+
+
 
 echo "DONE"
 

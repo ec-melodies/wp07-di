@@ -34,54 +34,51 @@ export -p LDIR=$OUTDIR/COKC
 export -p CDIR=$OUTDIR/SM001
 export -p VDIR=$OUTDIR/VM001
 export -p HDIR=~/wp07-di/src/main/app-resources/bin/ISD5_node/
-export -p RECLASS=$OUTDIR/SPPV001/AOI1/VX/
-
+export -p RECLASS=$OUTDIR/SPPV001
 #-------------------------------------------------------------------------------------# 
 # # Check HSD and LSD (for soil and vegetation) EStou aqui
 #-------------------------------------------------------------------------------------# 
 for file in $NVDIR/Vx*.tif; do
 filename01=$(basename $file .tif)
-f=${filename01/#Vx/LANDC}  
-j=${f/%_crop/_001}
+f=${filename01/#Vx001_/LULC_mosaic_}  
+j=${f/%/01}
 for file2 in $j; do
 filename02=$(basename $file2 .tif )
 done;
 echo $filename01 $filename02
-for i in {2,3,4,5,7}; do 
-gdal_calc.py -A $NVDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$LDIR/Vx${filename01}_0$i.tif --calc="(B==$i)*(A*10000)" --overwrite --NoDataValue=0 --type=UInt32;
+for i in {2,3,4,6}; do 
+gdal_calc.py -A $NVDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$LDIR/Vx${filename01}_0$i.tif --calc="(B==$i)*(A)" --overwrite --NoDataValue=0 --type=UInt32;
 done;
 done
 
-for file in $SBDIR/Sx001*.tif; do
+for file in $SBDIR/Sx*.tif; do
 filename01=$(basename $file .tif)
-f=${filename01/#Sx/LANDC}  
-j=${f/%_crop/_001}
+f=${filename01/#Sx001_/LULC_mosaic_}  
+j=${f/%/01}
 for file2 in $j; do
 filename02=$(basename $file2 .tif )
 done;
 echo $filename01 $filename02
-# class 6
-gdal_calc.py -A $SBDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$LDIR/Sx${filename01}_06.tif --calc="(B==6)*(A*10000)" --overwrite --NoDataValue=0 --type=UInt32;
+for i in 5; do 
+gdal_calc.py -A $SBDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$LDIR/Vx${filename01}_0$i.tif --calc="(B==$i)*(A)" --overwrite  --NoDataValue=0 --type=UInt32;
+done;
 done
 
-for file in $SBDIR/Sx001*.tif; do
+for file in $SBDIR/Sx*.tif; do
 filename01=$(basename $file .tif)
-f=${filename01/#Sx/LANDC}  
-j=${f/%_crop/_001}
+f=${filename01/#Sx001_/LULC_mosaic_}  
+j=${f/%/01}
 for file2 in $j; do
 filename02=$(basename $file2 .tif )
 done;
 echo $filename01 $filename02
-for i in {1,8,9,10,11}; do 
-gdal_calc.py -A $SBDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$LDIR/Vx${filename01}_0$i.tif --calc="(B==$i)*(A*0+5000)" --overwrite  --NoDataValue=0 --type=UInt32;
+for i in {1,7,8,9,10,11}; do 
+gdal_calc.py -A $SBDIR/${filename01}.tif -B $RECLASS/${filename02}.tif --outfile=$LDIR/Vx${filename01}_0$i.tif --calc="(B==$i)*(A)" --overwrite  --NoDataValue=0 --type=UInt32;
 done;
 done
-
 #-------------------------------------------------------------------------------------#
-for i in {1..4}; do  
-mv $LDIR/VxSx001_${i}_crop_010.tif  $LDIR/VxSx001_${i}_crop_10.tif
-mv $LDIR/VxSx001_${i}_crop_011.tif  $LDIR/VxSx001_${i}_crop_11.tif
-done
+mv $LDIR/VxSx001__010.tif  $LDIR/VxSx001__10.tif
+mv $LDIR/VxSx001__011.tif  $LDIR/VxSx001__11.tif
 #-------------------------------------------------------------------------------------#  
 
 R --vanilla --no-readline   -q  <<'EOF'
@@ -99,17 +96,17 @@ require("rciop")
 list.files(pattern=".tif$") 
  
 # create a list from these files
-for (j in 1:4){ 
-print(j)
-ww=assign(paste("list.filenames_",j,sep=""),list.files(pattern=paste("x001_",j,".*\\.tif",sep="")))
-}
+#for (j in 1:4){ 
+#print(j)
+ww=assign(paste("list.filenames_",sep=""),list.files(pattern=paste("x001_",".*\\.tif",sep="")))
+#}
 
 
 # create a list from these files
-for (j in 1:4)
-{ 
-print(j)
-list.filenames=assign(paste("list.filenames_",j,sep=""),list.files(pattern=paste("x001_",j,".*\\.tif",sep="")))
+#for (j in 1:4)
+#{ 
+#print(j)
+list.filenames=assign(paste("list.filenames_",sep=""),list.files(pattern=paste("x001_",".*\\.tif",sep="")))
 # load raster data  
 
 rstack003<-stack(raster(list.filenames[1]),
@@ -118,8 +115,8 @@ raster(list.filenames[6]), raster(list.filenames[7]), raster(list.filenames[8]),
 raster(list.filenames[10]), raster(list.filenames[11]))
 
 rastD6<-sum(rstack003, na.rm=TRUE)
-writeRaster(rastD6, filename=paste("CR001_",j,"_crop.tif", sep=""), format="GTiff", overwrite=TRUE)
-}
+writeRaster(rastD6, filename=paste("Bx001_", ".tif", sep=""), format="GTiff", overwrite=TRUE)
+#}
 
 EOF
 
@@ -174,9 +171,9 @@ list.filenames02<-list.files(pattern=".txt$")
 
 #Bx001_2_crop.txt
 
-for (j in 1:4){ 
-print(j)
-dt=assign(paste(path=OUTDIR,'/',pattern="Bx001_",j,"_crop.txt",sep =""),list.files(pattern=paste("Bx001_",j,"_crop",".*\\.txt",sep="")))
+#for (j in 1:4){ 
+#print(j)
+dt=assign(paste(path=OUTDIR,'/',pattern="Bx001_",".txt",sep =""),list.files(pattern=paste("Bx001_",".*\\.txt",sep="")))
 print(dt)
 file003<-read.table(paste(path=OUTDIR,'/',dt,sep=""))
 #sdf <- stack(file003)
@@ -190,7 +187,7 @@ sdf01003<-sdf003$values/10000
 # create a list from these files
 
 
-list.filename=assign(paste(path=OUTDIR,'/',pattern="Bx001_",j,"_crop.tif",sep =""),list.files(pattern=paste("Bx001_",j,"_crop",".*\\.tif",sep="")))
+list.filename=assign(paste(path=OUTDIR,'/',pattern="Bx001_",".tif",sep =""),list.files(pattern=paste("Bx001_",".*\\.tif",sep="")))
 file<-readGDAL(paste(path=OUTDIR,'/',list.filename,sep=""))
 
 xy_sa=geometry(file)
@@ -205,8 +202,8 @@ sdf01111003 <-cbind(xy,z,sdf01003)
 #int
 #write.table(sdf10111003[,c(3:3)],paste(path=OUTDIR,'/' ,'Bx1000003.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
 #float
-write.table(sdf01111003[,c(4:4)],paste(path=OUTDIR,'/' ,'Bx0100003_',j,'_crop.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
-}
+write.table(sdf01111003[,c(4:4)],paste(path=OUTDIR,'/' ,'Bx0100003_','.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
+#}
 EOF
 #-------------------------------------------------------------------------------------#
 export -p HDIR=/application/bin/ISD5_node/

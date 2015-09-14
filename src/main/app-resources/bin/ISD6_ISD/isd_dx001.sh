@@ -35,13 +35,13 @@ export -p ADIR=$OUTDIR/=$DIR/INPUT/AOI
 #-------------------------------------------------------------------------------------# 
 # bash $HDIR/vgt_to_geoms_004.sh
 
-for file in $HXDIR/*Cx_AOI1.par; do 
+for file in $HXDIR/*Dx_AOI1.par; do 
 filename=$(basename $file .par )
 wine64 $HDIR/geoms.exe $HXDIR/${filename}.par
-mv $ISDC/ISD_Kriging_Variance.out $ISDC/ISD_Kriging_Var_${filename}.out
-mv $ISDC/ISD_Kriging_Mean.out $ISDC/ISD_Kriging_Mean_${filename}.out
-awk 'NR > 3 { print }' $ISDC/ISD_Kriging_Var_${filename}.out > $ISDC/ISDvar_${filename}.txt
-awk 'NR > 3 { print }' $ISDC/ISD_Kriging_Mean_${filename}.out > $ISDC/ISDmean_${filename}.txt
+mv $ISDD/ISD_Kriging_Variance.out $ISDD/ISD_Kriging_Var_${filename}.out
+mv $ISDD/ISD_Kriging_Mean.out $ISDD/ISD_Kriging_Mean_${filename}.out
+awk 'NR > 3 { print }' $ISDD/ISD_Kriging_Var_${filename}.out > $ISDD/ISDvar_${filename}.txt
+awk 'NR > 3 { print }' $ISDD/ISD_Kriging_Mean_${filename}.out > $ISDD/ISDmean_${filename}.txt
 done
 
 #-------------------------------------------------------------------------------------# 
@@ -51,13 +51,13 @@ done
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
 INDIR = Sys.getenv(c('LDIR'))
-ZDIR = Sys.getenv(c('ISDC'))
+ZDIR = Sys.getenv(c('ISDD'))
 IDIR="/home/melodies-ist/data/ISD/INPUT/AOI/"
 
 #INDIR
 #[1] "/home/melodies-ist/data/ISD//ISD000//COKC"
 #ZDIR
-#[1] "/home/melodies-ist/data/ISD//ISD000//GEOMS//Cx"
+#[1] "/home/melodies-ist/data/ISD//ISD000//GEOMS//Dx"
 
 ## load the package
 require("zoo")
@@ -96,6 +96,7 @@ str(ww)
 
 #-------------------------------------------------------------------------------------# 
 list.filenames04=list.files(path=ZDIR, pattern=paste("ISDmean",sep=""))
+
 list.filenames04
 ISD <-read.table(paste(path=ZDIR,'/', list.filenames04[i],sep =""), header=FALSE, sep="", na.strings="NA", dec=".", strip.white=TRUE)
 file_out<-as.matrix(ISD)
@@ -116,11 +117,11 @@ projection(rD3) = CRS("+init=epsg:4326")
 head(rD3)
 AOI.sub<-readOGR(paste(IDIR,sep = ""),"AOI1")
 ISD<-rD3
-writeRaster(ISD,filename=paste(ZDIR, "/" ,"ISDmeanCx001_02",i,".tif",sep = ""),format="GTiff",overwrite=TRUE)
+writeRaster(ISD,filename=paste(ZDIR, "/" ,"ISDmeanDx001_02",i,".tif",sep = ""),format="GTiff",overwrite=TRUE)
 
 isd.sub <- crop(ISD, extent(AOI.sub))
 isd.sub <- mask(isd.sub, AOI.sub)
-writeRaster(isd.sub,filename=paste(ZDIR, "/" ,"ISDmeanCx001_",i,".tif",sep = ""),format="GTiff",overwrite=TRUE)
+writeRaster(isd.sub,filename=paste(ZDIR, "/" ,"ISDmeanDx001_",i,".tif",sep = ""),format="GTiff",overwrite=TRUE)
 head(isd.sub)
 
 }
