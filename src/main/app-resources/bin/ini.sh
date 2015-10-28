@@ -42,6 +42,11 @@ export -p NVDIR=$OUTDIR/VM001/class_NDV001/
 export -p SBDIR=$OUTDIR/SM001/class_SOIL001/
 export -p HDIR=/application/bin/ISD5_node/
 export -p CMDIR=$OUTDIR/CM001/AOI
+<<<<<<< HEAD:src/main/app-resources/bin/ini.sh
+=======
+export -p SPPV00101=$OUTDIR/SPPV001/AOI1/VX
+export -p SPPV00102=$OUTDIR/SPPV001/AOI1/SX
+>>>>>>> 771a50f1325b740d146e0f06257ab50f4fee6ab5:src/main/app-resources/bin/ini.sh
 export -p CDIR=$OUTDIR/SM001
 export -p VDIR=$OUTDIR/VM001
 export -p PDIR=$OUTDIR/PM001
@@ -52,9 +57,12 @@ export -p ISDC=$ZDIR/Cx
 export -p ISDD=$ZDIR/Dx
 export -p HDIR=~/wp07-di/src/main/app-resources/bin/ISD5_node/
 export -p ADIR=$DIR/AOI
+<<<<<<< HEAD:src/main/app-resources/bin/ini.sh
 export -p CMDIR01=$CMDIR/AOI_CX
 export -p CMDIR02=$CMDIR/AOI_DX
 
+=======
+>>>>>>> 771a50f1325b740d146e0f06257ab50f4fee6ab5:src/main/app-resources/bin/ini.sh
 #-------------------------------------------------------------------------------------# 
 mkdir -p $OUTDIR
 mkdir -p $CMDIR
@@ -68,7 +76,12 @@ mkdir -p $PDIR
 mkdir -p $ZDIR
 mkdir -p $ISDC
 mkdir -p $ISDD
+<<<<<<< HEAD:src/main/app-resources/bin/ini.sh
 
+=======
+mkdir -p $SPPV00101
+mkdir -p $SPPV00102
+>>>>>>> 771a50f1325b740d146e0f06257ab50f4fee6ab5:src/main/app-resources/bin/ini.sh
 #-------------------------------------------------------------------------------------# 
 #output: The Indicator of Susceptibility to Desertification (ISD)
 export LDIR=$OUTDIR/COKC
