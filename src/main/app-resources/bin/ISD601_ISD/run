@@ -1,0 +1,57 @@
+#!/bin/sh
+#-------------------------------------------------------------------------------------# 
+# PURPOSE: ISD_Dx
+#-------------------------------------------------------------------------------------# 
+start=`date +%s`
+#-------------------------------------------------------------------------------------# 
+export DIR=~/data/ISD/ISD000/
+if [ ! -d "$DIR" ]; then
+    mkdir $DIR
+fi
+
+export -p IXDIR=/home/melodies-ist/wp07-di/src/main/app-resources/bin/ISD601_ISD/bin/
+
+#-------------------------------------------------------------------------------------# 
+
+#-------------------------------------------------------------------------------------# 
+function igcx(){
+exec $IXDIR"isd_dx001.sh" $1
+}
+
+#-------------------------------------------------------------------------------------# 
+while IFS='' read -r line || [[ -n "$line" ]]; do
+	if [[ "$line" == AOI1 ]] ; then	
+		
+		PAR=$(grep "ssdirDx_AOI1" $2)
+
+		igcx $PAR
+	
+	elif [[ "$line" == AOI2 ]] ; then
+
+		PAR=$(grep "ssdirDx_AOI2" $2)
+
+		igcx $PAR
+
+	elif [[ "$line" == AOI3 ]] ; then
+
+		PAR=$(grep "ssdirDx_AOI3" $2)
+
+		igcx $PAR
+
+	elif [[ "$line" == AOI4 ]] ; then
+
+		PAR=$(grep "ssdirDx_AOI4" $2)
+
+		igcx $PAR
+
+	else
+		echo "AOI out of range"
+	fi 
+done < "$1"
+#done < $inputfile
+#-------------------------------------------------------------------------------------# 
+end=`date +%s`
+runtime=$((end-start))
+echo "Runtime: $runtime seconds"
+#-------------------------------------------------------------------------------------# 
+exit 0 
