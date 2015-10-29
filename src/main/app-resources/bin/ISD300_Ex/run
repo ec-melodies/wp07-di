@@ -16,8 +16,9 @@ function igcx(){
 exec $IXDIR"resample_aoi_00107.sh" $1 $2
 }
 
-# imagem exemplo(2010), 
-# issues: procura por anos (2000 - 2015 (SET)), processo muito longo
+# imagem exemplo(2010)
+# issues: procura por anos (2000 - 2015 (SET))
+# issues: efectuar mosaico de imagens depois 2014
 
 Y2= 2000
 #-------------------------------------------------------------------------------------# 
