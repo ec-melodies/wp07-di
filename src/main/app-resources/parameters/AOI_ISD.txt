@@ -1,0 +1,16 @@
+/application/parameters/ssdirCx_AOI4_1.par
+/application/parameters/ssdirCx_AOI4_2.par
+/application/parameters/ssdirDx_AOI4_1.par
+/application/parameters/ssdirDx_AOI4_2.par
+/application/parameters/ssdirCx_AOI3_1.par
+/application/parameters/ssdirCx_AOI3_2.par
+/application/parameters/ssdirDx_AOI3_1.par
+/application/parameters/ssdirDx_AOI3_2.par
+/application/parameters/ssdirCx_AOI2_1.par
+/application/parameters/ssdirCx_AOI2_2.par
+/application/parameters/ssdirDx_AOI2_1.par
+/application/parameters/ssdirDx_AOI2_2.par
+/application/parameters/ssdirCx_AOI1_1.par
+/application/parameters/ssdirCx_AOI1_2.par
+/application/parameters/ssdirDx_AOI1_1.par
+/application/parameters/ssdirDx_AOI1_2.par
