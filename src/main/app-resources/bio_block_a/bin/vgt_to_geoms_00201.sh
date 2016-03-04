@@ -21,7 +21,6 @@ export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-# bash /application/bin/ISD5_node/ini.sh
 #-------------------------------------------------------------------------------------#
 # JOB000
 #-------------------------------------------------------------------------------------#
@@ -206,12 +205,13 @@ EOF
 #-------------------------------------------------------------------------------------# 
 # here we publish the results
 #-------------------------------------------------------------------------------------# 
-# Sx001 <- rciop.publish(rastD7, recursive=FALSE, metalink=TRUE)
+Sx001 <- rciop.publish(rastD7, recursive=FALSE, metalink=TRUE)
 
 export -p CDIR=$OUTDIR/SM001
 export -p SBDIR=$CDIR/class_SOIL001/soil_mosaic
 
 cp $SBDIR/Sx001_.tif $CDIR/Sx001_.tif
+#rm -rf $SBDIR
 
 echo "DONE"
 exit 0

@@ -16,7 +16,7 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-source ${ciop_job_include}
+# source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
@@ -238,13 +238,13 @@ writeRaster(rastD6, filename=paste("Vx001_",".tif", sep=""), format="GTiff", ove
 #-------------------------------------------------------------------------------------# 
 # here we publish the results
 #-------------------------------------------------------------------------------------# 
-# Vx001 <- rciop.publish(rastD6, recursive=FALSE, metalink=TRUE)
+Vx001 <- rciop.publish(rastD6, recursive=FALSE, metalink=TRUE)
 EOF
 
 cp $NVDIR/Vx001_.tif $VDIR/Vx001_.tif
+#rm -rf $NVDIR
 
 today=$(date)
 echo "The date and time are: " $today
 #-------------------------------------------------------------------------------------# 
 echo "DONE"
-echo 0

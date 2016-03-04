@@ -28,7 +28,6 @@ export -p OUTDIR=$DIR/ISD000/
 export -p CMDIR=$OUTDIR/CM001/
 export -p CMDIR02=$CMDIR/AOI/AOI_DX/C002
 export -p ZDIR=$OUTDIR/GEOMS
-export -p HDIR=/application/parameters/
 #-------------------------------------------------------------------------------------# 
 for file in $CMDIR02/*.tif ; do 
 filename=$(basename $file .tif )
@@ -101,6 +100,8 @@ write.table(sdf0111103,paste(path=CMDIR,'/' ,'Dx0111103_',h,'.dat',sep = ""),  r
 }
 EOF
 #-------------------------------------------------------------------------------------# 
+#export -p HDIR=/application/bin/ISD5_node/
+export -p HDIR=/home/melodies-ist/wp07-di/src/main/app-resources/parameters/
 #-------------------------------------------------------------------------------------# 
 for file in $CMDIR02/*.dat; do 
 filename=$(basename $file .dat )
@@ -111,6 +112,9 @@ sed -i -e 's/^/ /' $CMDIR02/${filename}_01.dat
 sed -i 's/$/\r/' $CMDIR02/${filename}_01.dat
 cp $CMDIR02/${filename}_01.dat $ZDIR/${filename}_01.dat
 done
+
+#rm $CMDIR02/Dx001.asc $CMDIR02/Dx001.asc.aux.xml $CMDIR02/Dx001.prj
+#rm $CMDIR02/Dx001.txt $CMDIR02/Dx0111103_1.dat $CMDIR02/RPlist04_mean.txt $CMDIR02/RPlist04.txt
 
 #-------------------------------------------------------------------------------------# 
 echo "DONE"

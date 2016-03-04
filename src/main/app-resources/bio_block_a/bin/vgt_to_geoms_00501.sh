@@ -16,7 +16,7 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-source ${ciop_job_include}
+#source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#
 export PATH=/opt/anaconda/bin/:$PATH
@@ -54,7 +54,7 @@ library(digest)
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
 
-TPmlist01<-list.files(path=SBDIR, pattern=paste("LANDC002*",".*\\.tif",sep=""))
+TPmlist01<-mixedsort(list.files(path=SBDIR, pattern=paste("LANDC002*",".*\\.tif",sep="")))
 TPmlist01
 
 for (i in 1:(length(TPmlist01))){
@@ -105,8 +105,8 @@ done
 # ASCII to geoMS (.OUT or .dat)
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
-export -p CRS32662=/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI
-export -p C2=/home/melodies-ist/wp07-di/src/main/app-resources/parameters/CRS32662_01.txt
+export -p CRS32662=/application/parameters/AOI
+export -p C2=/application/CRS32662_01.txt
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then
@@ -124,6 +124,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		echo "AOI out of range"
 	fi 
 done < "$CRS32662"
+#done < "/application/AOI4_32662_01.txt"
 #-------------------------------------------------------------------------------------#
 for file in $LAND001/LC_004.tif ; do
 export -p COUNT=0
@@ -135,6 +136,7 @@ echo $line
 echo $COUNT
 gdal_translate -projwin $line -of GTiff $LAND001/${filename}.tif  $LAND001/${filename}_crop_$COUNT.tif
 done < $CRS326620
+#done < "/application/parameters/AOI4_32662_01.txt"
 done
 
 #-------------------------------------------------------------------------------------# 

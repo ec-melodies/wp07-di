@@ -1,9 +1,9 @@
 #!/bin/sh
 #-------------------------------------------------------------------------------------# 
-# PURPOSE: Dataset ECWMF
+# PURPOSE: input data ECWMF
 #-------------------------------------------------------------------------------------# 
 
-# source the ciop functions (e.g. ciop-log)
+source the ciop functions (e.g. ciop-log)
 source ${ciop_job_include}
 
 #-------------------------------------------------------------------------------------# 
@@ -16,6 +16,7 @@ export -p YR=/application/parameters/year
 export -p Y2="$(cat $YR)"
 #-------------------------------------------------------------------------------------# 
 
+cd $DIR
 
 if ((Y2<=2003)) ; then
     export -p Y1=$(($Y2-20))

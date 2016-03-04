@@ -11,11 +11,11 @@
 #bash /application/bin/ISD5_node/ini.sh
 export -p PATH=/opt/anaconda/bin/:$PATH 
 
-export -p Cx001=$1
+#export -p Cx001=$1
 #export -p INSPOT=$2
 
-#export -p AOI=AOI3
-echo $AOI
+export -p AOI=AOI3
+#echo $AOI
 export -p OUTDIR=/data/auxdata/ISD/ISD000/VITO; mkdir -p $OUTDIR
 
 #-------------------------------------------------------------------------------------# 
@@ -48,7 +48,7 @@ fi
 #POLYGON=$(echo 17.592308044433594 -3.8307693004608154, 42.46923065185547 -3.8307693004608154, 42.46923065185547 -32.85384750366211, 17.592308044433594 -32.85384750366211, 17.592308044433594 -3.8307693004608154)   
 
 echo $POLYGON
-cat $1
+#cat $1
 
 #-------------------------------------------------------------------------------------# 
 cd $OUTDIR
@@ -63,8 +63,9 @@ export PATH=${SNAP}/bin:${PATH}
 OUTDIR=/data/auxdata/ISD/ISD000/VITO/
 
 #-------------------------------------------------------------------------------------# 
-while IFS='' read -r line || [[ -n "$line" ]]; do
-echo $line
+while IFS='' read -r line || [[ -n "$line00" ]]; do
+echo $line00
+line = $(ciop-copy -o ./ $line00)
 export -p INSPOT=$line
 export -p OUTSPOT=$line.tif
 export -p filename=$(basename $line .HDF5)
@@ -150,9 +151,9 @@ gdalwarp -t_srs '+init=epsg:32662' $OUTDIR/V2KRNS0310.tif $OUTDIR/V2KRNS10.tif
 #-------------------------------------------------------------------------------------# 
 # extract band
 #-------------------------------------------------------------------------------------# 
-#for file in $OUTDIR/PROBAV_S1*.tif; do 
-#rm $file
-#done
+for file in $OUTDIR/PROBAV_S1*.tif; do 
+rm $file
+done
 
 gdal_translate -of Gtiff -b 2 V2KRNS10.tif $OUTDIR/RED001.tif
 gdal_translate -of Gtiff -b 3 V2KRNS10.tif $OUTDIR/NIR001.tif
@@ -162,7 +163,7 @@ gdal_translate -of Gtiff -b 1 V2KRNS10.tif $OUTDIR/NDV001.tif
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: RESAMPLE_AOI NDVI, NIR, RED
 #-------------------------------------------------------------------------------------#
-export -p Cx001=/data/auxdata/ISD/ISD000/CM001/AOI/AOI_CX/Cx001.txt 
+export -p Cx001=/data/auxdata/ISD/ISD000/CM001/AOI/AOI_CX/Cx001_32662.txt
 #-------------------------------------------------------------------------------------# 
 for file in $OUTDIR/*001.tif ; do 
 filename=$(basename $file .tif )
@@ -175,9 +176,10 @@ lry=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $5 }')
 echo $ulx $uly $lrx $lry $filename
 gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $OUTDIR/${filename}.tif $OUTDIR/${filename}_01.tif 
 done
+
 #rm $OUTDIR/NDV001.tif $OUTDIR/NIR001.tif $OUTDIR/RED001.tif $OUTDIR/V2KRNS10.tif $OUTDIR/subset_aoi.xml
 #-------------------------------------------------------------------------------------#
-
+exit 0
 
 
 

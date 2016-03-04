@@ -16,7 +16,7 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-source ${ciop_job_include}
+#source ${ciop_job_include}
 export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
@@ -52,7 +52,7 @@ library(digest)
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
 
-TPmlist01<-list.files(path=SBDIR, pattern=paste("CR001_03*",".*\\.tif",sep=""))
+TPmlist01<-mixedsort(list.files(path=SBDIR, pattern=paste("CR001_03*",".*\\.tif",sep="")))
 TPmlist01
 
 for (i in 1:(length(TPmlist01))){
@@ -93,7 +93,7 @@ echo $ulx1 $uly1 $lrx1 $lry1
 
 output003=$SBDIR/${filename/#CR001_03_/CR001_04_}.tif 
 echo $output003 
-gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input001 $output003
+gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $input001 $output003
 done
 
 #-------------------------------------------------------------------------------------# 
@@ -127,7 +127,7 @@ library(digest)
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
 
-TPmlist01<-list.files(path=SBDIR, pattern=paste("LC_004.tif",sep=""))
+TPmlist01<-mixedsort(list.files(path=SBDIR, pattern=paste("LC_004.tif",sep="")))
 TPmlist01
 
 for (i in 1:(length(TPmlist01))){
@@ -191,7 +191,7 @@ echo $ulx1 $uly1 $lrx1 $lry1
 
 output003=$SBDIR/${filename/#CR001_03_/CR001_04_}.tif 
 echo $output003 
-gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input001 $output003
+gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $input001 $output003
 done
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
@@ -217,6 +217,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		echo "AOI out of range"
 	fi 
 done < "$CRS32662"
+#done < "/application/parameters/AOI4_32662_01.txt"
 #-------------------------------------------------------------------------------------#
 for file in $SBDIR/CR_004.tif ; do
 export -p COUNT=0
@@ -227,13 +228,79 @@ COUNT=$(( $COUNT + 1 ))
 echo $line
 echo $COUNT
 gdal_translate -projwin $line -of GTiff $SBDIR/${filename}.tif  $SBDIR/${filename}_crop_$COUNT.tif
-done < "$CRS326620"
+done < $CRS326620
+#done </application/parameters/AOI4_32662_01.txt
 done
 #-------------------------------------------------------------------------------------# 
+
+#-------------------------------------------------------------------------------------#
+R --vanilla --no-readline   -q  <<'EOF'
+SBDIR = Sys.getenv(c('SBDIR'))
+
+setwd(SBDIR)
+getwd()
+
+require("zoo")
+require("rgdal")
+require("raster")
+require("sp")
+require("rciop")
+require("gtools")
+library(digest)
+
+options(max.print=99999999) 
+options("scipen"=100, "digits"=4)
+
+TPmlist01<-mixedsort(list.files(pattern=paste("CR_004_crop*",".*\\.tif",sep="")))
+TPmlist01
+
+for (i in 1:(length(TPmlist01))){
+rb=raster(paste(SBDIR,'/',TPmlist01[[i]] ,sep = ""))
+rb
+capture.output(rb, file=paste(SBDIR,'/','INFO_CR_004_',i,'.txt',sep = ""), append=TRUE)
+}
+
+EOF
+
+#-------------------------------------------------------------------------------------# 
+cd $SBDIR
+
+h=1
+for file in $SBDIR/CR_004_crop*.tif; do
+filename=$(basename $file .tif )
+input001=$SBDIR/${filename}.tif
+echo $input001
+
+# Get the same boundary information_globcover
+h=$((h+1))
+Cx001=$SBDIR/${filename/#CR_004_crop/INFO_CR_004}.txt
+echo $Cx001
+
+ulx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $3 }')
+uly=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $6 }')
+lrx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $4 }')
+lry=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $5 }')
+
+echo $ulx $uly $lrx $lry 
+
+ulx1=$(awk "BEGIN {print ($ulx+6184.416)}")
+uly1=$(awk "BEGIN {print ($uly-6184.416)}")
+lrx1=$(awk "BEGIN {print ($lrx-6184.416)}")
+lry1=$(awk "BEGIN {print ($lry+6184.416)}")
+
+echo $ulx1 $uly1 $lrx1 $lry1
+
+output003=$SBDIR/${filename/#CR_004_crop/CR_005_crop}.tif 
+echo $output003 
+gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input001 $output003
+done
+
+#-------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
 export -p PDIR=$OUTDIR/PM001
 
-for file in $PDIR/CR_004_crop_*.tif; do
+for file in $PDIR/CR_005_crop_*.tif; do
 filename=$(basename $file .tif)
 gdal_translate  -of AAIGrid  $PDIR/${filename}.tif  $PDIR/${filename}.asc
 awk '$1 ~ /^[+-]?[0-9]/' $PDIR/${filename}.asc > $PDIR/${filename}.txt
@@ -265,32 +332,37 @@ options("scipen"=100, "digits"=4)
 # list all files from the current directory
 list.files(pattern=".tif$")  
 # create a list from these files
-list.filenames<-mixedsort(list.files(pattern=paste("CR_004_crop",".*\\.tif",sep="")))
+list.filenames<-mixedsort(list.files(pattern=paste("CR_005_crop",".*\\.tif",sep="")))
 list.filenames
-list.filenames02<-mixedsort(list.files(pattern=paste("CR_004_crop",".*\\.txt",sep="")))
+list.filenames02<-mixedsort(list.files(pattern=paste("CR_005_crop",".*\\.txt",sep="")))
 list.filenames02
 
 for (h in 1:length(list.filenames[])){
+h
 dt<-paste(path=OUTDIR,'/',list.filenames[h],sep ="")
 file001<-readGDAL(dt)
 xy001=geometry(file001)
+rm(file001)
+rm(dt)
 xy<-data.frame(xy001)
+rm(xy001)
 z<- rep(0,dim(xy)[1])
 dt<-paste(path=OUTDIR,'/',list.filenames02[h],sep ="")
-
 #-------------------------------------------------------------------------------------#
 file003<-read.table(dt)
-list.filename = paste(path=OUTDIR,'/',pattern="CR_004_crop_",h,".tif",sep ="")
+list.filename = paste(path=OUTDIR,'/',list.filenames[h],sep ="")
 file<-readGDAL(list.filename)
-
+rm(dt)
 file005 = as.matrix(file003, nrow = file@grid@cells.dim[1], ncol = file@grid@cells.dim[2])
 str(file005)
 file004 = matrix(0, nrow = file@grid@cells.dim[2], ncol = file@grid@cells.dim[1])
 str(file004)
 for (i in 1:dim(file005)[1]) {file004[i,]=file005[dim(file005)[1]-i+1,] }
-
+rm(file003)
 file006<-as.data.frame(t(file004))
+rm(file004)
 sdf003<-stack(file006)
+rm(file006)
 #-------------------------------------------------------------------------------------#
 #B=xy[1]
 x= xy[1]
@@ -303,10 +375,11 @@ xy01<-cbind(x,y)
 
 #-------------------------------------------------------------------------------------# 
 sdf01003<-sdf003$values/10000
+rm(sdf003)
 sdf01111003 <-cbind(xy01,z,sdf01003)
-
+rm(sdf01003)
 write.table(sdf01111003[,c(4:4)],paste(path=OUTDIR,'/' ,'CRx0100003_',h,'.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
-
+rm(sdf01111003)
 }
 EOF
 
@@ -331,4 +404,4 @@ done
 # CRx0100004b=ciop.publish($PDIR/CRx0100004b)
 
 echo "DONE"
-echo 0
+exit 0

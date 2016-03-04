@@ -4,13 +4,9 @@
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions (e.g. ciop-log)
-source ${ciop_job_include}
+# source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
-export DIR=/data/auxdata/ISD/ISD000/
-if [ ! -d "$DIR" ]; then
-    mkdir $DIR
-fi
-
+export -p DIR=/data/auxdata/ISD/ISD000/
 export -p IR=/application/parameters/AOI
 export -p IXDIR=/application/bio_block_a/bin/
 #-------------------------------------------------------------------------------------# 
@@ -53,8 +49,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 	fi 
 done < "$IR"
 #-------------------------------------------------------------------------------------# 
-echo "Done"
-echo 0
+exit 0
 
 
 

@@ -20,7 +20,6 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-# bash /application/bin/ISD5_node/ini.sh
 export -p DIR=/data/auxdata/ISD/
 export -p OUTDIR=$DIR/ISD000
 export -p SBDIR=$OUTDIR/SM001/
@@ -66,7 +65,7 @@ library(digest)
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
 
-TPmlist01<-list.files(path=LDIR, pattern=paste("NDV02_*",".*\\.tif",sep=""))
+TPmlist01<-mixedsort(list.files(pattern=paste("NDV02_*",".*\\.tif",sep="")))
 TPmlist01
 
 for (i in 1:(length(TPmlist01))){
@@ -76,7 +75,8 @@ capture.output(rb, file=paste(LDIR,'/','INFONDV02',i,'.txt',sep = ""), append=FA
 capture.output(rb, file=paste(LDIR,'/','INFO_NDV02','.txt',sep = ""), append=TRUE)
 }
 
-TPmlist01<-list.files(path=CMDIR, pattern=paste("LANDC002_*",".*\\.tif",sep=""))
+setwd(CMDIR)
+TPmlist01<-mixedsort(list.files(pattern=paste("LANDC002_*",".*\\.tif",sep="")))
 TPmlist01
 
 for (i in 1:(length(TPmlist01))){

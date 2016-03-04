@@ -29,8 +29,6 @@ export -p OUTDIR=$DIR/ISD000/
 export -p CMDIR=$OUTDIR/CM001/AOI
 export -p CMDIR01=$CMDIR/AOI_CX/C002
 export -p ZDIR=$OUTDIR/GEOMS
-export -p HDIR=/application/parameters/
-
 #-------------------------------------------------------------------------------------# 
 for file in $CMDIR01/*.tif ; do 
 filename=$(basename $file .tif )
@@ -97,7 +95,6 @@ B=xy[2]
 y= matrix(, nrow = dim(B)[1], ncol = dim(B)[2])
 for (i in 1:dim(y)[1]) {y[i,]=B[dim(y)[1]-i+1,]}
 xy01<-cbind(x,y)
-
 #-------------------------------------------------------------------------------------# 
 sdf0111103 <-cbind(xy01,z,sdf003$values)
 write.table(sdf0111103,paste(path=CMDIR,'/' ,'Cx0111103_',h,'.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
@@ -106,6 +103,8 @@ write.table(sdf0111103,paste(path=CMDIR,'/' ,'Cx0111103_',h,'.dat',sep = ""),  r
 
 EOF
 #-------------------------------------------------------------------------------------# 
+export -p HDIR=~/wp07-di/src/main/app-resources/parameters/
+
 #-------------------------------------------------------------------------------------#
 for file in $CMDIR01/*.dat; do 
 filename=$(basename $file .dat )
@@ -118,7 +117,11 @@ sed -i 's/$/\r/' $CMDIR01/${filename}_01.dat
 cp $CMDIR01/${filename}_01.dat $ZDIR/${filename}_01.dat
 done 
 
+#rm $CMDIR01/Cx001.asc $CMDIR01/Cx001.asc.aux.xml $CMDIR01/Cx001.prj
+#rm $CMDIR01/Cx0111103_1.dat $CMDIR01/RL100601.txt
+#rm $ZDIR/Cx0111103_2_01.dat
+
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 echo "DONE"
-exit 0
+#exit 0

@@ -121,7 +121,9 @@ CS_df = spTransform(CS_df1,CRS("+init=epsg:32662"))
 gridded(CS_df) = TRUE
 r = raster(CS_df)
 writeRaster(r,file=paste(CMDIR,'/', 'Cx001_32662.tif',sep = ""),overwrite=TRUE)
-
+sink(paste(CMDIR,'/', 'Cx001_32662.txt',sep = ""))
+r
+sink()
 rm(r)
 gc()
 
@@ -139,4 +141,4 @@ sink()
 EOF
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
-
+exit 0

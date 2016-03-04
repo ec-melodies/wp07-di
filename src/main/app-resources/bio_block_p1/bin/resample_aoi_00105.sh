@@ -20,6 +20,7 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
+#bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
 
 export -p DIR=/data/auxdata/ISD/
@@ -106,76 +107,15 @@ r10 = spTransform(r10,CRS("+init=epsg:32662"))
 gridded(r10) = TRUE
 rD3 = raster(r10)
 projection(rD3) = CRS("+init=epsg:32662")
-writeRaster(rD3,paste(CMDIR, '/' ,'LANDC001_',i,'.tif',sep = ""),overwrite=TRUE)
-
-#return(rD3)
+writeRaster(rD3,paste(CMDIR, '/' ,'LANDC002_',i,'.tif',sep = ""),overwrite=TRUE)
 gc()
+rm(rD3)
 }
 EOF
 #-------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------#
-R --vanilla --no-readline   -q  <<'EOF'
-SBDIR = Sys.getenv(c('LAND001'))
-
-setwd(SBDIR)
-getwd()
-
-require("zoo")
-require("rgdal")
-require("raster")
-require("sp")
-require("rciop")
-require("gtools")
-library(digest)
-
-options(max.print=99999999) 
-options("scipen"=100, "digits"=4)
-
-TPmlist01<-list.files(path=SBDIR, pattern=paste("LANDC001*",".*\\.tif",sep=""))
-TPmlist01
-
-for (i in 1:(length(TPmlist01))){
-rb=raster(paste(SBDIR,'/',TPmlist01[[i]] ,sep = ""))
-rb
-capture.output(rb, file=paste(SBDIR,'/','INFO_L001',i,'.txt',sep = ""), append=TRUE)
-}
-
-EOF
-
 #-------------------------------------------------------------------------------------# 
-cd $LAND001
 
-h=1
-for file in $LAND001/LANDC001_*.tif; do
-filename=$(basename $file .tif )
-input001=$LAND001/${filename}.tif
-echo $input001
-
-# Get the same boundary information_globcover
-h=$((h+1))
-Cx001=$LAND001/${filename/#LANDC001_/INFO_L001}.txt
-echo $Cx001
-
-ulx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $3 }')
-uly=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $6 }')
-lrx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $4 }')
-lry=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $5 }')
-
-echo $ulx $uly $lrx $lry 
-
-ulx1=$(awk "BEGIN {print ($ulx+6184.416)}")
-uly1=$(awk "BEGIN {print ($uly-6184.416)}")
-lrx1=$(awk "BEGIN {print ($lrx-6184.416)}")
-lry1=$(awk "BEGIN {print ($lry+6184.416)}")
-
-echo $ulx1 $uly1 $lrx1 $lry1
-
-output003=$LAND001/${filename/#LANDC001/LANDC002}.tif 
-echo $output003 
-gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $input001 $output003
-done
-
-#-------------------------------------------------------------------------------------# 
+rm $LAND001/x00_1.txt $LAND001/GLOBCOVER_01.tif $LAND001/GLOBCOVER_01.txt $LAND001/GLOBCOVER_01.prj $LAND001/GLOBCOVER_01.asc.aux.xml $LAND001/GLOBCOVER_01.asc
 echo "DONE"
 echo 0
 

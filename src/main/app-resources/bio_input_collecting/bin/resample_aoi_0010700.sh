@@ -12,7 +12,6 @@
 export -p PATH=/opt/anaconda/bin/:$PATH 
 
 export -p Cx001=$1
-export -p INSPOT=$2
 export -p AOI=$3
 echo $AOI
 
@@ -44,7 +43,10 @@ else
 	echo "AOI out of range in idcx"
 fi 
 
+#POLYGON=$(echo 20.590909957885742 44.335662841796875, 45.89160919189453 44.335662841796875, 45.89160919189453 33.38461685180664, 20.590909957885742 33.38461685180664, 20.590909957885742 44.335662841796875)
 echo $POLYGON
+#cat $1
+
 
 #-------------------------------------------------------------------------------------# 
 # set the environment variables to use ESA BEAM toolbox
@@ -57,8 +59,14 @@ export PATH=${SNAP}/bin:${PATH}
 OUTDIR=/data/auxdata/ISD/ISD000/VITO/
 
 #-------------------------------------------------------------------------------------# 
+while IFS='' read -r line || [[ -n "$line00" ]]; do
+echo $line00
+line = $(ciop-copy -o ./ $line00)
+export -p INSPOT=$line
+export -p filename=$(basename $line .zip)
+echo $filename
 export -p OUTSPOT=$OUTDIR/V2KRNS10.tif 
-#echo $filename
+
 #-------------------------------------------------------------------------------------# 
 
 subset_aoi=`cat <<EOF
@@ -116,7 +124,8 @@ EOF`
 echo $subset_aoi > $OUTDIR/subset_aoi.xml
 echo $subset_aoi
 
-gpt $OUTDIR/subset_aoi.xml  -Ssource=$INSPOT  -f GeoTIFF -t $OUTSPOT
+gpt $OUTDIR/subset_aoi.xml  -Ssource=$line -f GeoTIFF -t $OUTSPOT
+done < "/data/auxdata/ISD/ISD000/list.txt"
 
 cd $OUTDIR
 #-------------------------------------------------------------------------------------# 
@@ -157,7 +166,6 @@ rb
 sink()
 
 EOF
-
 
 export -p Cx001=/data/auxdata/ISD/ISD000/VITO/Cx001_32662.txt
 #-------------------------------------------------------------------------------------# 

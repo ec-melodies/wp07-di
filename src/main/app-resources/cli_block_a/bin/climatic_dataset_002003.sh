@@ -14,12 +14,11 @@
 # maptools
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-source ${ciop_job_include}
+# source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
 
-#bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
 
 export -p DIR=/data/auxdata/ISD/
@@ -47,7 +46,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		export -p CRS326620=$(grep AOI3_32662.txt $C2);
 
 	elif [[ "$line" == AOI4 ]] ; then 
-		export -p CRS326620=$(grep AOI4_32662_01.txt $C2);
+		export -p CRS326620=$(grep AOI4_32662.txt $C2);
 	else
 		echo "AOI out of range"
 	fi 

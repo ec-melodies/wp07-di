@@ -2,9 +2,28 @@
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: Setup environment variables
 #-------------------------------------------------------------------------------------# 
+# cat /application/bin/ISD5_node/main.sh
+#-------------------------------------------------------------------------------------# 
+# define variables
+Lib=/application/lib
+Bin=/application/bin
+#-------------------------------------------------------------------------------------# 
+#JOB=/application/bin/ISD5_node/main.sh
 #-------------------------------------------------------------------------------------# 
 anaconda=/opt/anaconda/bin/
 #-------------------------------------------------------------------------------------# 
+# basepath=/usr/lib64/qt-3.3/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:
+# # define environment variables
+# export GRASS_BATCH_JOB=/application/main.sh
+# export PATH=$PATH:$Bin:$Lib
+# export PYTHONPATH=$Lib
+# export GDAL_DATA=/application/gdal 
+# # run the job
+# grass64 -text /data/GRASSdb_ISD/World/Local/
+# # or
+# # grass70 ~/grassdata/nc_spm_08_grass7/user1 
+# # switch back to interactive mode
+# unset GRASS_BATCH_JOB
 #-------------------------------------------------------------------------------------# 
 # Define parameter path + filename
 export DIR=/data/auxdata/ISD/
@@ -17,6 +36,7 @@ export INDIR=$DIR/INPUT
 #-------------------------------------------------------------------------------------# 
 #auxiliar data files (tmp): The intermediate indicators:
 export OUTDIR=$DIR/ISD000/
+
 #-------------------------------------------------------------------------------------# 
 export -p NVDIR=$OUTDIR/VM001/class_NDV001/
 export -p SBDIR=$OUTDIR/SM001/class_SOIL001/
@@ -30,9 +50,12 @@ export -p LAND=$INDIR/LANDCOVER
 export -p LAND000=$INDIR/LANDCOVER/LANDCOVER000
 export -p ISDC=$ZDIR/Cx
 export -p ISDD=$ZDIR/Dx
+export -p HDIR=~/wp07-di/src/main/app-resources/bin/ISD5_Nx
 export -p ADIR=$DIR/AOI
+
 export -p CMDIR01=$CMDIR/AOI_CX
 export -p CMDIR02=$CMDIR/AOI_DX
+
 #-------------------------------------------------------------------------------------# 
 mkdir -p $OUTDIR
 mkdir -p $CMDIR

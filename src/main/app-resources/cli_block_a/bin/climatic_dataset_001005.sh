@@ -1,6 +1,6 @@
 #!/bin/sh
 #-------------------------------------------------------------------------------------# 
-# PURPOSE: Local static degradation CS(x)
+# PURPOSE: C(x)
 #-------------------------------------------------------------------------------------# 
 # Requires:
 # gdalinfo
@@ -17,7 +17,7 @@
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
 export PATH=/opt/anaconda/bin/:$PATH
-source ${ciop_job_include}
+#source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
@@ -29,13 +29,12 @@ export -p OUTDIR=$DIR/ISD000/
 export -p CMDIR=$OUTDIR/CM001/
 export -p CMDIR01=$CMDIR/AOI/AOI_CX/
 export -p ZDIR=$OUTDIR/GEOMS
-export -p HDIR=/application/parameters/
 #-------------------------------------------------------------------------------------#
 # Sample
 #-------------------------------------------------------------------------------------#
 export -p CXDIR=/application/cli_block_a/bin
 export -p CRS32662=/application/parameters/
-export -p C2=/application/parameters/CRS32662.txt
+export -p C2=/application/parameters/CRS32662_01.txt
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then
@@ -45,7 +44,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		export -p CRS326620=$(grep AOI2_32662.txt $C2);
 
 	elif [[ "$line" == AOI3 ]] ; then
-		export -p CRS326620=$(grep AOI3_32662.txt $C2);
+		export -p CRS326620=$(grep AOI3_32662_01.txt $C2);
 
 	elif [[ "$line" == AOI4 ]] ; then 
 		export -p CRS326620=$(grep AOI4_32662_01.txt $C2);
@@ -70,6 +69,7 @@ gdal_translate  -of AAIGrid $CMDIR01/${filename}.tif $CMDIR01/${filename}.asc
 awk '$1 ~ /^[+-]?[0-9]/' $CMDIR01/${filename}.asc > $CMDIR01/${filename}.txt
 done 
 
+#rm $CMDIR01/Cx001_32662.tif
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
 
@@ -136,6 +136,8 @@ write.table(sdf0111103,paste(path=CMDIR,'/' ,'Cx0111103_',h,'.dat',sep = ""),  r
 
 EOF
 #-------------------------------------------------------------------------------------# 
+export -p HDIR=~/wp07-di/src/main/app-resources/parameters/
+
 #-------------------------------------------------------------------------------------#
 for file in $CMDIR01/*.dat; do 
 filename=$(basename $file .dat )

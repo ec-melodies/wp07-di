@@ -1,6 +1,6 @@
 #!/bin/sh
 #-------------------------------------------------------------------------------------# 
-# PURPOSE: Local static degradation CS(x)
+# PURPOSE: D(x)
 #-------------------------------------------------------------------------------------# 
 # Requires:
 # gdalinfo
@@ -17,7 +17,7 @@
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
 export PATH=/opt/anaconda/bin/:$PATH
-source ${ciop_job_include}
+#source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
@@ -29,21 +29,13 @@ export -p OUTDIR=$DIR/ISD000/
 export -p CMDIR=$OUTDIR/CM001/
 export -p CMDIR01=$CMDIR/AOI/AOI_DX/
 export -p ZDIR=$OUTDIR/GEOMS
-#-------------------------------------------------------------------------------------# 
-
-export PATH=/opt/anaconda/bin/:$PATH
-
-export -p DIR=/data/auxdata/ISD/
-export -p INDIR=$DIR/INPUT
-export -p OUTDIR=$DIR/ISD000/
-export -p C001=$OUTDIR/CM001/AOI/AOI_DX/
 export -p C002=$OUTDIR/CM001/AOI/AOI_DX/C002
 #-------------------------------------------------------------------------------------#
 # Sample
 #-------------------------------------------------------------------------------------#
 export -p CXDIR=/application/cli_block_a/bin
 export -p CRS32662=/application/parameters/
-export -p C2=/application/CRS32662.txt
+export -p C2=/application/parameters/CRS32662_01.txt
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then
@@ -53,7 +45,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		export -p CRS326620=$(grep AOI2_32662.txt $C2);
 
 	elif [[ "$line" == AOI3 ]] ; then
-		export -p CRS326620=$(grep AOI3_32662.txt $C2);
+		export -p CRS326620=$(grep AOI3_32662_01.txt $C2);
 
 	elif [[ "$line" == AOI4 ]] ; then 
 		export -p CRS326620=$(grep AOI4_32662_01.txt $C2);
@@ -67,7 +59,7 @@ while read -r line; do
 COUNT=$(( $COUNT + 1 ))
 echo $line
 echo $COUNT
-gdal_translate -projwin $line -of GTiff $C001/Dx001.tif $C001/Dx001_32662_$COUNT.tif
+gdal_translate -projwin $line -of GTiff $CMDIR01/Dx001.tif $CMDIR01/Dx001_32662_$COUNT.tif
 done < "$CRS326620"
 #-------------------------------------------------------------------------------------# 
 
@@ -94,6 +86,10 @@ require("gtools")
 
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
+
+# list all files from the current directory
+list.files(pattern=".tif$")  
+# create a list from these files
 
 list.filenames <- mixedsort(list.files(pattern=paste("Dx001_32662_",".*\\.tif",sep="")))
 list.filenames
@@ -139,7 +135,7 @@ write.table(sdf0111103,paste(path=CMDIR,'/' ,'Dx0111103_',h,'.dat',sep = ""),  r
 
 EOF
 #-------------------------------------------------------------------------------------# 
-export -p HDIR=/application/parameters/
+export -p HDIR=~/wp07-di/src/main/app-resources/parameters/
 #-------------------------------------------------------------------------------------#
 for file in $CMDIR01/*.dat; do 
 filename=$(basename $file .dat )

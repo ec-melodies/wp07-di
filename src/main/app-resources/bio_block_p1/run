@@ -4,12 +4,7 @@
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions (e.g. ciop-log)
-#source ${ciop_job_include}
-
-export DIR=/data/auxdata/ISD/ISD000/
-if [ ! -d "$DIR" ]; then
-    mkdir $DIR
-fi
+source ${ciop_job_include}
 
 export -p IXDIR=/application/bio_block_p1/bin/
 export -p INP=/application/parameters/AOI
@@ -17,7 +12,7 @@ export -p INP=/application/parameters/AOI
 # JOB 1
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
-icx()
+function icx()
 {
 exec $IXDIR"resample_aoi_00105.sh"
 }
@@ -34,7 +29,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		icx $2
 	elif [[ "$line" == AOI4 ]] ; then
 		echo "$line"
-		#icx $2
+		icx $2
 	else
 		echo "AOI out of range"
 	fi 
@@ -42,11 +37,7 @@ done < "$INP"
 #-------------------------------------------------------------------------------------#
 # JOB 2
 #-------------------------------------------------------------------------------------# 
-export DIR=/data/auxdata/ISD/ISD000/
-if [ ! -d "$DIR" ]; then
-    mkdir $DIR
-fi
-export -p IR=/application/parameters/AOI
+export -p IR=~/wp07-di/src/main/app-resources/parameters/AOI
 
 #-------------------------------------------------------------------------------------# 
 function igcx(){
@@ -72,7 +63,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 	elif [[ "$line" == AOI4 ]] ; then
 		NV=$(grep "NDV001" $2)
 		LC=$(grep "LANDC001" $2)
-		#igcx $NV $LC
+		igcx $NV $LC
 	else
 		echo "AOI out of range"
 	fi 
@@ -81,7 +72,6 @@ done < "$IR"
 function igcs(){
 exec $IXDIR"vgt_to_geoms_00200.sh" $1 $2 $3
 }
-
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then	
@@ -111,7 +101,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		NI=$(grep "NIR001" $2)
 		RE=$(grep "RED001" $2)
 		LC=$(grep "LANDC001" $2)
-		#igcs $NI $LC $RE 
+		igcs $NI $LC $RE 
 	else
 		echo "AOI out of range"
 	fi 

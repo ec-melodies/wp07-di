@@ -16,7 +16,7 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-source ${ciop_job_include}
+#source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
@@ -29,8 +29,6 @@ export -p CMDIR=$OUTDIR/CM001
 export -p CMDIR02=$CMDIR/AOI/AOI_DX
 export PATH=/opt/anaconda/bin/:$PATH
 export -p ZDIR=$OUTDIR/GEOMS
-export y1=$1
-export y2=$2
 
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'

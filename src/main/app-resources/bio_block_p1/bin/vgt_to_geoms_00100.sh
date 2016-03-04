@@ -16,7 +16,7 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-source ${ciop_job_include}
+# source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
@@ -33,8 +33,6 @@ export -p NVDIR=$OUTDIR/VM001/class_NDV001/
 export PATH=/opt/anaconda/bin/:$PATH
 
 #-------------------------------------------------------------------------------------#
-#?input001=$1
-#?input002=$2
 #-------------------------------------------------------------------------------------#
 # JOB# resample LULC para o mesmo pixel scale do target (SPOT or PROBA-V)
 
@@ -84,7 +82,7 @@ library(digest)
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
 
-TPmlist01<-list.files(path=CMDIR, pattern="NDV02_001_crop*")
+TPmlist01<-mixedsort(list.files(pattern=paste("NDV02_001_crop*",".*\\.tif",sep="")))
 TPmlist01
 
 for (i in 1:(length(TPmlist01))){
@@ -95,7 +93,7 @@ capture.output(rb, file=paste(CMDIR,'/','INFO_NDV','.txt',sep = ""), append=TRUE
 }
 
 
-TPmlist01<-list.files(path=CMDIR, pattern="LANDC002*")
+TPmlist01<-mixedsort(list.files(path=CMDIR, pattern="LANDC002*"))
 TPmlist01
 
 for (i in 1:(length(TPmlist01))){
@@ -205,6 +203,7 @@ output003=$NVDIR/${filename/#NDV02_001_crop/Nr_LANDC01_1}_$i.tif
 gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A*0+1)" --NoDataValue=0 --overwrite --type=Int32; 
 done
 done
+
 #-------------------------------------------------------------------------------------#
 echo "DONE"
 exit 0

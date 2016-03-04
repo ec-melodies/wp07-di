@@ -21,6 +21,7 @@ export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------#
 # JOB000
 #-------------------------------------------------------------------------------------#
 export PATH=/opt/anaconda/bin/:$PATH
@@ -114,7 +115,7 @@ library(digest)
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
 
-TPmlist01<-list.files(path=SBDIR, pattern="NIRRED_Bx*")
+TPmlist01<-mixedsort(list.files(pattern=paste("NIRRED_Bx*",".*\\.tif",sep="")))
 TPmlist01
 
 for (i in 1:(length(TPmlist01))){
@@ -125,7 +126,8 @@ capture.output(rb, file=paste(SBDIR,'/','INFO_NIRRED_Bx','.txt',sep = ""), appen
 }
 
 
-TPmlist01<-list.files(path=CMDIR, pattern=paste("LANDC002_*",".*\\.tif",sep=""))
+setwd(CMDIR)
+TPmlist01<-mixedsort(list.files(pattern=paste("LANDC002_*",".*\\.tif",sep="")))
 TPmlist01
 
 for (i in 1:(length(TPmlist01))){
