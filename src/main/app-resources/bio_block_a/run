@@ -24,30 +24,7 @@ wait
 exec $IXDIR"vgt_to_geoms_00401.sh" 
 }
 #-------------------------------------------------------------------------------------# 
-while IFS='' read -r line || [[ -n "$line" ]]; do
-	if [[ "$line" == AOI1 ]] ; then	
-		NV=$(grep "NDV001" $2)
-		LC=$(grep "LANDC001" $2)
-		igcx $NV $LC
-	
-	elif [[ "$line" == AOI2 ]] ; then		
-		NV=$(grep "NDV001" $2)
-		LC=$(grep "LANDC001" $2)
-		igcx $NV $LC
-
-	elif [[ "$line" == AOI3 ]] ; then		
-		NV=$(grep "NDV001" $2)
-		LC=$(grep "LANDC001" $2)
-		igcx $NV $LC
-
-	elif [[ "$line" == AOI4 ]] ; then
-		NV=$(grep "NDV001" $2)
-		LC=$(grep "LANDC001" $2)
-		igcx $NV $LC
-	else
-		echo "AOI out of range"
-	fi 
-done < "$IR"
+igcx
 #-------------------------------------------------------------------------------------# 
 exit 0
 

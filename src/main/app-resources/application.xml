@@ -1,188 +1,73 @@
 <?xml version="1.0" encoding="us-ascii"?>
 <application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="application">
-  <!-- WP7-di -->
-  <!-- Setting Environments -->
-  <jobTemplates>
-    <jobTemplate id="env">
-      <streamingExecutable>/application/bin/ini.sh</streamingExecutable>   
-    </jobTemplate>
-  </jobTemplates> 
-
-  <!-- Accessing ECMWF data servers in batch (ecmwfapi)  -->
+  <!-- WP07-di -->
+  <!-- Clima  -->
   <jobTemplates>
     <jobTemplate id="ecmwfapi">
-      <streamingExecutable>/application/bin/ISD100_CxDx/run</streamingExecutable>
+      <streamingExecutable>/application/cli_block_a/run</streamingExecutable>
       <defaultParameters>
-  <!-- ISSUES: Area of interest require by the user (Years from 2000 to 2015)-->	  
     <parameter id="Year">2010</parameter>
-	<parameter id="Area of Interest">AOI1</parameter>
+	<parameter id="Area of Interest">AOI4</parameter>
       </defaultParameters>    
     </jobTemplate>
   </jobTemplates> 
- 
-   <!-- RESAMPLE_AOI LULC -->
-   <!-- ISSUES: Data Provider: ESA or WP7-LULC -->
+   
   <jobTemplates>
     <jobTemplate id="LULC">
-      <streamingExecutable>/application/bin/ISD000_Ix/run</streamingExecutable>
+      <streamingExecutable>/application/bio_input_collecting/run</streamingExecutable>
       <defaultParameters>
-        <parameter id="AOI">Cx001</parameter>
-        <parameter id="LULC">LAND001</parameter>
+        <parameter id="AOI"> ... </parameter>
       </defaultParameters>    
     </jobTemplate>
   </jobTemplates> 
   
-<!-- Translate HDF to GTiff for EPSG: 4326  -->
+<!-- Soil and Vegetation -->
 	<jobTemplates>
 		<jobTemplate id="vito">
-		<streamingExecutable>/application/bin/ISD300_Ex/run</streamingExecutable>
-			<parameter id="AOI">Cx001</parameter>
+		<streamingExecutable>/application/bio_block_p1/run</streamingExecutable>
+		<parameter id="AOI">Cx001</parameter>
         <parameter id00="y2">2010</parameter>
 
 		</jobTemplate>
 	</jobTemplates>
   
-<!-- Local vegetation status [V(x)] -->
+  <!-- Vegetation and Soil -->
  <jobTemplates>
     <jobTemplate id="byph_vx">
-      <streamingExecutable>/application/bin/ISD200_Vx/run</streamingExecutable>
+      <streamingExecutable>/application/bio_block_a/run</streamingExecutable>
     </jobTemplate>
-  </jobTemplates> -->
+  </jobTemplates> 
  
-  <!-- Local soil status [S(x)] -->
+  <!-- Vegetation and Soil -->
     <jobTemplates>
     <jobTemplate id="byph_sx">
-      <streamingExecutable>/application/bin/ISD201_Vx/run</streamingExecutable>
+      <streamingExecutable>/application/bio_block_p2/run</streamingExecutable>
     </jobTemplate>
   </jobTemplates>
 
-   <!-- Vegetation and Soil status [B(x)] -->
+   <!-- Collocated  -->
     <jobTemplates>
     <jobTemplate id="byph_bx">
-      <streamingExecutable>/application/bin/ISD202_Vx/run</streamingExecutable>
+      <streamingExecutable>/application/processing_block_p/run</streamingExecutable>
     </jobTemplate>
   </jobTemplates> 
-  
-     <!-- Vegetation and Soil status [B(x)] -->
+
+   <!-- Aggregation - ISD -->
     <jobTemplates>
-    <jobTemplate id="byph_cx">
-      <streamingExecutable>/application/bin/ISD203_Vx/run</streamingExecutable>
+    <jobTemplate id="byph_bx">
+      <streamingExecutable>/application/processing_block_a/run</streamingExecutable>
     </jobTemplate>
   </jobTemplates> 
-  
-       <!-- ISD (Cx) -->
-    <jobTemplates>
-    <jobTemplate id="isd_cx">
-      <streamingExecutable>/application/bin/ISD600_ISD/run</streamingExecutable>
-    </jobTemplate>
-  </jobTemplates> 
-  
-         <!-- ISD (Dx) -->
-    <jobTemplates>
-    <jobTemplate id="isd_dx">
-      <streamingExecutable>/application/bin/ISD601_ISD/run</streamingExecutable>
-    </jobTemplate>
-  </jobTemplates> 
- 
-           <!-- ISD -->
-    <jobTemplates>
-    <jobTemplate id="isd_cxdx">
-      <streamingExecutable>/application/bin/ISD603_ISD/run</streamingExecutable>
-    </jobTemplate>
-  </jobTemplates> 
-  
- 
+
      <workflow id="workflow-isd" title="ISD V.1.0" abstract="Basic workflow archetype">
     <workflowVersion>1.0</workflowVersion>
     <node id="node_ecmwfapi01">
       <job id="ecmwfapi"/>
       <sources>
-        <source refid="file:urls">/application/bin/ISD100_CxDx/inputs</source>
+        <source refid="file:urls"> ... </source>
       </sources>
     </node>
   
-	<node id="node_lulc">        
-      <job id="LULC"></job>
-      <sources>
-        <source refid="wf:node">node_ecmwfapi01</source>
-        <source refid="file:urls">/application/bin/ISD000_Ix/inputs</source>        
-      </sources>
-    </node>
-    
-    <node id="node_vito">        
-      <job id="vito"></job>
-      <sources>
-        <source refid="wf:node">node_ecmwfapi01</source>
-        <source refid="file:urls">/application/bin/ISD300_Ex/inputs</source>        
-      </sources>
-    </node>
- 
-     <node id="node_bands_resample">        
-      <job id="bands_resample"></job>
-      <sources>
-        <source refid="wf:node">node_ecmwfapi01</source>
-        <source refid="wf:node">node_lulc</source>
-        <source refid="wf:node">node_vito</source>
-        <source refid="file:urls">/application/bin/ISD200_Vx/inputs</source>        
-      </sources>
-    </node>
-     
-    <node id="node_byph_vx">        
-      <job id="byph_vx"></job>      
-      <sources>
-        <source refid="wf:node">node_ecmwfapi01</source>
-        <source refid="wf:node">node_lulc</source>
-        <source refid="wf:node">node_vito</source>
-        <source refid="file:urls">/application/bin/ISD201_Vx/inputs</source>        
-      </sources>
-    </node>
-	
-    <node id="node_byph_sx">        
-      <job id="byph_sx"></job>      
-      <sources>
-        <source refid="wf:node">node_ecmwfapi01</source>
-        <source refid="wf:node">node_lulc</source>
-        <source refid="wf:node">node_vito</source>
-        <source refid="file:urls">/application/bin/ISD202_Vx/inputs</source>        
-      </sources>
-    </node>
-	
-	<node id="node_byph_bx">        
-      <job id="byph_bx"></job>
-	  <sources>
-        <source refid="wf:node">node_byph_sx</source>
-        <source refid="wf:node">node_lulc</source>
-        <source refid="file:urls">/application/bin/ISD203_Vx/inputs</source>        
-      </sources>
-    </node>
-    
-    <node id="node_isd_cx">        
-      <job id="isd_cx"></job>      
-      <sources>
-        <source refid="wf:node">node_byph_bx</source>
-        <source refid="wf:node">node_ecmwfapi01</source>
-        <source refid="file:urls">/application/bin/ISD601_ISD/inputs</source>
-      </sources>	  
-    </node>
-    
-    <node id="node_isd_dx">        
-      <job id="isd_dx"></job>
-      <sources>
-        <source refid="wf:node">node_byph_bx</source>
-        <source refid="wf:node">node_ecmwfapi01</source>
-        <source refid="file:urls">/application/bin/ISD602_ISD/inputs</source>
-      </sources>
-    </node>
-    
-    <node id="node_isd_cxdx">        
-      <job id="isd_cxdx"></job>
-      <sources>
-        <source refid="wf:node">node_isd_cx</source>
-        <source refid="wf:node">node_isd_dx</source>
-        <source refid="file:urls">/application/bin/ISD602_ISD/inputs</source>
-      </sources>
-     </node>
-	  
     
   </workflow>
 </application>

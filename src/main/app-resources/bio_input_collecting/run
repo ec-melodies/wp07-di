@@ -17,11 +17,11 @@ export -p Y2="$(cat $YR1)"
 #-------------------------------------------------------------------------------------# 
 # JOB 1 - ESA to LULC_crop
 #-------------------------------------------------------------------------------------# 
-#function icx() { 
-#exec $IXDIR"resample_aoi_0010100.sh" $1 &
-#wait
-#exec $IXDIR"resample_aoi_0010300.sh"
-#}
+function icx() { 
+exec $IXDIR"resample_aoi_0010100.sh" $1 &
+wait
+exec $IXDIR"resample_aoi_0010300.sh"
+}
 
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do

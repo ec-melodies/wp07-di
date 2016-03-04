@@ -10,9 +10,8 @@ export -p IXDIR=/application/processing_block_p/bin/
 
 #-------------------------------------------------------------------------------------# 
 function igcx(){
-exec $IXDIR"isd_cx001.sh" $1 $2 &
-wait
-exec $IXDIR"isd_dx001.sh" $1 $2
+exec $IXDIR"isd_cx001.sh" &
+exec $IXDIR"isd_dx001.sh"
 }
 
 igcx
