@@ -10,12 +10,8 @@
 #-------------------------------------------------------------------------------------# 
 #bash /application/bin/ISD5_node/ini.sh
 export -p PATH=/opt/anaconda/bin/:$PATH 
-
-#export -p Cx001=$1
-#export -p INSPOT=$2
-
-export -p AOI=AOI3
-#echo $AOI
+export -p AOI=$1
+echo $AOI
 export -p OUTDIR=/data/auxdata/ISD/ISD000/VITO; mkdir -p $OUTDIR
 
 #-------------------------------------------------------------------------------------# 

@@ -7,7 +7,6 @@
 source ${ciop_job_include}
 
 export -p IXDIR=/application/bio_block_p1/bin/
-export -p IR=/application/parameters/AOI
 #-------------------------------------------------------------------------------------# 
 # JOB 1
 #-------------------------------------------------------------------------------------# 
@@ -20,105 +19,23 @@ icx
 #-------------------------------------------------------------------------------------#
 # JOB 2
 #-------------------------------------------------------------------------------------# 
-#-------------------------------------------------------------------------------------# 
 function igcx(){
-exec $IXDIR"vgt_to_geoms_00100.sh" $1 $2
+exec $IXDIR"vgt_to_geoms_00100.sh" 
 }
 #-------------------------------------------------------------------------------------# 
-while IFS='' read -r line || [[ -n "$line" ]]; do
-	if [[ "$line" == AOI1 ]] ; then	
-		NV=$(grep "NDV001" $2)
-		LC=$(grep "LANDC001" $2)
-		igcx $NV $LC
-	
-	elif [[ "$line" == AOI2 ]] ; then		
-		NV=$(grep "NDV001" $2)
-		LC=$(grep "LANDC001" $2)
-		igcx $NV $LC
-
-	elif [[ "$line" == AOI3 ]] ; then		
-		NV=$(grep "NDV001" $2)
-		LC=$(grep "LANDC001" $2)
-		igcx $NV $LC
-
-	elif [[ "$line" == AOI4 ]] ; then
-		NV=$(grep "NDV001" $2)
-		LC=$(grep "LANDC001" $2)
-		igcx $NV $LC
-	else
-		echo "AOI out of range"
-	fi 
-done < "$IR"
+igcx
 #-------------------------------------------------------------------------------------# 
 function igcs(){
-exec $IXDIR"vgt_to_geoms_00200.sh" $1 $2 $3
+exec $IXDIR"vgt_to_geoms_00200.sh" 
 }
 #-------------------------------------------------------------------------------------# 
-while IFS='' read -r line || [[ -n "$line" ]]; do
-	if [[ "$line" == AOI1 ]] ; then	
-
-		NI=$(grep "NIR001" $2)
-		RE=$(grep "RED001" $2)
-		LC=$(grep "LANDC001" $2)
-
-		igcs $NI $LC $RE 
-	
-	elif [[ "$line" == AOI2 ]] ; then
-		
-		NI=$(grep "NIR001" $2)
-		RE=$(grep "RED001" $2)
-		LC=$(grep "LANDC001" $2)
-		igcs $NI $LC $RE 
-
-	elif [[ "$line" == AOI3 ]] ; then
-		
-		NI=$(grep "NIR001" $2)
-		RE=$(grep "RED001" $2)
-		LC=$(grep "LANDC001" $2)
-		igcs $NI $LC $RE 
-
-	elif [[ "$line" == AOI4 ]] ; then
-		
-		NI=$(grep "NIR001" $2)
-		RE=$(grep "RED001" $2)
-		LC=$(grep "LANDC001" $2)
-		igcs $NI $LC $RE 
-	else
-		echo "AOI out of range"
-	fi 
-done < "$IR"
-
-#-------------------------------------------------------------------------------------# 
-#-------------------------------------------------------------------------------------# 
+igcs
 #-------------------------------------------------------------------------------------# 
 function igcr(){
-exec $IXDIR"vgt_to_geoms_00400.sh" $1 $2
+exec $IXDIR"vgt_to_geoms_00400.sh" 
 }
 #-------------------------------------------------------------------------------------# 
-while IFS='' read -r line || [[ -n "$line" ]]; do
-	if [[ "$line" == AOI1 ]] ; then	
-		RE=$(grep "NDV02" $2)
-		LC=$(grep "LANDC001" $2)
-		igcr $RE $LC 
-	
-	elif [[ "$line" == AOI2 ]] ; then		
-		RE=$(grep "NDV02" $2)
-		LC=$(grep "LANDC001" $2)
-		igcr $RE $LC 
-
-	elif [[ "$line" == AOI3 ]] ; then
-		RE=$(grep "NDV02" $2)
-		LC=$(grep "LANDC001" $2)
-		igcr $RE $LC 
-
-	elif [[ "$line" == AOI4 ]] ; then		
-		RE=$(grep "NDV02" $2)
-		LC=$(grep "LANDC001" $2)
-		igcr $RE $LC 
-	else
-		echo "AOI out of range"
-	fi 
-done < "$IR"
+igcr
 #-------------------------------------------------------------------------------------# 
 echo "AGGREGATION.................1"
 echo 0

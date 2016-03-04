@@ -18,45 +18,21 @@ export -p Y2="$(cat $YR1)"
 # JOB 1 - ESA to LULC_crop
 #-------------------------------------------------------------------------------------# 
 function icx() { 
-exec $IXDIR"resample_aoi_0010100.sh" $1 &
+exec $IXDIR"resample_aoi_0010100.sh" &
 wait
 exec $IXDIR"resample_aoi_0010300.sh"
 }
-
-#-------------------------------------------------------------------------------------# 
-while IFS='' read -r line || [[ -n "$line" ]]; do
-	if [[ "$line" == AOI1 ]] ; then	
-		echo "$line"
-		icx $YR 
-	elif [[ "$line" == AOI2 ]] ; then
-		echo "$line"
-		icx $YR
-	elif [[ "$line" == AOI3 ]] ; then
-		echo "$line"
-		icx $YR
-	elif [[ "$line" == AOI4 ]] ; then
-		echo "$line"
-		icx $YR
-	else
-		echo "AOI out of range"
-	fi 
-done < "$IR"
-#-------------------------------------------------------------------------------------# 
-#-------------------------------------------------------------------------------------# 
+icx
 #-------------------------------------------------------------------------------------# 
 # JOB 2 - VITO to NIR/NDV/RED.tif
 # Images (VITO), SNAP Toolbox crop PROBA-V and SPOT-VGT
 #-------------------------------------------------------------------------------------# 
-#-------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------#
-
 function igcx(){
-exec $IXDIR"resample_aoi_0010701.sh" $1 $2 $3 &
+exec $IXDIR"resample_aoi_0010701.sh" $1 &
 wait
 exec $IXDIR"resample_aoi_0010900.sh"
 }
 
- 
 function probav(){
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then
@@ -64,9 +40,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		grep "X17Y03" $INP2 >> $DIR/list.txt
 		grep "X18Y03" $INP2 >> $DIR/list.txt
 		echo "${AOI=$(echo AOI1 )}"
-		IMG001=$(grep $Y2 $INP2)
-		Cx1=$(grep "Cx001" $INP2)
-		igcx $Cx1 $IMG001 $AOI
+		igcx $AOI
 		echo "AOI1"
 
 	elif [[ "$line" == AOI2 ]] ; then
@@ -74,10 +48,8 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		grep "Y04" $INP2 >> $DIR/list.txt
 		grep "Y05" $INP2 >> $DIR/list.txt
 		echo "${AOI=$(echo AOI2 )}"
-		IMG001=$(grep $Y2 $INP2)
-		Cx1=$(grep "Cx001" $INP2)
-		igcx $Cx1 $IMG001 $AOI
-	        echo "AOI2"
+		igcx $AOI
+	    echo "AOI2"
 
 	elif [[ "$line" == AOI3 ]] ; then
 		grep "X20Y06" $INP2 > $DIR/list.txt
@@ -96,9 +68,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		grep "X21Y10" $INP2 >> $DIR/list.txt
 		grep "X22Y10" $INP2 >> $DIR/list.txt
 		echo "${AOI=$(echo AOI3 )}"
-		IMG001=$(grep $Y2 $INP2)
-		Cx1=$(grep "Cx001" $INP2)
-		igcx $Cx1 $IMG001 $AOI
+		igcx $AOI
 		echo "AOI3"
 
 	elif [[ "$line" == AOI4 ]] ; then
@@ -106,9 +76,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		grep "X21Y03" $INP2 >> $DIR/list.txt
 		grep "X19Y03" $INP2 >> $DIR/list.txt
 		echo "${AOI=$(echo AOI4 )}"
-		IMG001=$(grep $Y2 $INP2)
-		Cx1=$(grep "Cx001" $INP2)
-		igcx $Cx1 $IMG001 $AOI
+		igcx $AOI
 		echo "AOI4"
 	else
 		echo "PROBA-V out of range"
@@ -117,7 +85,7 @@ done < "$IR"
 }
 
 function igcxs(){
-exec $IXDIR"resample_aoi_0010700.sh" $1 $2 $3 &
+exec $IXDIR"resample_aoi_0010700.sh" $1 &
 wait
 exec $IXDIR"resample_aoi_0010900.sh"
 }
@@ -127,39 +95,29 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 	
 	if [[ "$line" == AOI1 ]] ; then
 		echo "${AOI=$(echo AOI1 )}"
-		IMG001=$(grep $Y2 $INP2)
-		Cx1=$(grep "Cx001" $INP2)
-		igcxs $Cx1 $IMG001 $AOI
 		grep $Y2 $INP2 > $DIR/list.txt
-		igcxs $Cx1 $IMG001 $AOI
+		igcxs $AOI
 		echo "AOI1"
 		echo $Y2
 	
 	elif [[ "$line" == AOI2 ]] ; then
 		echo "${AOI=$(echo AOI2 )}"
-		IMG001=$(grep $Y2 $INP2)
-		Cx1=$(grep "Cx001" $INP2)
-		igcxs $Cx1 $IMG001 $AOI
 		grep $Y2 $INP2 > $DIR/list.txt
-	        igcxs $Cx1 $IMG001 $AOI
-                echo "AOI2"
+	    igcxs $AOI
+        echo "AOI2"
 		echo $Y2
 
 	elif [[ "$line" == AOI3 ]] ; then
 		echo "${AOI=$(echo AOI3 )}"
-		IMG001=$(grep $Y2 $INP2)
-		Cx1=$(grep "Cx001" $INP2)
 		grep $Y2 $INP2 > $DIR/list.txt
-		igcxs $Cx1 $IMG001 $AOI
+		igcxs $AOI
 		echo "AOI3"
 		echo $Y2
 
 	elif [[ "$line" == AOI4 ]] ; then
 		echo "${AOI=$(echo AOI4 )}"
-		IMG001=$(grep $Y2 $INP2)
-		Cx1=$(grep "Cx001" $INP2)
 		grep $Y2 $INP2 > $DIR/list.txt
-		igcxs $Cx1 $IMG001 $AOI
+		igcxs $AOI
 		echo "AOI4"
 		echo $Y2
 	else

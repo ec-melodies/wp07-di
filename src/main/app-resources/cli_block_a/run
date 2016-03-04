@@ -121,7 +121,7 @@ exec $CXDIR"climatic_dataset_002005.sh"
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then
-	        echo "${AOI1=$(echo $Y1 $Y2 44.00 -9.75 36.00 3.50 0.75)}" 
+	    echo "${AOI1=$(echo $Y1 $Y2 44.00 -9.75 36.00 3.50 0.75)}" 
 		fcx
 	elif [[ "$line" == AOI2 ]] ; then
 		echo "${AOI2=$(echo $Y1 $Y2 37.5 -19.0 12.0 25.5 0.75)}" 
