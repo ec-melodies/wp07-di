@@ -3,18 +3,24 @@
 # PURPOSE: input data ECWMF
 #-------------------------------------------------------------------------------------# 
 
-source the ciop functions (e.g. ciop-log)
+# source the ciop functions (e.g. ciop-log)
 source ${ciop_job_include}
 
+export -p IDIR=/application/
+echo $IDIR
+
 #-------------------------------------------------------------------------------------# 
-bash /application/cli_block_a/bin/ini.sh
 #-------------------------------------------------------------------------------------# 
 export -p DIR=/data/auxdata/ISD/ISD000/
-export -p CXDIR=/application/cli_block_a/bin/
-export -p IR=/application/parameters/AOI
-export -p YR=/application/parameters/year
+export -p CXDIR=$IDIR/cli_block_a/bin/
+export -p IR=$IDIR/parameters/AOI
+export -p YR=$IDIR/parameters/year
 export -p Y2="$(cat $YR)"
 #-------------------------------------------------------------------------------------# 
+hcx(){
+exec $CXDIR"ini.sh"
+}
+hcx
 
 cd $DIR
 
@@ -101,8 +107,8 @@ wait
 exec $CXDIR"climatic_dataset_001001.sh" $years &
 wait
 exec $CXDIR"climatic_dataset_001003.sh" &
-wait
-exec $CXDIR"climatic_dataset_001002.sh" &
+#wait
+#exec $CXDIR"climatic_dataset_001002.sh" &
 wait
 exec $CXDIR"climatic_dataset_001005.sh" &
 wait
@@ -111,8 +117,8 @@ wait
 exec $CXDIR"climatic_dataset_002001.sh" $years &
 wait
 exec $CXDIR"climatic_dataset_002003.sh" &
-wait
-exec $CXDIR"climatic_dataset_002002.sh" &
+#wait
+#exec $CXDIR"climatic_dataset_002002.sh" &
 wait
 exec $CXDIR"climatic_dataset_002005.sh"    
 }
@@ -121,7 +127,7 @@ exec $CXDIR"climatic_dataset_002005.sh"
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then
-	    echo "${AOI1=$(echo $Y1 $Y2 44.00 -9.75 36.00 3.50 0.75)}" 
+	        echo "${AOI1=$(echo $Y1 $Y2 44.00 -9.75 36.00 3.50 0.75)}" 
 		fcx
 	elif [[ "$line" == AOI2 ]] ; then
 		echo "${AOI2=$(echo $Y1 $Y2 37.5 -19.0 12.0 25.5 0.75)}" 

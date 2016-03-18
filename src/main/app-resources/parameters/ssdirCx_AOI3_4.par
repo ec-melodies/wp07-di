@@ -54,14 +54,14 @@ VARCORR   = 1                 # Average correction flag
 #-------------------------------------------------------------------------------------# 
 [GRID] 
 # NX, NY and NZ are the number of blocks per direction  
-NX        =3793
+NX        =3993
 
 NY        =4370
 
 NZ        =1
 
 # ORIGX, ORIGY and ORIGZ are the start coordinate for each direction 
-ORIGX     =2343728.069
+ORIGX     =3428783.883
 
 ORIGY     =-2358901.976
 
@@ -113,10 +113,10 @@ SANG3   =0                   # Orientation angle parameter of direction I (degre
 KTYPE     =5               # Kriging type ;0=simple,1=ordinary,2=simple with locally varying mean, 
 # 3=external drif, 4=collo-cokrig global CC,5=local CC (KTYPE) 
 COLOCORR =0.75                # Global CC to ktype=4  
-SOFTFILE  =/data/auxdata/ISD/ISD000/GEOMS/Bx0100003_1_01.dat    # Filename of the soft data 
+SOFTFILE  =/data/auxdata/ISD/ISD000/GEOMS/Bx0100003_4_01.dat    # Filename of the soft data 
 NVARIL  = 1                   # Number of columns in the secundary data file 
 ICOLLVM = 1                   # Column number of secundary variable  
-CCFILE    =/data/auxdata/ISD/ISD000/GEOMS/CRx0100003_1_01.dat      # Filename of correlation file for local correlations (ktype=5) 
+CCFILE    =/data/auxdata/ISD/ISD000/GEOMS/CRx0100003_4_01.dat      # Filename of correlation file for local correlations (ktype=5) 
 RESCALE = 0
 #-------------------------------------------------------------------------------------# 
 # here we define the variogram to use. if more than 1, use [VARIOGRAM2] 

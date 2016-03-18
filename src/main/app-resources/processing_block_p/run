@@ -4,14 +4,18 @@
 #-------------------------------------------------------------------------------------# 
 start=`date +%s`
 #-------------------------------------------------------------------------------------#
-export -p IXDIR=/application/processing_block_p/bin/
+
+export -p IDIR=/application/
+echo $IDIR
+export -p IXDIR=$IDIR/processing_block_p/bin/
 
 #-------------------------------------------------------------------------------------# 
 
 #-------------------------------------------------------------------------------------# 
 function igcx(){
-exec $IXDIR"isd_cx001.sh" &
-exec $IXDIR"isd_dx001.sh"
+exec $IXDIR"isd_cx001.sh" $1 $2 &
+wait
+exec $IXDIR"isd_dx001.sh" $1 $2
 }
 
 igcx

@@ -1,5 +1,5 @@
-/application/parameters/AOI1_32662_01.txt
-/application/parameters/AOI2_32662_01.txt
-/application/parameters/AOI3_32662_01.txt
-/application/parameters/AOI4_32662_01.txt
+/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI1_32662_01.txt
+/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI2_32662_01.txt
+/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI3_32662_01.txt
+/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI4_32662_01.txt
 

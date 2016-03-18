@@ -1,3 +1,4 @@
+
 #!/bin/sh
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: run file for Ix
@@ -7,8 +8,9 @@
 # source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 export -p DIR=/data/auxdata/ISD/ISD000/
-export -p IR=/application/parameters/AOI
-export -p IXDIR=/application/bio_block_a/bin/
+export -p IDIR=/application/
+export -p IR=$IDIR/parameters/AOI
+export -p IXDIR=$IDIR/bio_block_a/bin/
 #-------------------------------------------------------------------------------------# 
 function igcx(){
 exec $IXDIR"vgt_to_geoms_00101.sh" & 
@@ -23,9 +25,10 @@ exec $IXDIR"vgt_to_geoms_00501.sh" &
 wait
 exec $IXDIR"vgt_to_geoms_00401.sh" 
 }
-#-------------------------------------------------------------------------------------# 
+
 igcx
 #-------------------------------------------------------------------------------------# 
+
 exit 0
 
 

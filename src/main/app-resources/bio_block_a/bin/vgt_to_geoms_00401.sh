@@ -16,23 +16,29 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-#source ${ciop_job_include}
+source ${ciop_job_include}
 export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
+# bash /application/bin/ISD5_node/ini.sh
 #-------------------------------------------------------------------------------------#
 # JOB000
 #-------------------------------------------------------------------------------------#
 export PATH=/opt/anaconda/bin/:$PATH
 export -p DIR=/data/auxdata/ISD/
+export -p IDIR=/application/
+echo $IDIR
 export -p INDIR=$DIR/INPUT
 export -p OUTDIR=$DIR/ISD000/
 export -p SBDIR=$OUTDIR/PM001/
-export -p HDIR=/application/parameters/
+export -p HDIR=$IDIR/parameters/
 export -p PDIR=$OUTDIR/PM001/
 export -p ZDIR=$OUTDIR/GEOMS/
 export -p LAND001=$OUTDIR/VITO/
+
+export -p CRS32662=$IDIR/parameters/AOI
+export -p C2=$IDIR/parameters/CRS32662_01.txt
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
 R --vanilla --no-readline   -q  <<'EOF'
@@ -84,16 +90,16 @@ lry=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $5 }')
 
 echo $ulx $uly $lrx $lry 
 
-ulx1=$(awk "BEGIN {print ($ulx+7730.52)}")
-uly1=$(awk "BEGIN {print ($uly-7730.52)}")
-lrx1=$(awk "BEGIN {print ($lrx-7730.52)}")
-lry1=$(awk "BEGIN {print ($lry+7730.52)}")
+ulx1=$(awk "BEGIN {print ($ulx+1546.104)}")
+uly1=$(awk "BEGIN {print ($uly-1546.104)}")
+lrx1=$(awk "BEGIN {print ($lrx-1546.104)}")
+lry1=$(awk "BEGIN {print ($lry+1546.104)}")
 
 echo $ulx1 $uly1 $lrx1 $lry1
 
 output003=$SBDIR/${filename/#CR001_03_/CR001_04_}.tif 
 echo $output003 
-gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $input001 $output003
+gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input001 $output003
 done
 
 #-------------------------------------------------------------------------------------# 
@@ -110,6 +116,9 @@ gdal_translate $SBDIR/${filename}.vrt $SBDIR/CR_00401.tif
 done
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------#
+
 R --vanilla --no-readline   -q  <<'EOF'
 SBDIR = Sys.getenv(c('LAND001'))
 
@@ -137,6 +146,8 @@ capture.output(rb, file=paste(SBDIR,'/','INFO_LC_004.txt',sep = ""), append=TRUE
 }
 
 EOF
+#-------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
 h=1
 for file in $PDIR/CR_00401.tif; do
@@ -161,6 +172,8 @@ echo $output003
 gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $input001 $output003
 done
 
+#-------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------# 
 
 cd $SBDIR
 
@@ -198,8 +211,6 @@ done
 # ASCII to geoMS (.OUT or .dat)
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
-export -p CRS32662=/application/parameters/AOI
-export -p C2=/application/parameters/CRS32662_01.txt
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then
@@ -217,7 +228,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 		echo "AOI out of range"
 	fi 
 done < "$CRS32662"
-#done < "/application/parameters/AOI4_32662_01.txt"
+#done < "/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI4_32662_01.txt"
 #-------------------------------------------------------------------------------------#
 for file in $SBDIR/CR_004.tif ; do
 export -p COUNT=0
@@ -229,7 +240,7 @@ echo $line
 echo $COUNT
 gdal_translate -projwin $line -of GTiff $SBDIR/${filename}.tif  $SBDIR/${filename}_crop_$COUNT.tif
 done < $CRS326620
-#done </application/parameters/AOI4_32662_01.txt
+#done </home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI4_32662_01.txt
 done
 #-------------------------------------------------------------------------------------# 
 

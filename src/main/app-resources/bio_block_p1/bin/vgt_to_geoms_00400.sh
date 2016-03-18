@@ -20,12 +20,16 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
+# bash /application/bin/ISD5_node/ini.sh
 export -p DIR=/data/auxdata/ISD/
 export -p OUTDIR=$DIR/ISD000
+export -p IDIR=/application/
+echo $IDIR
+
 export -p SBDIR=$OUTDIR/SM001/
 export -p PDIR=$OUTDIR/PM001
 export -p CMDIR=$OUTDIR/CM001
-export -p HDIR=/application/parameters/
+export -p HDIR=$IDIR/parameters/
 export -p LDIR=$OUTDIR/COKC
 export -p CDIR=$OUTDIR/SM001
 export -p VDIR=$OUTDIR/VM001
@@ -106,11 +110,16 @@ uly=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $6 }')
 lrx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $4 }')
 lry=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $5 }')
 
+ulx1=$(awk "BEGIN {print ($ulx+6184.416)}")
+uly1=$(awk "BEGIN {print ($uly-6184.416)}")
+lrx1=$(awk "BEGIN {print ($lrx-6184.416)}")
+lry1=$(awk "BEGIN {print ($lry+6184.416)}")
+
 echo $ulx $uly $lrx $lry 
 
 output003=$LAND001/${filename/#NDV02_001_crop/LANDC1}.tif 
 echo $output003 
-gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $input002 $output003
+gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input002 $output003
 done
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
@@ -203,7 +212,7 @@ rstack003<-stack(raster(list.filenames[1]),
 raster(list.filenames[2]), raster(list.filenames[3]), raster(list.filenames[4]), raster(list.filenames[5]),
 raster(list.filenames[6]), raster(list.filenames[7]), raster(list.filenames[8]), raster(list.filenames[9]),
 raster(list.filenames[10]), raster(list.filenames[11]))
-rastD6<-sum(rstack003, na.rm=TRUE)
+rastD6<-max(rstack003, na.rm=TRUE)
 
 head(rastD6)
 

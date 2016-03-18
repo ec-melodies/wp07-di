@@ -17,7 +17,7 @@
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
 export PATH=/opt/anaconda/bin/:$PATH
-source ${ciop_job_include}
+#source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
@@ -95,6 +95,8 @@ B=xy[2]
 y= matrix(, nrow = dim(B)[1], ncol = dim(B)[2])
 for (i in 1:dim(y)[1]) {y[i,]=B[dim(y)[1]-i+1,]}
 xy01<-cbind(x,y)
+
+
 #-------------------------------------------------------------------------------------# 
 sdf0111103 <-cbind(xy01,z,sdf003$values)
 write.table(sdf0111103,paste(path=CMDIR,'/' ,'Cx0111103_',h,'.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
@@ -103,8 +105,7 @@ write.table(sdf0111103,paste(path=CMDIR,'/' ,'Cx0111103_',h,'.dat',sep = ""),  r
 
 EOF
 #-------------------------------------------------------------------------------------# 
-export -p HDIR=~/wp07-di/src/main/app-resources/parameters/
-
+export -p HDIR=$IDIR/parameters/
 #-------------------------------------------------------------------------------------#
 for file in $CMDIR01/*.dat; do 
 filename=$(basename $file .dat )

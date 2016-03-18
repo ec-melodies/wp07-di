@@ -16,11 +16,12 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-source ${ciop_job_include}
+#source ${ciop_job_include}
 export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
+# bash /application/bin/ISD5_node/ini.sh
 #-------------------------------------------------------------------------------------#
 # JOB000
 #-------------------------------------------------------------------------------------#
@@ -75,14 +76,14 @@ for file in $LAND001/RED001_02_crop*.tif; do
 filename=$(basename $file .tif )
 input001=$LAND001/${filename}.tif
 output003=$SBDIR/${filename/#RED001_02_crop/RED02_001_crop}.tif 
-gdal_calc.py -A $input001 --outfile=$output003 --calc="(0.0005*A)*10000" --overwrite --NoDataValue=-1 --type=Int32
+gdal_calc.py -A $input001 --outfile=$output003 --calc="(0.0005*A)*10000" --overwrite --NoDataValue=-1 --type=Float64
 done
 
 for file in $LAND001/NIR001_02_crop*.tif; do 
 filename=$(basename $file .tif )
 input001=$LAND001/${filename}.tif
 output003=$SBDIR/${filename/#NIR001_02_crop/NIR02_001_crop}.tif 
-gdal_calc.py -A $input001 --outfile=$output003 --calc="(0.0005*A)*10000" --overwrite --NoDataValue=-1 --type=Int32
+gdal_calc.py -A $input001 --outfile=$output003 --calc="(0.0005*A)*10000" --overwrite --NoDataValue=-1 --type=Float64
 done
 
 #-------------------------------------------------------------------------------------#
@@ -94,7 +95,7 @@ input001=$SBDIR/${filename}.tif
 input002=$SBDIR/${filename/#NIR02_001_crop/RED02_001_crop}.tif 
 output003=$SBDIR/${filename/#NIR02_001_crop/NIRRED_Bx}.tif 
 echo $input001 $input002 $output003
-gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="sqrt((A*A+B*B)/2)" --NoDataValue=-1 --overwrite --type=Int32
+gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="sqrt((A*A+B*B)/2)" --NoDataValue=-1 --overwrite --type=Float64
 done
 #-------------------------------------------------------------------------------------#
 
@@ -184,7 +185,7 @@ echo $input001 $input002
 for i in {2,3,4,5,6,7}; do
 output003=$SBDIR/${filename/#NIRRED_Bx/LANDC01_1}_0$i.tif   
 echo $output003
-gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A)" --NoDataValue=0 --overwrite --type=Int32
+gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A)" --NoDataValue=0 --overwrite --type=Float64
 done
 done
 
@@ -198,7 +199,7 @@ echo $input001 $input002
 for i in 1; do  
 output003=$SBDIR/${filename/#NIRRED_Bx/LANDC01_1}_0$i.tif   
 echo $output003
-gdal_calc.py -A $input001 -B $input002 --outfile=$output003  --calc="(B==$i)*(A*0+5000)" --NoDataValue=0 --overwrite --type=Int32; 
+gdal_calc.py -A $input001 -B $input002 --outfile=$output003  --calc="(B==$i)*(A*0+5000)" --NoDataValue=0 --overwrite --type=Float64; 
 done
 done
 
@@ -212,7 +213,7 @@ echo $input001 $input002
 for i in {8,9}; do
 output003=$SBDIR/${filename/#NIRRED_Bx/Sr_LANDC01_1}_0$i.tif   
 echo $output003 
-gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A*0+10000)" --NoDataValue=0 --overwrite --type=Int32; 
+gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A*0+10000)" --NoDataValue=0 --overwrite --type=Float64; 
 done
 done
 
@@ -226,7 +227,7 @@ echo $input001 $input002
 for i in {10,11}; do  
 output003=$SBDIR/${filename/#NIRRED_Bx/Sr_LANDC01_1}_$i.tif   
 echo $output003 ~
-gdal_calc.py -A $input001 -B $input002 --outfile=$output003  --calc="(B==$i)*(A*0+1)" --NoDataValue=0 --overwrite --type=Int32; 
+gdal_calc.py -A $input001 -B $input002 --outfile=$output003  --calc="(B==$i)*(A*0+1)" --NoDataValue=0 --overwrite --type=Float64; 
 done
 done
 

@@ -114,8 +114,6 @@ rm(rD3)
 EOF
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
-
-rm $LAND001/x00_1.txt $LAND001/GLOBCOVER_01.tif $LAND001/GLOBCOVER_01.txt $LAND001/GLOBCOVER_01.prj $LAND001/GLOBCOVER_01.asc.aux.xml $LAND001/GLOBCOVER_01.asc
 echo "DONE"
 echo 0
 

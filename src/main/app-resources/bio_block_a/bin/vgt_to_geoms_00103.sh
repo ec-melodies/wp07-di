@@ -16,21 +16,24 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-source ${ciop_job_include}
+# source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
+#bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
+export -p IDIR=/application/
+echo $IDIR
 
 export -p DIR=/data/auxdata/ISD/
 export -p INDIR=$DIR/INPUT
 export -p OUTDIR=$DIR/ISD000/
 export -p Vx001=$OUTDIR/VM001/
 #-------------------------------------------------------------------------------------#
-# Sample
+# Samples
 #-------------------------------------------------------------------------------------#
-export -p CRS32662=/application/parameters/AOI
-export -p C2=/application/parameters/CRS32662_01.txt
+export -p CRS32662=$IDIR/parameters/AOI
+export -p C2=$IDIR/parameters/CRS32662_01.txt
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then

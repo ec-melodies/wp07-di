@@ -13,11 +13,12 @@ export -p DIR=/data/auxdata/ISD/
 export -p OUTDIR=$DIR/ISD000/
 export -p OUTDIR01=$DIR/ISD000/VITO
 
-Cx001=$(grep "Cx001" $1)
-LAND001=$(grep "GLOBCOVER" $1)
+#Cx001=$(grep "Cx001" $1)
+#LAND001=$(grep "GLOBCOVER" $1)
 
 mkdir -p $OUTDIR01
 export -p Cx001=/data/auxdata/ISD/ISD000/CM001/AOI/AOI_CX/Cx001.txt
+export -p LAND001=/data/auxdata/ESA/GLOBCOVER_L4_200901_200912_V2.3.tif
 #-------------------------------------------------------------------------------------#
 # CROP LAND/LANDCOVER
 #-------------------------------------------------------------------------------------# 

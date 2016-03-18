@@ -5,9 +5,10 @@
 start=`date +%s`
 #-------------------------------------------------------------------------------------# 
 export DIR=/data/auxdata/ISD/ISD000/
-export -p IXDIR=/application/processing_block_a/bin/
+export -p IDIR=/application/
+echo $IDIR
+export -p IXDIR=$IDIR/processing_block_a/bin/
 #-------------------------------------------------------------------------------------# 
-
 #-------------------------------------------------------------------------------------# 
 function igcx(){
 exec $IXDIR"isd_vx001.sh" 

@@ -12,7 +12,7 @@
 #-------------------------------------------------------------------------------------# 
 
 [HARDDATAZ1] 
-DATAFILE  =  /data/auxdata/ISD/ISD000/CM001/AOI/AOI_CX/Cx01111031_01.dat # Hard Data file
+DATAFILE  =  /data/auxdata/ISD/ISD000/CM001/AOI/AOI_DX/Dx0111103_1_01.dat # Hard Data file
 
 COLUMNS   = 4                 # Number of columns in the data file (to eliminate) 
 XCOLUMN   = 1                 # Column number of X coordinate 
@@ -43,7 +43,7 @@ UTPAR   = 1    # Parameter for the utail=2
 # here we define some parameters for the simulation 
 #-------------------------------------------------------------------------------------# 
 [SIMULATION] 
-OUTFILE   = /data/auxdata/ISD/ISD000/GEOMS/Cx/ISD_   # Filename of the resultant simulations
+OUTFILE   = /data/auxdata/ISD/ISD000/GEOMS/Dx/ISD_   # Filename of the resultant simulations
 
 NSIMS     = 1                 # Number of Simulations to generate 
 NTRY      = 5                 # Number of simulation for bias correction  

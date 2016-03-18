@@ -28,6 +28,9 @@ export PATH=/opt/anaconda/bin/:$PATH
 export -p DIR=/data/auxdata/ISD/
 export -p INDIR=$DIR/INPUT
 
+export -p IDIR=/application/
+echo $IDIR
+
 export -p OUTDIR=$DIR/ISD000
 export -p LAND001=$OUTDIR/VITO/
 
@@ -36,7 +39,7 @@ export -p SBDIR=$OUTDIR/SM001/class_SOIL001/
 
 export -p SBDIR1=$OUTDIR/SM001/class_SOIL001/soil_mosaic
 export -p VDIR=$OUTDIR/SM001
-export -p ISD5_Nx=/application/parameters/
+export -p ISD5_Nx=$IDIR/parameters/
 
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
@@ -174,29 +177,20 @@ require(raster)
 require(rciop)
 
 # list all files from the current directory
-list.files(pattern=".tif$") 
+
 list.filenames=assign(paste("list.filenames",sep=""),list.files(pattern=paste("Sr_HSLS",".*\\.tif",sep="")))
 list.filenames 
 
 # create a list from these files
 for (j in 1:length(list.filenames)){ 
 
-#SNr_HSLS_1<-raster(list.filenames[j])
-#SNr_HSLS_1[SNr_HSLS_1==5000]<-0.5
-#SNr_HSLS_1[SNr_HSLS_1!=5000]<-NA
-#n00<-unlist(strsplit(list.filenames[j], "_1_"))
-#n01<-n00[2]
-#n02<-unlist(strsplit(n01,"."))
-#writeRaster(SNr_HSLS_1, filename=paste("SNrHSLS_",n01, sep=""), format="GTiff", overwrite=TRUE, na.rm=TRUE)
-#list.filenames=assign(paste("list.filenames",sep=""),list.files(pattern=paste("SNrHSLS",".*\\.tif",sep="")))
-#list.filenames 
-
 # load raster data 
 rstack001<-stack(raster(list.filenames[1]),
 raster(list.filenames[2]),raster(list.filenames[3]),raster(list.filenames[4]),raster(list.filenames[5]),
 raster(list.filenames[6]),raster(list.filenames[7]),raster(list.filenames[8]),raster(list.filenames[9]),
 raster(list.filenames[10]),raster(list.filenames[11]))
-rastD6<-sum(rstack001, na.rm=TRUE)
+#rastD6<-sum(rstack001, na.rm=TRUE)
+rastD6<-max(rstack001, na.rm=TRUE)
 summary(rastD6)
 writeRaster(rastD6, filename=paste("Sx001_",".tif", sep=""), format="GTiff", overwrite=TRUE, na.rm=TRUE)
 }
@@ -205,7 +199,7 @@ EOF
 #-------------------------------------------------------------------------------------# 
 # here we publish the results
 #-------------------------------------------------------------------------------------# 
-Sx001 <- rciop.publish(rastD7, recursive=FALSE, metalink=TRUE)
+# Sx001 <- rciop.publish(rastD7, recursive=FALSE, metalink=TRUE)
 
 export -p CDIR=$OUTDIR/SM001
 export -p SBDIR=$CDIR/class_SOIL001/soil_mosaic

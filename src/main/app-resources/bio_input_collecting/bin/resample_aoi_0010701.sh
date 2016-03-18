@@ -8,10 +8,14 @@
 # awk
 # unzip
 #-------------------------------------------------------------------------------------# 
-#bash /application/bin/ISD5_node/ini.sh
 export -p PATH=/opt/anaconda/bin/:$PATH 
-export -p AOI=$1
+export -p IDIR=/application/
+echo $IDIR
+
+export -p AOIP=$IDIR/parameters/AOI
+export AOI=$(awk '{ print $1}' $AOIP)
 echo $AOI
+
 export -p OUTDIR=/data/auxdata/ISD/ISD000/VITO; mkdir -p $OUTDIR
 
 #-------------------------------------------------------------------------------------# 
@@ -59,9 +63,8 @@ export PATH=${SNAP}/bin:${PATH}
 OUTDIR=/data/auxdata/ISD/ISD000/VITO/
 
 #-------------------------------------------------------------------------------------# 
-while IFS='' read -r line || [[ -n "$line00" ]]; do
-echo $line00
-line = $(ciop-copy -o ./ $line00)
+while IFS='' read -r line || [[ -n "$line" ]]; do
+echo $line
 export -p INSPOT=$line
 export -p OUTSPOT=$line.tif
 export -p filename=$(basename $line .HDF5)
@@ -124,7 +127,7 @@ EOF`
 echo $subset_aoi_probav > $OUTDIR/subset_aoi_probav.xml
 echo $subset_aoi_probav
 
-gpt $OUTDIR/subset_aoi_probav.xml  -Ssource=$line -f GeoTIFF -t $OUTSPOT
+#gpt $OUTDIR/subset_aoi_probav.xml  -Ssource=$line -f GeoTIFF -t $OUTSPOT
 done < "/data/auxdata/ISD/ISD000/list.txt"
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
@@ -132,34 +135,47 @@ export PATH=/opt/anaconda/bin/:$PATH
 
 cd $OUTDIR
 
-for file in $OUTDIR/PROBAV_S1*.tif; do 
+for file in /data/auxdata/ESA/AOI/RAD/PROBAV_S1*.tif; do 
+#for file in $OUTDIR/PROBAV_S1*.tif; do 
 filename=$(basename $file .tif )
-echo $file >> list_proba.txt
-gdalbuildvrt V2KRNS0210.vrt --optfile list_proba.txt
-gdal_translate V2KRNS0210.vrt V2KRNS0310.tif
+echo $file >> list_proba_RAD.txt
+gdalbuildvrt V2KRNS0210_RAD.vrt --optfile list_proba_RAD.txt
+gdal_translate V2KRNS0210_RAD.vrt V2KRNS0310_RAD.tif
 #gdal_merge.py -ot Int32 -o V2KRNS0210.tif -a_nodata 0 --optfile list_proba.txt
 done
 
-gdalwarp -t_srs '+init=epsg:32662' $OUTDIR/V2KRNS0310.tif $OUTDIR/V2KRNS10.tif
+for file in /data/auxdata/ESA/AOI/NDV/PROBAV_S1*.tif; do 
+#for file in $OUTDIR/PROBAV_S1*.tif; do 
+filename=$(basename $file .tif )
+echo $file >> list_proba_NDV.txt
+gdalbuildvrt V2KRNS0210_NDV.vrt --optfile list_proba_NDV.txt
+gdal_translate V2KRNS0210_NDV.vrt V2KRNS0310_NDV.tif
+#gdal_merge.py -ot Int32 -o V2KRNS0210.tif -a_nodata 0 --optfile list_proba.txt
+done
+
+
+#gdalwarp -t_srs '+init=epsg:32662' $OUTDIR/V2KRNS0310.tif $OUTDIR/V2KRNS10.tif
+gdalwarp -t_srs '+init=epsg:32662' $OUTDIR/V2KRNS0310_NDV.tif $OUTDIR/V2KRNS10_NDV.tif
+gdalwarp -t_srs '+init=epsg:32662' $OUTDIR/V2KRNS0310_RAD.tif $OUTDIR/V2KRNS10_RAD.tif
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: NDVI, NIR, RED
 #-------------------------------------------------------------------------------------# 
 # extract band
 #-------------------------------------------------------------------------------------# 
-for file in $OUTDIR/PROBAV_S1*.tif; do 
-rm $file
-done
+#for file in $OUTDIR/PROBAV_S1*.tif; do 
+#rm $file
+#done
 
-gdal_translate -of Gtiff -b 2 V2KRNS10.tif $OUTDIR/RED001.tif
-gdal_translate -of Gtiff -b 3 V2KRNS10.tif $OUTDIR/NIR001.tif
-gdal_translate -of Gtiff -b 1 V2KRNS10.tif $OUTDIR/NDV001.tif
+gdal_translate -of Gtiff -b 2 V2KRNS10_RAD.tif $OUTDIR/RED001.tif
+gdal_translate -of Gtiff -b 3 V2KRNS10_RAD.tif $OUTDIR/NIR001.tif
+gdal_translate -of Gtiff -b 1 V2KRNS10_NDV.tif $OUTDIR/NDV001.tif
 #-------------------------------------------------------------------------------------# 
 # echo "FASE 1"
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: RESAMPLE_AOI NDVI, NIR, RED
 #-------------------------------------------------------------------------------------#
-export -p Cx001=/data/auxdata/ISD/ISD000/CM001/AOI/AOI_CX/Cx001_32662.txt
+export -p Cx001=/data/auxdata/ISD/ISD000/CM001/AOI/AOI_CX/Cx001_info.txt
 #-------------------------------------------------------------------------------------# 
 for file in $OUTDIR/*001.tif ; do 
 filename=$(basename $file .tif )

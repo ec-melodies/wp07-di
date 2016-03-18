@@ -12,7 +12,7 @@
 #-------------------------------------------------------------------------------------# 
 
 [HARDDATAZ1] 
-DATAFILE  =  /data/auxdata/ISD/ISD000/CM001/AOI/AOI_CX/Cx0111103_2_01.dat # Hard Data file
+DATAFILE  =  /data/auxdata/ISD/ISD000/CM001/AOI/AOI_CX/Cx01111031_01.dat # Hard Data file
 
 COLUMNS   = 4                 # Number of columns in the data file (to eliminate) 
 XCOLUMN   = 1                 # Column number of X coordinate 
@@ -54,16 +54,16 @@ VARCORR   = 1                 # Average correction flag
 #-------------------------------------------------------------------------------------# 
 [GRID] 
 # NX, NY and NZ are the number of blocks per direction  
-NX        =3993
+NX        =3793
 
-NY        =8323
+NY        =4254
 
 NZ        =1
 
 # ORIGX, ORIGY and ORIGZ are the start coordinate for each direction 
-ORIGX     =3339584.724
+ORIGX     =2343728.069
 
-ORIGY     =-3590053.578
+ORIGY     =-3581251.829
 
 ORIGZ     =0.0
 
@@ -88,7 +88,7 @@ FILETYPE = GEOEAS #SGEMS
 #-------------------------------------------------------------------------------------# 
 [SEARCH] 
 NDMIN   = 1                   # Minimum number of original data that should be used to simulate a node 
-NDMAX   = 16                  # Maximum number of original data that should be used to simulate a node 
+NDMAX   = 32                  # Maximum number of original data that should be used to simulate a node 
 NODMAX  = 12                  # Maximum number of previouly simulated nodes to be used to simulate a new node 
 SSTRAT  = 0                   # Two-part search / data nodes flag  
 MULTS   = 0                   # Multiple grid simulation flag  

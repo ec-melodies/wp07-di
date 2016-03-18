@@ -8,22 +8,9 @@
 Lib=/application/lib
 Bin=/application/bin
 #-------------------------------------------------------------------------------------# 
-#JOB=/application/bin/ISD5_node/main.sh
 #-------------------------------------------------------------------------------------# 
 anaconda=/opt/anaconda/bin/
 #-------------------------------------------------------------------------------------# 
-# basepath=/usr/lib64/qt-3.3/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:
-# # define environment variables
-# export GRASS_BATCH_JOB=/application/main.sh
-# export PATH=$PATH:$Bin:$Lib
-# export PYTHONPATH=$Lib
-# export GDAL_DATA=/application/gdal 
-# # run the job
-# grass64 -text /data/GRASSdb_ISD/World/Local/
-# # or
-# # grass70 ~/grassdata/nc_spm_08_grass7/user1 
-# # switch back to interactive mode
-# unset GRASS_BATCH_JOB
 #-------------------------------------------------------------------------------------# 
 # Define parameter path + filename
 export DIR=/data/auxdata/ISD/
@@ -50,7 +37,6 @@ export -p LAND=$INDIR/LANDCOVER
 export -p LAND000=$INDIR/LANDCOVER/LANDCOVER000
 export -p ISDC=$ZDIR/Cx
 export -p ISDD=$ZDIR/Dx
-export -p HDIR=~/wp07-di/src/main/app-resources/bin/ISD5_Nx
 export -p ADIR=$DIR/AOI
 
 export -p CMDIR01=$CMDIR/AOI_CX

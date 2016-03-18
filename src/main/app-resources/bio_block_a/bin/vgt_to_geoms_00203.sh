@@ -22,16 +22,18 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 #bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
+export -p IDIR=/application/
+echo $IDIR
 
 export -p DIR=/data/auxdata/ISD/
 export -p INDIR=$DIR/INPUT
 export -p OUTDIR=$DIR/ISD000/
 export -p Sx001=$OUTDIR/SM001/
 #-------------------------------------------------------------------------------------#
-# Sample
+# Samples
 #-------------------------------------------------------------------------------------#
-export -p CRS32662=/application/parameters/AOI
-export -p C2=/application/parameters/CRS32662_01.txt
+export -p CRS32662=$IDIR/parameters/AOI
+export -p C2=$IDIR/parameters/CRS32662_01.txt
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then

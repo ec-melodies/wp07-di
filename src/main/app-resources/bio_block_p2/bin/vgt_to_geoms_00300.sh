@@ -32,7 +32,7 @@ mkdir -p $LDIR
 export -p CDIR=$OUTDIR/SM001
 export -p VDIR=$OUTDIR/VM001
 export -p ZDIR=$OUTDIR/GEOMS
-export -p HDIR=/application/parameters/
+export -p HDIR=~/wp07-di/src/main/app-resources/parameters/
 export -p LAND001=$OUTDIR/VITO/
 
 export -p ZDIR=$OUTDIR/GEOMS
@@ -299,7 +299,7 @@ echo $ulx1 $uly1 $lrx1 $lry1
 output003=$LDIR/${filename/#Bx00101_/Bx002_}.tif
 output004=$ZDIR/${filename/#Bx00101_/Bx002_}.tif  
 echo $output003 
-gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $input001 $output003
+gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input001 $output003
 cp $output003 $output004 
 done
 

@@ -20,7 +20,11 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
+#bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
+
+export -p IDIR=/application/
+echo $IDIR
 
 export -p DIR=/data/auxdata/ISD/
 export -p INDIR=$DIR/INPUT
@@ -29,10 +33,10 @@ export -p LAND001=$OUTDIR/VITO
 #-------------------------------------------------------------------------------------#
 # Sample
 #-------------------------------------------------------------------------------------#
-export -p CXDIR=/application/bio_input_collecting/bin/
-export -p CRS32662=/application/parameters/
-export -p C2=/application/parameters/CRS32662.txt
-export -p DAOI=/application/parameters/AOI
+export -p CXDIR=$IDIR/bio_input_collecting/bin/
+export -p CRS32662=$IDIR/parameters/
+export -p C2=$IDIR/parameters/CRS32662.txt
+export -p DAOI=$IDIR/parameters/AOI
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do

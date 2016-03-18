@@ -10,15 +10,22 @@
 #-------------------------------------------------------------------------------------# 
 #bash /application/bin/ISD5_node/ini.sh
 export -p PATH=/opt/anaconda/bin/:$PATH 
-export -p AOI=$1
-echo $AOI
-
 export -p OUTDIR=/data/auxdata/ISD/ISD000/VITO; mkdir -p $OUTDIR
+
+export -p IDIR=/application/
+echo $IDIR
+export -p AOIP="$( ciop-getparam AOI)"
+#export -p AOIP=$IDIR/parameters/AOI
+export AOI=$(awk '{ print $1}' $AOIP)
+echo $AOI
 
 #-------------------------------------------------------------------------------------# 
 cd $OUTDIR
 #-------------------------------------------------------------------------------------# 
 # set the environment variables to use ESA BEAM toolbox
+
+export -p IDIR=/application/
+echo $IDIR
 
 export SNAP=/opt/snap-2.0
 export PATH=${SNAP}/bin:${PATH}
@@ -57,9 +64,8 @@ export PATH=${SNAP}/bin:${PATH}
 OUTDIR=/data/auxdata/ISD/ISD000/VITO/
 
 #-------------------------------------------------------------------------------------# 
-while IFS='' read -r line || [[ -n "$line00" ]]; do
-echo $line00
-line = $(ciop-copy -o ./ $line00)
+while IFS='' read -r line || [[ -n "$line" ]]; do
+echo $line
 export -p INSPOT=$line
 export -p filename=$(basename $line .zip)
 echo $filename

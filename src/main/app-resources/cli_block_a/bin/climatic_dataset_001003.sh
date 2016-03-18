@@ -18,8 +18,6 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-
-#bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
 
 export -p DIR=/data/auxdata/ISD/
@@ -29,12 +27,14 @@ export -p C001=$OUTDIR/CM001/AOI/AOI_CX/
 export -p C002=$OUTDIR/CM001/AOI/AOI_CX/C002
 mkdir $C002
 
+export -p IDIR=/application/
+echo $IDIR
 #-------------------------------------------------------------------------------------#
 # Sample
 #-------------------------------------------------------------------------------------#
-export -p CXDIR=/application/cli_block_a/bin
-export -p CRS32662=/application/parameters/
-export -p C2=/application/parameters/CRS32662.txt
+export -p CXDIR=$IDIR/cli_block_a/bin
+export -p CRS32662=$IDIR/parameters/
+export -p C2=$IDIR/parameters/CRS32662.txt
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then
@@ -51,7 +51,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 	else
 		echo "AOI out of range"
 	fi 
-done < "/application/parameters/AOI"
+done < "$IDIR/parameters/AOI"
 #-------------------------------------------------------------------------------------#
 export -p COUNT=0
 while read -r line; do

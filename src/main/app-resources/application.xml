@@ -1,73 +1,35 @@
 <?xml version="1.0" encoding="us-ascii"?>
-<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="application">
-  <!-- WP07-di -->
-  <!-- Clima  -->
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="beam_arithm">
   <jobTemplates>
-    <jobTemplate id="ecmwfapi">
-      <streamingExecutable>/application/cli_block_a/run</streamingExecutable>
-      <defaultParameters>
-    <parameter id="Year">2010</parameter>
-	<parameter id="Area of Interest">AOI4</parameter>
-      </defaultParameters>    
-    </jobTemplate>
-  </jobTemplates> 
-   
-  <jobTemplates>
-    <jobTemplate id="LULC">
+    <jobTemplate id="bio_collecting">
       <streamingExecutable>/application/bio_input_collecting/run</streamingExecutable>
       <defaultParameters>
-        <parameter id="AOI"> ... </parameter>
-      </defaultParameters>    
-    </jobTemplate>
-  </jobTemplates> 
-  
-<!-- Soil and Vegetation -->
-	<jobTemplates>
-		<jobTemplate id="vito">
-		<streamingExecutable>/application/bio_block_p1/run</streamingExecutable>
-		<parameter id="AOI">Cx001</parameter>
-        <parameter id00="y2">2010</parameter>
-
-		</jobTemplate>
-	</jobTemplates>
-  
-  <!-- Vegetation and Soil -->
- <jobTemplates>
-    <jobTemplate id="byph_vx">
-      <streamingExecutable>/application/bio_block_a/run</streamingExecutable>
-    </jobTemplate>
-  </jobTemplates> 
- 
-  <!-- Vegetation and Soil -->
-    <jobTemplates>
-    <jobTemplate id="byph_sx">
-      <streamingExecutable>/application/bio_block_p2/run</streamingExecutable>
+        <parameter id="Year">
+          <options>
+            <option>2000</option>
+            <option>2010</option>
+            <default>2014</default> 
+          </options>
+        </parameter>
+        <parameter id="AOI">
+          <options>
+            <option>AOI1</option>
+            <option>AOI2</option>
+            <option>AOI3</option>   
+            <default>AOI4</default>
+          </options>
+        </parameter>
+      </defaultParameters>
     </jobTemplate>
   </jobTemplates>
-
-   <!-- Collocated  -->
-    <jobTemplates>
-    <jobTemplate id="byph_bx">
-      <streamingExecutable>/application/processing_block_p/run</streamingExecutable>
-    </jobTemplate>
-  </jobTemplates> 
-
-   <!-- Aggregation - ISD -->
-    <jobTemplates>
-    <jobTemplate id="byph_bx">
-      <streamingExecutable>/application/processing_block_a/run</streamingExecutable>
-    </jobTemplate>
-  </jobTemplates> 
-
-     <workflow id="workflow-isd" title="ISD V.1.0" abstract="Basic workflow archetype">
+    <workflow id="bio_collecting" title="Using parameters" abstract="ISD_01, bio_collecting">
     <workflowVersion>1.0</workflowVersion>
-    <node id="node_ecmwfapi01">
-      <job id="ecmwfapi"/>
+    <node id="node_bio_collecting">
+      <job id="bio_collecting"/>
       <sources>
-        <source refid="file:urls"> ... </source>
+        <source refid="file:urls">/data/auxdata/ISD/ISD000/list.txt</source>
       </sources>
     </node>
-  
-    
   </workflow>
 </application>
+

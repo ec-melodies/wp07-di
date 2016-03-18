@@ -1,4 +1,4 @@
-/application/parameters/AOI1.txt
-/application/parameters/AOI2.txt
-/application/parameters/AOI3.txt
-/application/parameters/AOI4.txt
+/home/melodies-ist/wp07-di/src/main/app-resources/bin/ISD5_Nx/AOI1.txt
+/home/melodies-ist/wp07-di/src/main/app-resources/bin/ISD5_Nx/AOI2.txt
+/home/melodies-ist/wp07-di/src/main/app-resources/bin/ISD5_Nx/AOI3.txt
+/home/melodies-ist/wp07-di/src/main/app-resources/bin/ISD5_Nx/AOI4.txt

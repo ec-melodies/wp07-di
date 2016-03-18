@@ -17,7 +17,7 @@
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
 export PATH=/opt/anaconda/bin/:$PATH
-#source ${ciop_job_include}
+source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
@@ -30,12 +30,15 @@ export -p CMDIR=$OUTDIR/CM001/
 export -p CMDIR01=$CMDIR/AOI/AOI_DX/
 export -p ZDIR=$OUTDIR/GEOMS
 export -p C002=$OUTDIR/CM001/AOI/AOI_DX/C002
+
+export -p IDIR=/application/
+echo $IDIR
 #-------------------------------------------------------------------------------------#
 # Sample
 #-------------------------------------------------------------------------------------#
-export -p CXDIR=/application/cli_block_a/bin
-export -p CRS32662=/application/parameters/
-export -p C2=/application/parameters/CRS32662_01.txt
+export -p CXDIR=$IDIR/cli_block_a/bin
+export -p CRS32662=$IDIR/parameters/
+export -p C2=$IDIR/CRS32662_01.txt
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then
@@ -52,14 +55,14 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 	else
 		echo "AOI out of range"
 	fi 
-done < "/application/parameters/AOI"
+done < "$IDIR/parameters/AOI"
 #-------------------------------------------------------------------------------------#
 export -p COUNT=0
 while read -r line; do
 COUNT=$(( $COUNT + 1 ))
 echo $line
 echo $COUNT
-gdal_translate -projwin $line -of GTiff $CMDIR01/Dx001.tif $CMDIR01/Dx001_32662_$COUNT.tif
+#gdal_translate -projwin $line -of GTiff $CMDIR01/Dx001.tif $CMDIR01/Dx001_32662_$COUNT.tif
 done < "$CRS326620"
 #-------------------------------------------------------------------------------------# 
 
@@ -91,9 +94,9 @@ options("scipen"=100, "digits"=4)
 list.files(pattern=".tif$")  
 # create a list from these files
 
-list.filenames <- mixedsort(list.files(pattern=paste("Dx001_32662_",".*\\.tif",sep="")))
+list.filenames <- mixedsort(list.files(pattern=paste("Dx001",".*\\.tif",sep="")))
 list.filenames
-list.filenames02 <- mixedsort(list.files(pattern=paste("Dx001_32662_",".*\\.txt",sep="")))
+list.filenames02 <- mixedsort(list.files(pattern=paste("Dx001",".*\\.txt",sep="")))
 list.filenames02
 
 for (h in 1:length(list.filenames[])){
@@ -106,7 +109,7 @@ dt<-paste(path=CMDIR,'/',list.filenames02[h],sep ="")
 file003<-read.table(dt)
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#
-list.filename = mixedsort(list.files(pattern=paste("Dx001_32662_",h,".*\\.tif",sep="")))
+list.filename = mixedsort(list.files(pattern=paste("Dx001",".*\\.tif",sep="")))
 file<-readGDAL(list.filename)
 
 file005 = as.matrix(file003, nrow = file@grid@cells.dim[1], ncol = file@grid@cells.dim[2])
@@ -135,7 +138,7 @@ write.table(sdf0111103,paste(path=CMDIR,'/' ,'Dx0111103_',h,'.dat',sep = ""),  r
 
 EOF
 #-------------------------------------------------------------------------------------# 
-export -p HDIR=~/wp07-di/src/main/app-resources/parameters/
+export -p HDIR=$IDIR/parameters/
 #-------------------------------------------------------------------------------------#
 for file in $CMDIR01/*.dat; do 
 filename=$(basename $file .dat )

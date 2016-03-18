@@ -21,26 +21,33 @@ export -p ZDIR=$OUTDIR/GEOMS/
 export -p ISDC=$ZDIR/Cx
 export -p ISDD=$ZDIR/Dx
 
+export -p IDIR=/application/
+echo $IDIR
 #-------------------------------------------------------------------------------------# 
 export -p IDIR=/data/auxdata/AOI
-export -p AOIP=/application/parameters/AOI
+export -p AOIP=$IDIR/parameters/AOI
 export AOI=$(awk '{ print $1}' $AOIP)
 echo $AOI
-export -p YR1=/application/parameters/year
+export -p YR1=$IDIR/parameters/year
 export -p Y2="$(cat $YR1)"
 
 #-------------------------------------------------------------------------------------# 
 D=$(date +"%d%m%Y")
 
 
-for file in $ISDC/ISD_Cx001AOI*.tif; do 
+for file in $ISDC/ISD_Cx002MSCAOI*.tif; do 
 filename=$(basename $file .tif )
 isd01=$ISDC/${filename}.tif
-isd02=$ISDD/${filename/#ISD_Cx001AOI/ISD_Dx001AOI}.tif 
-gdal_calc.py -A $isd01 -B $isd02 --outfile=$ZDIR/ISD_${Y2}_${D}_$AOI.tif --calc="((0.5*A)+(0.5*B))" --overwrite --NoDataValue=-9999 --type=Float32 
+isd02=$ISDD/${filename/#ISD_Cx002MSCAOI/ISD_Dx002MSCAOI}.tif 
+gdal_calc.py -A $isd01 -B $isd02 --outfile=$ZDIR/ISD_${Y2}_${D}_$AOI.tif --calc="((0.5*A)+(0.5*B))*10000" --NoDataValue=0 --overwrite  --type=UInt32
+
+# publish the result
+ciop-publish -r $ZDIR/ISD_${Y2}_${D}_$AOI.tif
+
 done
 
-ciop-publish $ZDIR/ISD_${Y}_${D}_AOI.tif
+
+
 
 #-------------------------------------------------------------------------------------#
 echo "DONE"

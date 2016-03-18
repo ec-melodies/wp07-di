@@ -14,7 +14,7 @@
 # maptools
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-# source ${ciop_job_include}
+source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
@@ -27,19 +27,21 @@ export -p ZDIR=$OUTDIR/GEOMS/
 export -p ISDC=$ZDIR/Cx
 export -p ISDD=$ZDIR/Dx
 
-export -p HDIR=/application/processing_block_p/bin/
-export -p HXDIR=/application/parameters/
+export -p IDIR=/application/
+echo $IDIR
+export -p HDIR=$IDIR/processing_block_p/bin/
+export -p HXDIR=$IDIR/parameters/
 
 export -p LDIR=$OUTDIR/COKC
 export -p ADIR=/data/auxdata/AOI
-export -p IR=/application/parameters/AOI
-export -p YR1=/application/parameters/year
+export -p IR=$IDIR/parameters/AOI
+export -p YR1=$IDIR/parameters/year
 export -p Y2="$(cat $YR1)"
 #-------------------------------------------------------------------------------------# 
 # bash $HDIR/vgt_to_geoms_004.sh
 
 cd $ZDIR
-export -p AOIX=/application/parameters/AOI_ISD.txt
+export -p AOIX=/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI_ISD.txt
 
 echo $AOI
 
@@ -75,8 +77,8 @@ mv $ISDC/ISD_Kriging_Variance.out $ISDC/ISD_Kriging_Var_${filename}.out
 mv $ISDC/ISD_Kriging_Mean.out $ISDC/ISD_Kriging_Mean_${filename}.out
 awk 'NR > 3 { print }' $ISDC/ISD_Kriging_Var_${filename}.out > $ISDC/ISDvar_${filename}.txt
 awk 'NR > 3 { print }' $ISDC/ISD_Kriging_Mean_${filename}.out > $ISDC/ISDmean_${filename}.txt
-
 done < "$ZDIR/list_isd_cx.txt"
+
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 # .out file to Gtiff
@@ -178,7 +180,7 @@ EOF
 #-------------------------------------------------------------------------------------#
 export -p ZDIR=$OUTDIR/GEOMS/Cx
 export -p IDIR=/data/auxdata/AOI
-export -p AOIP=~/wp07-di/src/main/app-resources/parameters/AOI
+export -p AOIP=$IDIR/parameters/AOI
 export AOI=$(awk '{ print $1}' $AOIP)
 echo $AOI
 
@@ -220,15 +222,33 @@ list01=assign(paste("isd.sub_",j,sep=""), mask(list00, AOI.sub01))
 writeRaster(list01,filename=paste(SBDIR, "/" ,"ISD_Cx001_00_",AOIP,Y2,j,".tif",sep = ""),format="GTiff",overwrite=TRUE)
 }
 
+
 TPmlist02<-list.files(pattern=paste("ISD_Cx001_00_",".*\\.tif",sep=""))
 TPmlist02
 
 tmp1 <-raster(TPmlist02[1])
 tmp2 <-raster(TPmlist02[2])
+tmp3 <-raster(TPmlist02[3])
+tmp4 <-raster(TPmlist02[4])
 
-TPm_2<-histMatch(tmp1,tmp2)
-rastD6<-mosaic(TPm_2,tmp2, fun=mean)
-writeRaster(rastD6,filename=paste(SBDIR, "/" ,"ISD_Cx001",AOIP,Y2,".tif",sep = ""),format="GTiff",overwrite=TRUE)
+#TPm_1<-histMatch(tmp2,tmp3)
+#TPm_2<-histMatch(tmp1,tmp4)
+#TPm_11<-mosaic(TPm_1,tmp3, fun=max)
+#TPm_21<-mosaic(TPm_2,tmp4, fun=max)
+#TPm_22<-histMatch(TPm_11,TPm_21)
+#rastD6<-mosaic(TPm_22,TPm_21, fun=max)
+#window <-matrix(1,nrow=3,ncol=3)
+#rastD7<-focal(rastD6, w=window, fun=mean)
+
+rastD8<-mosaic(tmp1,tmp2,tmp3,tmp4, fun=max)
+
+AOIP=AOI
+Y2 =Y2
+v1="MSC"
+
+#writeRaster(rastD6,filename=paste(SBDIR, "/" ,"ISD_Cx001",v0,AOIP,Y2,".tif",sep = ""),format="GTiff",datatype='FLT4S',overwrite=TRUE)
+#writeRaster(rastD7,filename=paste(SBDIR, "/" ,"ISD_Cx001",v1,AOIP,Y2,".tif",sep = ""),format="GTiff",datatype='FLT4S',overwrite=TRUE)
+writeRaster(rastD8,filename=paste(SBDIR, "/" ,"ISD_Cx002",v1,AOIP,Y2,".tif",sep = ""),format="GTiff",datatype='FLT4S',overwrite=TRUE)
 
 EOF
 

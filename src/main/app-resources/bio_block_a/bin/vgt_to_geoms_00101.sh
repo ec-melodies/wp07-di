@@ -16,14 +16,16 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-# source ${ciop_job_include}
+source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-# # bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
 export -p DIR=/data/auxdata/ISD/
 export -p INDIR=$DIR/INPUT
+
+export -p IDIR=/application/
+echo $IDIR
 
 export -p OUTDIR=$DIR/ISD000
 export -p LAND001=$OUTDIR/VITO/
@@ -31,6 +33,10 @@ export -p VDIR=$OUTDIR/VM001
 export -p NVDIR=$OUTDIR/VM001/class_NDV001/
 
 export PATH=/opt/anaconda/bin/:$PATH
+
+export -p VDIR=$OUTDIR/VM001
+export -p NVDIR=$OUTDIR/VM001/class_NDV001/ndv_mosaic
+export -p ISD5_Nx=$IDIR/parameters/
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
 cd $OUTDIR/VM001/class_NDV001
@@ -57,11 +63,6 @@ gdal_translate ndv_mosaic/NDV_Mosaic_${filename}.vrt ndv_mosaic/NDV_Mosaic2_${fi
 done
 
 #-------------------------------------------------------------------------------------#
-
-export -p VDIR=$OUTDIR/VM001
-export -p NVDIR=$OUTDIR/VM001/class_NDV001/ndv_mosaic
-export -p ISD5_Nx=~/wp07-di/src/main/app-resources/parameters/
-
 #-------------------------------------------------------------------------------------#
 R --vanilla --no-readline   -q  <<'EOF'
 
@@ -205,6 +206,7 @@ EOF
 #-------------------------------------------------------------------------------------#
 R --vanilla --no-readline   -q  <<'EOF'
 
+#overlay()
 # set working directory
 INDIR = Sys.getenv(c('NVDIR'))
 OUTDIR = Sys.getenv(c('ISD5_Nx'))
@@ -226,19 +228,23 @@ list.files(pattern=".tif$")
 list.filenames=assign(paste("list.filenames",sep=""),list.files(pattern=paste("NrHSLS_NDV_",".*\\.tif",sep="")))
 list.filenames
 # load raster data 
+
+
 rstack001<-stack(raster(list.filenames[1]),
 raster(list.filenames[2]),raster(list.filenames[3]),raster(list.filenames[4]),
 raster(list.filenames[5]),raster(list.filenames[6]),raster(list.filenames[7]),
 raster(list.filenames[8]),raster(list.filenames[9]),raster(list.filenames[10]),
 raster(list.filenames[11]))
-rastD6<-sum(rstack001, na.rm=TRUE)
+
+rastD6<-max(rstack001, na.rm=TRUE)
+
 summary(rastD6)
 writeRaster(rastD6, filename=paste("Vx001_",".tif", sep=""), format="GTiff", overwrite=TRUE, na.rm=TRUE)
 #}
 #-------------------------------------------------------------------------------------# 
 # here we publish the results
 #-------------------------------------------------------------------------------------# 
-Vx001 <- rciop.publish(rastD6, recursive=FALSE, metalink=TRUE)
+# Vx001 <- rciop.publish(rastD6, recursive=FALSE, metalink=TRUE)
 EOF
 
 cp $NVDIR/Vx001_.tif $VDIR/Vx001_.tif
@@ -248,3 +254,4 @@ today=$(date)
 echo "The date and time are: " $today
 #-------------------------------------------------------------------------------------# 
 echo "DONE"
+echo 0

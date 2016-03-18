@@ -16,7 +16,7 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-# source ${ciop_job_include}
+source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
@@ -33,10 +33,12 @@ export -p NVDIR=$OUTDIR/VM001/class_NDV001/
 export PATH=/opt/anaconda/bin/:$PATH
 
 #-------------------------------------------------------------------------------------#
+#?input001=$1
+#?input002=$2
 #-------------------------------------------------------------------------------------#
 # JOB# resample LULC para o mesmo pixel scale do target (SPOT or PROBA-V)
 
-export -p Cx001=/data/auxdata/ISD/ISD000/CM001/AOI/AOI_CX/Cx001.txt
+export -p Cx001=$OUTDIR/CM001/AOI/AOI_CX/Cx001.txt
 #-------------------------------------------------------------------------------------#
 
 for file in $LAND001/NDV001_01_crop*.tif; do 
@@ -59,7 +61,7 @@ for file in $LAND001/NDV001_02_crop*.tif; do
 filename=$(basename $file .tif )
 input001=$LAND001/${filename}.tif
 output003=$LAND001/${filename/#NDV001_02_crop/NDV02_001_crop}.tif 
-gdal_calc.py -A $input001 --outfile=$output003 --calc="(((A*0.004)-0.08)*10000.0)" --overwrite --NoDataValue=255 --type=Int32 
+gdal_calc.py -A $input001 --outfile=$output003 --calc="(((A*0.004)-0.08)*10000.0)" --overwrite --NoDataValue=255 --type=Float64 
 done
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
@@ -157,7 +159,7 @@ echo $input002
 for i in {2,3,4,5,6,7}; do
 output003=$NVDIR/${filename/#NDV02_001_crop/LANDC01_1}_0$i.tif   
 echo $output003
-gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="((B==$i)*(A))" --NoDataValue=0 --overwrite --type=Int32; 
+gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="((B==$i)*(A))" --NoDataValue=0 --overwrite --type=Float64; 
 done
 done
 
@@ -172,7 +174,7 @@ h=$((h+1))
 echo $input001 $input002
 for i in 1; do  
 output003=$NVDIR/${filename/#NDV02_001_crop/LANDC01_1}_0$i.tif  
-gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A*0+5000)" --NoDataValue=0 --overwrite --type=Int32; 
+gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A*0+5000)" --NoDataValue=0 --overwrite --type=Float64; 
 done
 done
 
@@ -186,7 +188,7 @@ h=$((h+1))
 echo $input001 $input002
 for i in {8,9}; do 
 output003=$NVDIR/${filename/#NDV02_001_crop/Nr_LANDC01_1}_0$i.tif  
-gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A*0+10000)" --NoDataValue=0 --overwrite --type=Int32; 
+gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A*0+10000)" --NoDataValue=0 --overwrite --type=Float64; 
 done
 done
 
@@ -200,7 +202,7 @@ h=$((h+1))
 echo $input001 $input002
 for i in {10,11}; do
 output003=$NVDIR/${filename/#NDV02_001_crop/Nr_LANDC01_1}_$i.tif    
-gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A*0+1)" --NoDataValue=0 --overwrite --type=Int32; 
+gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A*0+1)" --NoDataValue=0 --overwrite --type=Float64; 
 done
 done
 
