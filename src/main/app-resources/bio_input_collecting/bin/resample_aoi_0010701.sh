@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------------------------------# 
-# PURPOSE: Translate HDF to GTiff for EPSG: 4326 (PROBA_V)
+# PURPOSE: Translate HDF to GTiff (PROBA_V)
 #-------------------------------------------------------------------------------------# 
 # Requires:
 # gdal_translate
@@ -12,7 +12,8 @@ export -p PATH=/opt/anaconda/bin/:$PATH
 export -p IDIR=/application/
 echo $IDIR
 
-export -p AOIP=$IDIR/parameters/AOI
+#export -p AOIP=$IDIR/parameters/AOI
+export -p AOIP="$( ciop-getparam AOI)"
 export AOI=$(awk '{ print $1}' $AOIP)
 echo $AOI
 
@@ -45,10 +46,7 @@ else
 	echo "AOI out of range in idcx"
 fi 
 
-#POLYGON=$(echo 17.592308044433594 -3.8307693004608154, 42.46923065185547 -3.8307693004608154, 42.46923065185547 -32.85384750366211, 17.592308044433594 -32.85384750366211, 17.592308044433594 -3.8307693004608154)   
-
 echo $POLYGON
-#cat $1
 
 #-------------------------------------------------------------------------------------# 
 cd $OUTDIR
@@ -127,7 +125,7 @@ EOF`
 echo $subset_aoi_probav > $OUTDIR/subset_aoi_probav.xml
 echo $subset_aoi_probav
 
-#gpt $OUTDIR/subset_aoi_probav.xml  -Ssource=$line -f GeoTIFF -t $OUTSPOT
+#gpt $OUTDIR/subset_aoi_probav.xml  -Ssource=$(ciop-copy -o $line) -f GeoTIFF -t $OUTSPOT
 done < "/data/auxdata/ISD/ISD000/list.txt"
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 

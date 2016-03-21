@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------------------------------# 
-# PURPOSE: Translate HDF to GTiff for EPSG: 4326 (SPOT)
+# PURPOSE: Translate HDF to GTiff (SPOT)
 #-------------------------------------------------------------------------------------# 
 # Requires:
 # gdal_translate
@@ -14,8 +14,9 @@ export -p OUTDIR=/data/auxdata/ISD/ISD000/VITO; mkdir -p $OUTDIR
 
 export -p IDIR=/application/
 echo $IDIR
-export -p AOIP="$( ciop-getparam AOI)"
+
 #export -p AOIP=$IDIR/parameters/AOI
+export -p AOIP="$( ciop-getparam AOI)"
 export AOI=$(awk '{ print $1}' $AOIP)
 echo $AOI
 
@@ -48,10 +49,7 @@ else
 	echo "AOI out of range in idcx"
 fi 
 
-#POLYGON=$(echo 20.590909957885742 44.335662841796875, 45.89160919189453 44.335662841796875, 45.89160919189453 33.38461685180664, 20.590909957885742 33.38461685180664, 20.590909957885742 44.335662841796875)
 echo $POLYGON
-#cat $1
-
 
 #-------------------------------------------------------------------------------------# 
 # set the environment variables to use ESA BEAM toolbox
@@ -128,7 +126,7 @@ EOF`
 echo $subset_aoi > $OUTDIR/subset_aoi.xml
 echo $subset_aoi
 
-gpt $OUTDIR/subset_aoi.xml  -Ssource=$line -f GeoTIFF -t $OUTSPOT
+gpt $OUTDIR/subset_aoi.xml  -Ssource=$(ciop-copy -o $line) -f GeoTIFF -t $OUTSPOT
 done < "/data/auxdata/ISD/ISD000/list.txt"
 
 cd $OUTDIR

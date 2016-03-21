@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: run file for bio_block
 #-------------------------------------------------------------------------------------# 
@@ -11,7 +11,7 @@ echo $IDIR
 
 export -p IXDIR=$IDIR/bio_input_collecting/bin/
 #export -p IR=$IDIR/parameters/AOI
-export -p IR="$( ciop-getparam AOI)"
+IR="$( ciop-getparam AOI)"
 
 export -p YR=$IDIR/parameters/LULC
 export -p DIR=/data/auxdata/ISD/ISD000/
@@ -19,17 +19,22 @@ export -p INP2=$IDIR/parameters/vito
 export -p ex=$IDIR/parameters/LULC
 
 #export -p YR1=$IDIR/parameters/year
-export -p YR1="$( ciop-getparam Year)"
+YR1="$( ciop-getparam Year)"
 
 export -p Y2="$(cat $YR1)"
 #-------------------------------------------------------------------------------------# 
 
 
-function igcx(){
+function igcx1(){
 exec $IXDIR"resample_aoi_0010100.sh" &
 wait
-exec $IXDIR"resample_aoi_0010300.sh" &
-wait
+exec $IXDIR"resample_aoi_0010300.sh"
+}
+
+igcx1
+
+function igcx(){
+
 exec $IXDIR"resample_aoi_0010701.sh" $1 &
 wait
 exec $IXDIR"resample_aoi_0010900.sh"
@@ -86,11 +91,8 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 done < "$IR"
 }
 
+
 function igcxs(){
-exec $IXDIR"resample_aoi_0010100.sh" &
-wait
-exec $IXDIR"resample_aoi_0010300.sh" &
-wait
 exec $IXDIR"resample_aoi_0010700.sh" $1 &
 wait
 exec $IXDIR"resample_aoi_0010900.sh"

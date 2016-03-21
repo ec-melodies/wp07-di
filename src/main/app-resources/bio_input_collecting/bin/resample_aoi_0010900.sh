@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: LANDCOVER
 #-------------------------------------------------------------------------------------# 
@@ -36,7 +36,9 @@ export -p LAND001=$OUTDIR/VITO
 export -p CXDIR=$IDIR/bio_input_collecting/bin/
 export -p CRS32662=$IDIR/parameters/
 export -p C2=$IDIR/parameters/CRS32662.txt
-export -p DAOI=$IDIR/parameters/AOI
+#export -p DAOI=$IDIR/parameters/AOI
+export -p DAOI="$( ciop-getparam AOI)"
+
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: LANDCOVER
 #-------------------------------------------------------------------------------------# 
@@ -13,14 +13,13 @@
 # raster
 # sp
 # maptools
-# rciop
+
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
 source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-#bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
 
 export -p IDIR=/application/
@@ -28,12 +27,15 @@ echo $IDIR
 
 export -p DIR=/data/auxdata/ISD/
 export -p INDIR=$DIR/INPUT
-export -p OUTDIR=$DIR/ISD000/
+export -p OUTDIR=$DIR/ISD000
 export -p LAND001=$OUTDIR/VITO
 #-------------------------------------------------------------------------------------#
 # Sample
 #-------------------------------------------------------------------------------------#
-export -p CRS32662="$( ciop-getparam AOI)"
+
+#export -p CRS32662=$IDIR/parameters/AOI
+CRS32662="$( ciop-getparam AOI)"
+
 export -p C2=$IDIR/parameters/CRS32662.txt
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
