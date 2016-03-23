@@ -1,24 +1,11 @@
 <?xml version="1.0" encoding="us-ascii"?>
-<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="beam_arithm">
-  <jobTemplates>
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="ISD">
+<jobTemplates>
     <jobTemplate id="bio_collecting">
       <streamingExecutable>/application/bio_input_collecting/run</streamingExecutable>
       <defaultParameters>
-        <parameter id="Year">
-          <options>
-            <option>2000</option>
-            <option>2010</option>
-            <default>2014</default> 
-          </options>
-        </parameter>
-        <parameter id="AOI">
-          <options>
-            <option>AOI1</option>
-            <option>AOI2</option>
-            <option>AOI3</option>   
-            <default>AOI4</default>
-          </options>
-        </parameter>
+        <parameter id="Year">2014</parameter>
+        <parameter id="AOI">AOI3</parameter>
       </defaultParameters>
     </jobTemplate>
   </jobTemplates>
@@ -27,9 +14,11 @@
     <node id="node_bio_collecting">
       <job id="bio_collecting"/>
       <sources>
-        <source refid="file:urls">/data/auxdata/ISD/ISD000/list.txt</source>
+        <source refid="string:list">/data/auxdata/ISD/ISD000/list.txt</source>
       </sources>
+      <parameters/>
     </node>
   </workflow>
 </application>
+
 
