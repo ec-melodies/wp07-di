@@ -1,0 +1,5 @@
+/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI1_32662.txt
+/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI2_32662.txt
+/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI3_32662.txt
+/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI4_32662.txt
+

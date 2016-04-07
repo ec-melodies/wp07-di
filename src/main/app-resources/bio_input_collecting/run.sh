@@ -6,24 +6,25 @@
 # source the ciop functions (e.g. ciop-log)
 source ${ciop_job_include}
 
-export -p IDIR=/application/
-echo $IDIR
+ciop-log "INFO" "START: Bio_input_collecting" 
+
+export -p IDIR=/application
+echo "path ~bin:" $IDIR
 
 export -p IXDIR=$IDIR/bio_input_collecting/bin/
-#export -p IR=$IDIR/parameters/AOI
-IR="$( ciop-getparam AOI)"
-
 export -p YR=$IDIR/parameters/LULC
-export -p DIR=/data/auxdata/ISD/ISD000/
+
+export -p DIR=$TMPDIR/data/outDIR/ISD
+#export -p DIR=/data/outDIR/ISD
 export -p INP2=$IDIR/parameters/vito
-export -p ex=$IDIR/parameters/LULC
 
-#export -p YR1=$IDIR/parameters/year
-YR1="$( ciop-getparam Year)"
+IR="$( ciop-getparam aoi )"
+ciop-log "AOI: $IR"
 
-export -p Y2="$(cat $YR1)"
+export -p Y2=$1
+ciop-log "Year: $Y2"
 #-------------------------------------------------------------------------------------# 
-
+ciop-log "INFO" "Step00: Bio_input_collecting" 
 
 function igcx1(){
 exec $IXDIR"resample_aoi_0010100.sh" &
@@ -33,11 +34,13 @@ exec $IXDIR"resample_aoi_0010300.sh"
 
 igcx1
 
+ciop-log "INFO" "Step01: Bio_input_collecting" 
+
 function igcx(){
 
-exec $IXDIR"resample_aoi_0010701.sh" $1 &
+exec $IXDIR"resample_aoi_0010701.sh" $Y2 &
 wait
-exec $IXDIR"resample_aoi_0010900.sh"
+exec $IXDIR"resample_aoi_0010900.sh" $Y2
 }
 
 function probav(){
@@ -91,11 +94,12 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 done < "$IR"
 }
 
+ciop-log "INFO" "Step02: Bio_input_collecting" 
 
 function igcxs(){
-exec $IXDIR"resample_aoi_0010700.sh" $1 &
+exec $IXDIR"resample_aoi_0010700.sh" $Y2 &
 wait
-exec $IXDIR"resample_aoi_0010900.sh"
+exec $IXDIR"resample_aoi_0010900.sh" $Y2
 }
 
 function spot_v(){

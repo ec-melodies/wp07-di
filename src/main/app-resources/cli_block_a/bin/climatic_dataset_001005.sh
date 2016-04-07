@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: C(x)
 #-------------------------------------------------------------------------------------# 
@@ -21,13 +21,13 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-# bash /application/bin/ISD5_node/ini.sh
-export -p DIR=/data/auxdata/ISD/
 export PATH=/opt/anaconda/bin/:$PATH
-export -p INDIR=/data/INPUT/
-export -p OUTDIR=$DIR/ISD000/
-export -p CMDIR=$OUTDIR/CM001/
-export -p CMDIR01=$CMDIR/AOI/AOI_CX/
+
+export -p DIR=$TMPDIR/data/outDIR/ISD
+#export -p DIR=/data/outDIR/ISD
+export -p OUTDIR=$DIR/ISD000
+export -p CMDIR=$OUTDIR/CM001
+export -p CMDIR01=$CMDIR/AOI/AOI_CX
 export -p ZDIR=$OUTDIR/GEOMS
 
 export -p IDIR=/application/
@@ -37,14 +37,14 @@ echo $IDIR
 #-------------------------------------------------------------------------------------#
 export -p CXDIR=$IDIR/cli_block_a/bin
 export -p CRS32662=$IDIR/parameters/
-export -p C2=$IDIR/parameters/CRS32662_01.txt
+export -p C2=$IDIR/CRS32662_01.txt
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ "$line" == AOI1 ]] ; then
-		export -p CRS326620=$(grep AOI1_32662.txt $C2);
+		export -p CRS326620=$(grep AOI1_32662_01.txt $C2);
 
 	elif [[ "$line" == AOI2 ]] ; then
-		export -p CRS326620=$(grep AOI2_32662.txt $C2);
+		export -p CRS326620=$(grep AOI2_32662_01.txt $C2);
 
 	elif [[ "$line" == AOI3 ]] ; then
 		export -p CRS326620=$(grep AOI3_32662_01.txt $C2);
@@ -81,12 +81,11 @@ setwd(CMDIR)
 getwd()
 
 # load the package
-require("zoo")
-require("rgdal")
-require("raster")
-require("sp")
-require("rciop")
-require("gtools")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
+new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+lapply(xlist, require, character.only = TRUE)
 
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
@@ -136,7 +135,7 @@ xy01<-cbind(x,y)
 sdf0111103 <-cbind(xy01,z,sdf003$values)
 write.table(sdf0111103,paste(path=CMDIR,'/' ,'Cx0111103',h,'.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
 }
-
+rciop.publish(paste(CMDIR,"sdf0111103", sep="/"), recursive=FALSE, metalink=TRUE)
 EOF
 #-------------------------------------------------------------------------------------# 
 export -p HDIR=$IDIR/parameters/
@@ -151,8 +150,9 @@ sed -i -e 's/^/ /' $CMDIR01/${filename}_01.dat
 #To convert the line endings in a text file from UNIX to DOS format (LF to CRLF)
 sed -i 's/$/\r/' $CMDIR01/${filename}_01.dat
 cp $CMDIR01/${filename}_01.dat $ZDIR/${filename}_001.dat
-done 
 
+ciop-publish -m $ZDIR/${filename}_001.dat
+done 
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 echo "DONE"

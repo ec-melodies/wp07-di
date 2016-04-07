@@ -22,10 +22,11 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 export PATH=/opt/anaconda/bin/:$PATH
 
-export -p IDIR=/application/
+export -p IDIR=/application
 echo $IDIR
 
-export -p DIR=/data/auxdata/ISD/
+export -p DIR=$TMPDIR/data/outDIR/ISD
+#export -p DIR=/data/outDIR/ISD
 export -p INDIR=$DIR/INPUT
 export -p OUTDIR=$DIR/ISD000
 export -p LAND001=$OUTDIR/VITO
@@ -33,27 +34,29 @@ export -p LAND001=$OUTDIR/VITO
 # Sample
 #-------------------------------------------------------------------------------------#
 
-#export -p CRS32662=$IDIR/parameters/AOI
-CRS32662="$( ciop-getparam AOI)"
+
+CRS32662="$( ciop-getparam aoi )"
+echo $CRS32662
 
 export -p C2=$IDIR/parameters/CRS32662.txt
+export -p C1=$(cat IDIR/parameters/CRS32662.txt ); echo "$C1"
+
+#-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
-while IFS='' read -r line || [[ -n "$line" ]]; do
-	if [[ "$line" == AOI1 ]] ; then
-		export -p CRS326620=$(grep AOI1 $C2);
+if [[ $CRS32662 == AOI1 ]] ; then
+	export -p CRS326620=$(grep AOI1 $C2);
 
-	elif [[ "$line" == AOI2 ]] ; then
-		export -p CRS326620=$(grep AOI2 $C2);
+elif [[ $CRS32662 == AOI2 ]] ; then
+	export -p CRS326620=$(grep AOI2 $C2);
 
-	elif [[ "$line" == AOI3 ]] ; then
-		export -p CRS326620=$(grep AOI3 $C2);
+elif [[ $CRS32662 == AOI3 ]] ; then
+	export -p CRS326620=$(grep AOI3 $C2);
 
-	elif [[ "$line" == AOI4 ]] ; then 
-		export -p CRS326620=$(grep AOI4 $C2);
-	else
-		echo "AOI out of range"
-	fi 
-done < "$CRS32662"
+elif [[ $CRS32662 == AOI4 ]] ; then 
+	export -p CRS326620=$(grep AOI4 $C2);
+else
+	echo "AOI out of range"
+fi 
 
 #-------------------------------------------------------------------------------------#
 export -p COUNT=0
@@ -67,5 +70,6 @@ done < $CRS326620
 #-------------------------------------------------------------------------------------#
 echo "DONE"
 echo 0
+
 
 
