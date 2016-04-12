@@ -1,16 +1,12 @@
-#The Biophysical Indicator of Susceptibility to Drought
+#The Indicator of biophysical susceptibility to drought 
 
-The Biophysical Indicator of Susceptibility to Drought is a geographic map
-representing the susceptibility to desertification of the covered areas with a range
-between 0 and 1. The higher values correspond to places whose history indicates a
-dynamic drift towards the advancement of desertification processes.
+The Biophysical Indicator of Susceptibility to Drought is a geographic map representing the susceptibility to desertification of the covered areas with a range between 0 and 1. The higher values correspond to places whose history indicates a dynamic drift towards the advancement of desertification processes.
 
 This indicator is comprised of two fundamental components:
 
 Climate
 - Static component, which refers to the mean number of droughts over a period of 20 years.
-- Dynamic component, which refers to the trend of droughts over a 10
-years period.
+- Dynamic component, which refers to the trend of droughts over a 10 years period.
 
 Biophysical Factors
 - Vegetation, which refers to the relative status of the vegetation in specific Land Cover classes.
