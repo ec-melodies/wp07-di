@@ -1,6 +1,6 @@
-#The Indicator of biophysical susceptibility to drought 
+#The Indicator of Biophysical Susceptibility to Drought 
 
-The Biophysical Indicator of Susceptibility to Drought is a geographic map representing the susceptibility to desertification of the covered areas with a range between 0 and 1. The higher values correspond to places whose history indicates a dynamic drift towards the advancement of desertification processes.
+The Indicator of Biophysical Susceptibility to Drought is a geographic map representing the susceptibility to desertification of the covered areas with a range between 0 and 1. The higher values correspond to places whose history indicates a dynamic drift towards the advancement of desertification processes.
 
 This indicator is comprised of two fundamental components:
 
