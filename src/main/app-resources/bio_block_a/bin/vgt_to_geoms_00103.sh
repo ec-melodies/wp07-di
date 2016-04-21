@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: LANDCOVER
 #-------------------------------------------------------------------------------------# 
@@ -16,26 +16,26 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-# source ${ciop_job_include}
+source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-#bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
-export -p IDIR=/application/
-echo $IDIR
-
-export -p DIR=$TMPDIR/data/outDIR/ISD
-export -p INDIR=$DIR/INPUT
-export -p OUTDIR=$DIR/ISD000/
-export -p Vx001=$OUTDIR/VM001/
+export -p IDIR=/application
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
+export -p OUTDIR=$DIR/ISD000
+export -p VDIR=$OUTDIR/VM001
 #-------------------------------------------------------------------------------------#
 # Samples
 #-------------------------------------------------------------------------------------#
-CRS32662="$( ciop-getparam aoi )"
+export -p CRS32662=$2
 echo $CRS32662
+#Year
+export -p Y2=$1
+echo $Y2
 
-export -p C2=$IDIR/parameters/CRS32662.txt
+export -p C2=$IDIR/parameters/CRS32662_01.txt
 export -p C1=$(cat IDIR/parameters/CRS32662.txt ); echo "$C1"
 #-------------------------------------------------------------------------------------# 
 if [[ $CRS32662 == AOI1 ]] ; then
@@ -55,7 +55,7 @@ fi
 
 #-------------------------------------------------------------------------------------#
 
-for file in $Vx001/*01_.tif ; do
+for file in $VDIR/*01_.tif ; do
 export -p COUNT=0
 filename=$(basename $file .tif )
 # Get the same boundary information_globcover
@@ -63,10 +63,10 @@ while read -r line; do
 COUNT=$(( $COUNT + 1 ))
 echo $line
 echo $COUNT
-gdal_translate -projwin $line -of GTiff $Vx001/${filename}.tif  $Vx001/${filename}_crop_$COUNT.tif 
+gdal_translate -projwin $line -of GTiff $VDIR/${filename}.tif  $VDIR/${filename}_crop_$COUNT.tif 
 done < $CRS326620
 done
-
+ciop-log "INFO" "vgt_to_geoms_00103.sh"
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#
 exit 0

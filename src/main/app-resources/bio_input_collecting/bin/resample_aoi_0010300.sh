@@ -13,7 +13,6 @@
 # raster
 # sp
 # maptools
-
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
 source ${ciop_job_include}
@@ -21,26 +20,18 @@ source ${ciop_job_include}
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
 export PATH=/opt/anaconda/bin/:$PATH
-
-export -p IDIR=/application
-echo $IDIR
-
-export -p DIR=$TMPDIR/data/outDIR/ISD
-#export -p DIR=/data/outDIR/ISD
-export -p INDIR=$DIR/INPUT
+export -p IDIR=/application/
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
 export -p OUTDIR=$DIR/ISD000
-export -p LAND001=$OUTDIR/VITO
-#-------------------------------------------------------------------------------------#
-# Sample
-#-------------------------------------------------------------------------------------#
-
+export -p VITO=$OUTDIR/VITO
 
 CRS32662="$( ciop-getparam aoi )"
 echo $CRS32662
 
 export -p C2=$IDIR/parameters/CRS32662.txt
-export -p C1=$(cat IDIR/parameters/CRS32662.txt ); echo "$C1"
-
+echo "$(cat $IDIR/parameters/CRS32662.txt )"
+#-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
 if [[ $CRS32662 == AOI1 ]] ; then
@@ -64,7 +55,9 @@ while read -r line; do
 COUNT=$(( $COUNT + 1 ))
 echo $line
 echo $COUNT
-gdal_translate -projwin $line -of GTiff $LAND001/GLOBCOVER_01.tif $LAND001/GLOBCOVER_01_crop_$COUNT.tif
+gdal_translate -projwin $line -of GTiff $VITO/GLOBCOVER_01.tif $VITO/GLOBCOVER_01_crop_$COUNT.tif
+
+ciop-log "INFO" "Retrieving: $VITO/GLOBCOVER_01_crop_$COUNT.tif"
 done < $CRS326620
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#

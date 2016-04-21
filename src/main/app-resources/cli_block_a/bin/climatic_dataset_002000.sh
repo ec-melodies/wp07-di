@@ -16,19 +16,16 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-#source ${ciop_job_include}
+source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-export -p DIR=$TMPDIR/data/outDIR/ISD
-#export -p DIR=/data/outDIR/ISD
-export -p OUTDIR=$DIR/ISD000
-
 export PATH=/opt/anaconda/bin/:$PATH
-
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
+export -p OUTDIR=$DIR/ISD000
 export -p CMDIR=$OUTDIR/CM001
 export -p CMDIR02=$CMDIR/AOI/AOI_DX
-export PATH=/opt/anaconda/bin/:$PATH
 export -p ZDIR=$OUTDIR/GEOMS
 
 #-------------------------------------------------------------------------------------# 

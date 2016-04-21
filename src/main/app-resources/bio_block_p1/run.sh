@@ -7,8 +7,6 @@
 source ${ciop_job_include}
 
 export -p IDIR=/application
-echo $IDIR
-
 export -p IXDIR=$IDIR/bio_block_p1/bin/
 #-------------------------------------------------------------------------------------# 
 # JOB 1
@@ -20,12 +18,14 @@ exec $IXDIR"resample_aoi_00105.sh" &
 wait
 exec $IXDIR"vgt_to_geoms_00100.sh" & 
 wait
-exec $IXDIR"vgt_to_geoms_00200.sh" & 
-wait
-exec $IXDIR"vgt_to_geoms_00400.sh" 
+exec $IXDIR"vgt_to_geoms_00200.sh" 
 }
 #-------------------------------------------------------------------------------------# 
 icx
 #-------------------------------------------------------------------------------------# 
+ciop-log "INFO" "Step01: AGGREGATION" 
+
+ciop-log "INFO" "run_p1.sh"
+
 echo "AGGREGATION.................1"
 echo 0

@@ -21,50 +21,45 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-export -p DIR=$TMPDIR/data/outDIR/ISD
-#export -p DIR=/data/outDIR/ISD
-export -p OUTDIR=$DIR/ISD000
-
 export PATH=/opt/anaconda/bin/:$PATH
-
-export -p CMDIR=$OUTDIR/CM001
-export -p CMDIR01=$CMDIR/AOI/AOI_DX/
-export -p ZDIR=$OUTDIR/GEOMS
-export -p C002=$OUTDIR/CM001/AOI/AOI_DX/C002
-
 export -p IDIR=/application/
-echo $IDIR
-#-------------------------------------------------------------------------------------#
-# Sample
-#-------------------------------------------------------------------------------------#
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
+export -p OUTDIR=$DIR/ISD000
+export -p CMDIR=$OUTDIR/CM001
+export -p CMDIR01=$CMDIR/AOI/AOI_DX
+export -p ZDIR=$OUTDIR/GEOMS
 export -p CXDIR=$IDIR/cli_block_a/bin
 export -p CRS32662=$IDIR/parameters/
 export -p C2=$IDIR/CRS32662_01.txt
-#-------------------------------------------------------------------------------------# 
-while IFS='' read -r line || [[ -n "$line" ]]; do
-	if [[ "$line" == AOI1 ]] ; then
-		export -p CRS326620=$(grep AOI1_32662_01.txt $C2);
-
-	elif [[ "$line" == AOI2 ]] ; then
-		export -p CRS326620=$(grep AOI2_32662_01.txt $C2);
-
-	elif [[ "$line" == AOI3 ]] ; then
-		export -p CRS326620=$(grep AOI3_32662_01.txt $C2);
-
-	elif [[ "$line" == AOI4 ]] ; then 
-		export -p CRS326620=$(grep AOI4_32662_01.txt $C2);
-	else
-		echo "AOI out of range"
-	fi 
-done < "$IDIR/parameters/AOI"
 #-------------------------------------------------------------------------------------#
-export -p COUNT=0
-while read -r line; do
-COUNT=$(( $COUNT + 1 ))
-echo $line
-echo $COUNT
+# Sample
+#-------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------# 
+#while IFS='' read -r line || [[ -n "$line" ]]; do
+#	if [[ "$line" == AOI1 ]] ; then
+#		export -p CRS326620=$(grep AOI1_32662_01.txt $C2);
+#
+#	elif [[ "$line" == AOI2 ]] ; then
+#		export -p CRS326620=$(grep AOI2_32662_01.txt $C2);
+#
+#	elif [[ "$line" == AOI3 ]] ; then
+#		export -p CRS326620=$(grep AOI3_32662_01.txt $C2);
+#
+#	elif [[ "$line" == AOI4 ]] ; then 
+#		export -p CRS326620=$(grep AOI4_32662_01.txt $C2);
+#	else
+#		echo "AOI out of range"
+#	fi 
+#done < "$IDIR/parameters/AOI"
+#-------------------------------------------------------------------------------------#
+#export -p COUNT=0
+#while read -r line; do
+#COUNT=$(( $COUNT + 1 ))
+#echo $line
+#echo $COUNT
 #gdal_translate -projwin $line -of GTiff $CMDIR01/Dx001.tif $CMDIR01/Dx001_32662_$COUNT.tif
-done < "$CRS326620"
+#done < "$CRS326620"
 #-------------------------------------------------------------------------------------# 
 
 for file in $CMDIR01/*.tif ; do 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: LANDCOVER
 #-------------------------------------------------------------------------------------# 
@@ -20,41 +20,40 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-#bash /application/bin/ISD5_node/ini.sh
 export PATH=/opt/anaconda/bin/:$PATH
 export -p IDIR=/application
-echo $IDIR
-
-export -p DIR=$TMPDIR/data/outDIR/ISD
-export -p INDIR=$DIR/INPUT
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
 export -p OUTDIR=$DIR/ISD000
-export -p Sx001=$OUTDIR/SM001
+export -p CDIR=$OUTDIR/SM001
 #-------------------------------------------------------------------------------------#
-# Samples
-#-------------------------------------------------------------------------------------#
-export -p CRS32662=$IDIR/parameters/AOI
+export -p CRS32662=$2
+echo $CRS32662
+#Year
+export -p Y2=$1
+echo $Y2
+
 export -p C2=$IDIR/parameters/CRS32662_01.txt
+export -p C1=$(cat IDIR/parameters/CRS32662_01.txt ); echo "$C1"
 #-------------------------------------------------------------------------------------# 
-while IFS='' read -r line || [[ -n "$line" ]]; do
-	if [[ "$line" == AOI1 ]] ; then
-		export -p CRS326620=$(grep AOI1 $C2);
+if [[ $CRS32662 == AOI1 ]] ; then
+	export -p CRS326620=$(grep AOI1 $C2);
 
-	elif [[ "$line" == AOI2 ]] ; then
-		export -p CRS326620=$(grep AOI2 $C2);
+elif [[ $CRS32662 == AOI2 ]] ; then
+	export -p CRS326620=$(grep AOI2 $C2);
 
-	elif [[ "$line" == AOI3 ]] ; then
-		export -p CRS326620=$(grep AOI3 $C2);
+elif [[ $CRS32662 == AOI3 ]] ; then
+	export -p CRS326620=$(grep AOI3 $C2);
 
-	elif [[ "$line" == AOI4 ]] ; then 
-		export -p CRS326620=$(grep AOI4 $C2);
-	else
-		echo "AOI out of range"
-	fi 
-done < "$CRS32662"
+elif [[ $CRS32662 == AOI4 ]] ; then 
+	export -p CRS326620=$(grep AOI4 $C2);
+else
+	echo "AOI out of range"
+fi 
 
 #-------------------------------------------------------------------------------------#
 
-for file in $Sx001/*001_.tif ; do
+for file in $CDIR/*001_.tif ; do
 export -p COUNT=0
 filename=$(basename $file .tif )
 # Get the same boundary information_globcover
@@ -62,10 +61,11 @@ while read -r line; do
 COUNT=$(( $COUNT + 1 ))
 echo $line
 echo $COUNT
-gdal_translate -projwin $line -of GTiff $Sx001/${filename}.tif  $Sx001/${filename}_crop_$COUNT.tif 
+gdal_translate -projwin $line -of GTiff $CDIR/${filename}.tif  $CDIR/${filename}_crop_$COUNT.tif 
 done < $CRS326620
 done
 
+ciop-log "INFO" "vgt_to_geoms_00203.sh"
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#
 

@@ -16,23 +16,21 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-#source ${ciop_job_include}
+source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-export -p DIR=$TMPDIR/data/outDIR/ISD
-#export -p DIR=/data/outDIR/ISD
-export -p OUTDIR=$DIR/ISD000
-
 export PATH=/opt/anaconda/bin/:$PATH
-
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
+export -p OUTDIR=$DIR/ISD000
 export -p CMDIR=$OUTDIR/CM001
 export -p CMDIR02=$CMDIR/AOI/AOI_DX
-export PATH=/opt/anaconda/bin/:$PATH
 export -p ZDIR=$OUTDIR/GEOMS
+
+#-------------------------------------------------------------------------------------# 
 export y1=$1
 export y2=$2
-
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
@@ -48,7 +46,6 @@ y2 = as.numeric(Sys.getenv(c('y2')))
 xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
 new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
-
 lapply(xlist, require, character.only = TRUE)
 
 options(max.print=99999999) 

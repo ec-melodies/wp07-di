@@ -21,19 +21,19 @@ source ${ciop_job_include}
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
 export PATH=/opt/anaconda/bin/:$PATH
-
-export -p DIR=$TMPDIR/data/outDIR/ISD
-export -p INDIR=$DIR/INPUT
-export -p OUTDIR=$DIR/ISD000/
-export -p LAND001=$OUTDIR/VITO
+export -p IDIR=/application/
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
+export -p OUTDIR=$DIR/ISD000
+export -p VITO=$OUTDIR/VITO
 #-------------------------------------------------------------------------------------#
 # Sample
 #-------------------------------------------------------------------------------------#
-for file in $LAND001/GLOBCOVER_01_crop_*.tif; do 
+for file in $VITO/GLOBCOVER_01_crop_*.tif; do 
 filename=$(basename $file .tif )
-gdal_translate  -of AAIGrid $LAND001/${filename}.tif $LAND001/${filename}.asc
+gdal_translate  -of AAIGrid $VITO/${filename}.tif $VITO/${filename}.asc
 echo $filename
-awk '$1 ~ /^[0-9]/' $LAND001/${filename}.asc > $LAND001/${filename}.txt
+awk '$1 ~ /^[0-9]/' $VITO/${filename}.asc > $VITO/${filename}.txt
 done
 
 #-------------------------------------------------------------------------------------#
@@ -41,8 +41,8 @@ R --vanilla --no-readline   -q  <<'EOF'
 
 #R version  3.2.1
 # set working directory
-INDIR = Sys.getenv(c('LAND001'))
-CMDIR = Sys.getenv(c('LAND001'))
+INDIR = Sys.getenv(c('VITO'))
+CMDIR = Sys.getenv(c('VITO'))
 
 setwd(INDIR)
 getwd()
@@ -50,9 +50,7 @@ getwd()
 xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
 new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
-
 lapply(xlist, require, character.only = TRUE)
-
 
 #gc()
 #gcinfo(TRUE) 
@@ -112,6 +110,8 @@ gc()
 rm(rD3)
 }
 EOF
+
+ciop-log "INFO" "resample_aoi_00105.sh"
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
 echo "DONE"

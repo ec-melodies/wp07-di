@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: Local soil status [S(x)]
 #-------------------------------------------------------------------------------------# 
@@ -21,35 +21,27 @@ export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-#-------------------------------------------------------------------------------------#
 # JOB000
 #-------------------------------------------------------------------------------------#
-export PATH=/opt/anaconda/bin/:$PATH
-export -p DIR=$TMPDIR/data/outDIR/ISD
-export -p INDIR=$DIR/INPUT
-
 export -p IDIR=/application/
-echo $IDIR
-
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
 export -p OUTDIR=$DIR/ISD000
-export -p LAND001=$OUTDIR/VITO/
-
 export -p CDIR=$OUTDIR/SM001
-export -p SBDIR=$OUTDIR/SM001/class_SOIL001/
-
-export -p SBDIR1=$OUTDIR/SM001/class_SOIL001/soil_mosaic
-export -p VDIR=$OUTDIR/SM001
-export -p ISD5_Nx=$IDIR/parameters/
-
+export -p SBDIR=$OUTDIR/SM001/class_SOIL001
+export -p SBDIR1=$SBDIR/soil_mosaic && mkdir -pm 777 $SBDIR1
 #-------------------------------------------------------------------------------------#
+#Area of interesse
+export -p AOI=$2
+echo $AOI
+
+#Year
+export -p Y2=$1
+echo $Y2
 #-------------------------------------------------------------------------------------#
 # JOB# resample LULC para o mesmo pixel scale do target (SPOT or PROBA-V)
 #-------------------------------------------------------------------------------------#
 cd $SBDIR
-
-mkdir soil_mosaic
-
-export PATH=/opt/anaconda/bin/:$PATH
 
 for ((nr=1 ; nr<=9 ; nr++)); do
 filename=$(basename 0$nr)
@@ -76,7 +68,6 @@ R --vanilla --no-readline   -q  --min-vsize=10M --min-nsize=500k <<'EOF'
 
 # set working directory
 INDIR = Sys.getenv(c('SBDIR1'))
-OUTDIR = Sys.getenv(c('ISD5_Nx'))
 setwd(INDIR)
 
 xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
@@ -84,7 +75,6 @@ new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
 lapply(xlist, require, character.only = TRUE)
-
 
 # list all files from the current directory
 list.files(pattern=".tif$") 
@@ -107,11 +97,9 @@ class_02<-as.matrix(class_2)/10000
 bps <- boxplot.stats(class_02) 
 
 ISD_LSD=bps$stats[1] #lower wisker
-#write.table(ISD_LSD,paste(path=OUTDIR,'/' ,'ISD_LSDSx_','_'j,'.txt',sep = ""),row.names = FALSE, col.names =  FALSE, quote = FALSE, append = FALSE) 
 print(ISD_LSD)
 
 ISD_HSD=bps$stats[5] #upper wisker 
-#write.table(ISD_HSD,paste(path=OUTDIR,'/' ,'ISD_HSDSx_',j,'.txt',sep = ""),row.names = FALSE, col.names =  FALSE, quote = FALSE, append = FALSE) 
 print(ISD_HSD)
 
 ##component=='Soil'
@@ -128,10 +116,8 @@ n00<-unlist(strsplit(list.filenames[j], "_1_"))
 n01<-n00[2]
 n02<-unlist(strsplit(n01,"."))
 writeRaster(r, filename=paste("Sr_HSLS_0",j, sep=""), format="GTiff", overwrite=TRUE, na.rm=TRUE)
-
-summary(r)
-
 }
+#-------------------------------------------------------------------------------------#
 
 list.filenames=assign(paste("list.filenames",sep=""),list.files(pattern=paste("SOIL",".*\\.tif",sep="")))
 list.filenames
@@ -161,8 +147,7 @@ Sr_HSLS_11[Sr_HSLS_11==1]<-0
 Sr_HSLS_11[Sr_HSLS_11!=1]<-NA
 writeRaster(Sr_HSLS_11, filename=paste("Sr_HSLS_11",".tif", sep=""), format="GTiff", overwrite=TRUE, na.rm=TRUE)
 EOF
-#-------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------#
+
 #-------------------------------------------------------------------------------------#
 # # calculo das medias das classes, normalização 
 #-------------------------------------------------------------------------------------#
@@ -180,12 +165,14 @@ if(length(new.packages)) install.packages(new.packages)
 lapply(xlist, require, character.only = TRUE)
 
 # list all files from the current directory
+# list all files from the current directory
+list.files(pattern=".tif$") 
 
 list.filenames=assign(paste("list.filenames",sep=""),list.files(pattern=paste("Sr_HSLS",".*\\.tif",sep="")))
 list.filenames 
 
 # create a list from these files
-for (j in 1:length(list.filenames)){ 
+#for (j in 1:length(list.filenames)){ 
 
 # load raster data 
 rstack001<-stack(raster(list.filenames[1]),
@@ -196,19 +183,16 @@ raster(list.filenames[10]),raster(list.filenames[11]))
 rastD6<-max(rstack001, na.rm=TRUE)
 summary(rastD6)
 writeRaster(rastD6, filename=paste("Sx001_",".tif", sep=""), format="GTiff", overwrite=TRUE, na.rm=TRUE)
-}
+#}
 
 EOF
 #-------------------------------------------------------------------------------------# 
 # here we publish the results
 #-------------------------------------------------------------------------------------# 
-rciop.publish(paste("Sx001_",".tif", sep=""), recursive=FALSE, metalink=TRUE)
-
-export -p CDIR=$OUTDIR/SM001
-export -p SBDIR=$CDIR/class_SOIL001/soil_mosaic
-
-cp $SBDIR/Sx001_.tif $CDIR/Sx001_.tif
+cp $SBDIR1/Sx001_.tif $CDIR/Sx001_.tif
 #rm -rf $SBDIR
+
+ciop-log "INFO" "vgt_to_geoms_00201.sh"
 
 echo "DONE"
 exit 0

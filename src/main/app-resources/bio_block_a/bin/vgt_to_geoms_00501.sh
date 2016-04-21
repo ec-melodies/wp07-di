@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: Vegetation and Soil status [B(x)]
 #-------------------------------------------------------------------------------------# 
@@ -22,23 +22,26 @@ source ${ciop_job_include}
 export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------# 
 #auxiliar data files (tmp): The intermediate indicators:
-export -p DIR=$TMPDIR/data/outDIR/ISD
+export PATH=/opt/anaconda/bin/:$PATH
 export -p IDIR=/application/
-echo $IDIR
-export -p OUTDIR=$DIR/ISD000/
-export -p NVDIR=$OUTDIR/VM001/
-export -p SBDIR=$OUTDIR/SM001/
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
+export -p OUTDIR=$DIR/ISD000
+export -p NVDIR=$OUTDIR/VM001
+export -p SBDIR=$OUTDIR/SM001
 export -p LDIR=$OUTDIR/COKC
-mkdir -p $LDIR
 export -p CDIR=$OUTDIR/SM001
 export -p VDIR=$OUTDIR/VM001
 export -p ZDIR=$OUTDIR/GEOMS
-export -p HDIR=$IDIR/parameters/
-export -p LAND001=$OUTDIR/VITO/
+export -p HDIR=$IDIR/parameters
+export -p VITO=$OUTDIR/VITO
 export -p ZDIR=$OUTDIR/GEOMS
 
-
-CRS32662="$( ciop-getparam aoi )"
+#Year
+export -p Y2=$1
+echo $Y2
+#-------------------------------------------------------------------------------------#
+export -p CRS32662=$2
 echo $CRS32662
 
 export -p C2=$IDIR/parameters/CRS32662_01.txt
@@ -47,18 +50,17 @@ export -p C1=$(cat IDIR/parameters/CRS32662_01.txt ); echo "$C1"
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#
 R --vanilla --no-readline   -q  <<'EOF'
-SBDIR = Sys.getenv(c('LAND001'))
+SBDIR = Sys.getenv(c('VITO'))
 
 setwd(SBDIR)
 getwd()
 
-require("zoo")
-require("rgdal")
-require("raster")
-require("sp")
-require("rciop")
-require("gtools")
-library(digest)
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
+new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+lapply(xlist, require, character.only = TRUE)
+
 
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
@@ -75,17 +77,17 @@ capture.output(rb, file=paste(SBDIR,'/','INFO_L002',i,'.txt',sep = ""), append=T
 EOF
 
 #-------------------------------------------------------------------------------------# 
-cd $LAND001
+cd $VITO
 
 h=1
-for file in $LAND001/LANDC002_*.tif; do
+for file in $VITO/LANDC002_*.tif; do
 filename=$(basename $file .tif )
-input001=$LAND001/${filename}.tif
+input001=$VITO/${filename}.tif
 echo $input001
 
 # Get the same boundary information_globcover
 h=$((h+1))
-Cx001=$LAND001/${filename/#LANDC002_/INFO_L002}.txt
+Cx001=$VITO/${filename/#LANDC002_/INFO_L002}.txt
 echo $Cx001
 
 ulx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $3 }')
@@ -100,7 +102,7 @@ uly1=$(awk "BEGIN {print ($uly-6184.416)}")
 lrx1=$(awk "BEGIN {print ($lrx-6184.416)}")
 lry1=$(awk "BEGIN {print ($lry+6184.416)}")
 
-output003=$LAND001/${filename/#LANDC002/LANDC003}.tif 
+output003=$VITO/${filename/#LANDC002/LANDC003}.tif 
 echo $output003 
 gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input001 $output003
 done
@@ -108,12 +110,12 @@ done
 #-------------------------------------------------------------------------------------# 
 export PATH=/opt/anaconda/bin/:$PATH
 
-for file in $LAND001/LANDC003*.tif; do
+for file in $VITO/LANDC003*.tif; do
 filename=$(basename $file .tif )
 echo $filename
 ls *${filename}.tif >> list_LC.txt
-gdalbuildvrt $LAND001/${filename}.vrt --optfile list_LC.txt
-gdal_translate $LAND001/${filename}.vrt $LAND001/LC_004.tif
+gdalbuildvrt $VITO/${filename}.vrt --optfile list_LC.txt
+gdal_translate $VITO/${filename}.vrt $VITO/LC_004.tif
 done
 
 # ASCII to geoMS (.OUT or .dat)
@@ -135,7 +137,7 @@ else
 	echo "AOI out of range"
 fi 
 #-------------------------------------------------------------------------------------#
-for file in $LAND001/LC_004.tif ; do
+for file in $VITO/LC_004.tif ; do
 export -p COUNT=0
 filename=$(basename $file .tif )
 # Get the same boundary information_globcover
@@ -143,10 +145,12 @@ while read -r line; do
 COUNT=$(( $COUNT + 1 ))
 echo $line
 echo $COUNT
-gdal_translate -projwin $line -of GTiff $LAND001/${filename}.tif  $LAND001/${filename}_crop_$COUNT.tif
+gdal_translate -projwin $line -of GTiff $VITO/${filename}.tif  $VITO/${filename}_crop_$COUNT.tif
 done < $CRS326620
 #done < "/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI4_32662_01.txt"
 done
+
+ciop-log "INFO" "vgt_to_geoms_00501.sh"
 
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#

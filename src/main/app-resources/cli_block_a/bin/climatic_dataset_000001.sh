@@ -13,12 +13,13 @@ source ${ciop_job_include}
 # Set environment variable 
 #-------------------------------------------------------------------------------------#
 export PATH=/opt/anaconda/bin/:$PATH
-
-export -p DIR=$TMPDIR/data/outDIR/ISD
-#export -p DIR=/data/outDIR/ISD
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
 export -p OUTDIR=$DIR/ISD000
 export -p CMDIR=$OUTDIR/CM001
 
+s3cmd get --skip-existing s3://melodies-wp7/.ecmwfapirc $HOME
+#-------------------------------------------------------------------------------------#
 export y1=$1
 export y2=$2
 export uly=$3
@@ -28,8 +29,6 @@ export lrx=$6
 export deg=$7
 
 ciop-log "Year: $y1"
-
-s3cmd get --skip-existing s3://melodies-wp7/.ecmwfapirc $HOME
 #-------------------------------------------------------------------------------------#
 cat <<EOF | /opt/anaconda/bin/python - 
 
@@ -82,11 +81,7 @@ server.retrieve({
 ciop.log('INFO', 'step 00:' + target001)
 
 EOF
-
-export -p DIR=$TMPDIR/data/outDIR/ISD
-export -p OUTDIR=$DIR/ISD000
-export -p CMDIR=$OUTDIR/CM001
-
+#-------------------------------------------------------------------------------------#
 mv $CMDIR/ecmwf.grib $CMDIR/ecmwf_$y2.grib
 echo $CMDIR
 

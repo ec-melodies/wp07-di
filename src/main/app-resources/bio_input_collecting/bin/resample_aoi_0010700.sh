@@ -8,42 +8,41 @@
 # awk
 # unzip
 #-------------------------------------------------------------------------------------# 
-export -p PATH=/opt/anaconda/bin/:$PATH 
+# source the ciop functions
+source ${ciop_job_include}
 
-export -p DIR=$TMPDIR/data/outDIR/ISD
-#export -p DIR=/data/outDIR/ISD
-export -p INDIR=$DIR/INPUT
-export -p OUTDIR=$DIR/ISD000
-export -p OUTDIR=$OUTDIR/VITO; mkdir -p $OUTDIR
+export PATH=/opt/anaconda/bin/:$PATH
 
 export -p IDIR=/application
-echo $IDIR
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
+export -p OUTDIR=$DIR/ISD000
+export -p VITO=$OUTDIR/VITO
 
-export -p AOI="$( ciop-getparam aoi)"
+export AOI=$2
 echo $AOI
 
+#Year
 export -p Y2=$1
 echo $Y2
 
+#List of images
 export -p INP2=$IDIR/parameters/vito
 export -p y3=$(grep $Y2 $INP2)
 
-cd $OUTDIR
+cd $VITO
 ciop-copy -o . $y3
-
 export -p SPOT=$(ls | grep $Y2)
-export -p INSPOT=$OUTDIR/$SPOT
-
+export -p INSPOT=$VITO/$SPOT
+export -p Cx001=$VITO/Cx001_32662.txt
+export -p OUTSPOT=$VITO/V2KRNS10.tif
 #-------------------------------------------------------------------------------------# 
-
 #-------------------------------------------------------------------------------------# 
 # set the environment variables to use ESA BEAM toolbox
 
-export -p IDIR=/application/
-echo $IDIR
-
 export SNAP=/opt/snap-2.0
 export PATH=${SNAP}/bin:${PATH}
+
 #-------------------------------------------------------------------------------------# 
 #the ESA toolbox
 						
@@ -66,18 +65,9 @@ fi
 echo $POLYGON
 
 #-------------------------------------------------------------------------------------# 
-# set the environment variables to use ESA BEAM toolbox
-
-export SNAP=/opt/snap-2.0
-export PATH=${SNAP}/bin:${PATH}
-
+cd $VITO
 #-------------------------------------------------------------------------------------# 
-#-------------------------------------------------------------------------------------# 
-OUTDIR=/data/auxdata/ISD/ISD000/VITO/
-
-#-------------------------------------------------------------------------------------# 
-export -p OUTSPOT=$OUTDIR/V2KRNS10.tif 
-#-------------------------------------------------------------------------------------# 
+#the ESA toolbox
 
 subset_aoi=`cat <<EOF
 <graph id="Graph">
@@ -131,56 +121,63 @@ subset_aoi=`cat <<EOF
 
 EOF`
 
-echo $subset_aoi > $OUTDIR/subset_aoi.xml
+echo $subset_aoi > $VITO/subset_aoi.xml
 echo $subset_aoi
+echo $INSPOT
+echo $OUTSPOT
 
-gpt $OUTDIR/subset_aoi.xml  -Ssource=$(ciop-copy -o $line) -f GeoTIFF -t $OUTSPOT
+gpt $VITO/subset_aoi.xml -Ssource=$INSPOT -f GeoTIFF -t $OUTSPOT
 
+gdalinfo $OUTSPOT
 
-cd $OUTDIR
+ciop-log "INFO" "SNAP toolbox"
 #-------------------------------------------------------------------------------------# 
-gdalwarp -t_srs '+init=epsg:32662' $OUTSPOT $OUTDIR/V2KRNS100.tif
+#-------------------------------------------------------------------------------------# 
+ciop-log "INFO" "Gdalwarp -> epsg:32662"
+
+gdalwarp -t_srs '+init=epsg:32662' $OUTSPOT $VITO/V2KRNS100.tif
+#-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: NDVI, NIR, RED
-#-------------------------------------------------------------------------------------# 
-#-------------------------------------------------------------------------------------# 
-gdal_translate -of Gtiff -b 2 $OUTDIR/V2KRNS100.tif $OUTDIR/RED001.tif
-gdal_translate -of Gtiff -b 3 $OUTDIR/V2KRNS100.tif $OUTDIR/NIR001.tif
-gdal_translate -of Gtiff -b 5 $OUTDIR/V2KRNS100.tif $OUTDIR/NDV001.tif
+
+gdal_translate -of Gtiff -b 2 $VITO/V2KRNS100.tif $VITO/RED001.tif
+gdal_translate -of Gtiff -b 3 $VITO/V2KRNS100.tif $VITO/NIR001.tif
+gdal_translate -of Gtiff -b 5 $VITO/V2KRNS100.tif $VITO/NDV001.tif
+
+ciop-log "INFO" "BAND: NDV, RED, NIR"
 
 #-------------------------------------------------------------------------------------# 
 # echo "FASE 1"
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: RESAMPLE_AOI NDVI, NIR, RED
-
 #-------------------------------------------------------------------------------------#
-
 R --vanilla --no-readline   -q  <<'EOF'
 
 #R version  3.2.1
 # set working directory
-CMDIR = Sys.getenv(c('OUTDIR'))
+CMDIR = Sys.getenv(c('VITO'))
 
 setwd(CMDIR)
 getwd()
 
-require(sp)
-require(rgdal)
-require(raster)
-require(rciop)
-require("gtools")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
+new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
 
-rb = raster("/data/auxdata/ISD/ISD000/CM001/AOI/AOI_CX/Cx001_32662.tif")
+lapply(xlist, require, character.only = TRUE)
+
+rb = raster("/data/outDIR/ISD/ISD000/CM001/AOI/AOI_CX/Cx001_32662.tif")
+rb
 sink(paste(CMDIR,'/', 'Cx001_32662.txt',sep = ""))
 rb
 sink()
 
 EOF
 
-export -p Cx001=/data/auxdata/ISD/ISD000/VITO/Cx001_32662.txt
 #-------------------------------------------------------------------------------------# 
+ciop-log "INFO" "Getting the same boundary information of GlobCover: $VITO/${filename}_01.tif "
 
-for file in $OUTDIR/*001.tif ; do 
+for file in $VITO/*001.tif ; do 
 filename=$(basename $file .tif )
 echo $Cx001
 # Get the same boundary information_globcover
@@ -189,13 +186,14 @@ uly=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $6 }')
 lrx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $4 }')
 lry=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $5 }')
 echo $ulx $uly $lrx $lry $filename
-gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $OUTDIR/${filename}.tif $OUTDIR/${filename}_01.tif 
+gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $VITO/${filename}.tif $VITO/${filename}_01.tif 
 done
 
-#rm $OUTDIR/NDV001.tif $OUTDIR/NIR001.tif $OUTDIR/RED001.tif $OUTDIR/V2KRNS10.tif $OUTDIR/subset_aoi.xml
+
+rm -rf /tmp/snap-mapred/*
+rm -rf $INSPOT
+
+ciop-log "INFO" "remover /tmp/snap-mapred/"
+#rm $VITO/NDV001.tif $VITO/NIR001.tif $VITO/RED001.tif $VITO/V2KRNS10.tif $VITO/subset_aoi.xml
 #-------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------# 
-
 exit 0
-
-

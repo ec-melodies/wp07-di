@@ -1,11 +1,11 @@
-#!/bin/sh
+# #!/bin/bash
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: ISD
 #-------------------------------------------------------------------------------------# 
 # Requires:
 # awk
 # gdal_calc
-# maptools
+# ciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
 source ${ciop_job_include}
@@ -14,37 +14,99 @@ source ${ciop_job_include}
 anaconda=/opt/anaconda/bin/
 export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------# 
-
-export -p DIR=$TMPDIR/data/outDIR/ISD
-export -p OUTDIR=$DIR/ISD000/
+export -p DIR=/data/outDIR/ISD
+export -p OUTDIR=$DIR/ISD000
 export -p ZDIR=$OUTDIR/GEOMS
 export -p ISDC=$ZDIR/Cx
 export -p ISDD=$ZDIR/Dx
-
-export -p IDIR=/application
-echo $IDIR
 #-------------------------------------------------------------------------------------# 
-export -p IDIR=/data/auxdata/AOI
-export -p AOIP=$IDIR/parameters/AOI
-export AOI=$(awk '{ print $1}' $AOIP)
-echo $AOI
-export -p YR1=$IDIR/parameters/year
-export -p Y2="$(cat $YR1)"
-
+AOI="$( ciop-getparam aoi )"
+ciop-log "INFO" "AOI: $AOI"
 #-------------------------------------------------------------------------------------# 
 D=$(date +"%d%m%Y")
-
 
 for file in $ISDC/ISD_Cx002MSCAOI*.tif; do 
 filename=$(basename $file .tif )
 isd01=$ISDC/${filename}.tif
 isd02=$ISDD/${filename/#ISD_Cx002MSCAOI/ISD_Dx002MSCAOI}.tif 
-gdal_calc.py -A $isd01 -B $isd02 --outfile=$ZDIR/ISD_${Y2}_${D}_$AOI.tif --calc="((0.5*A)+(0.5*B))*10000" --NoDataValue=0 --overwrite  --type=UInt32
+gdal_calc.py -A $isd01 -B $isd02 --outfile=$ZDIR/ISD_${D}_$AOI.tif --calc="((0.5*A)+(0.5*B))*10000" --NoDataValue=0 --overwrite  --type=UInt32
 
-ciop-publish -r $ZDIR/ISD_${Y2}_${D}_$AOI.tif
+export -p INISD=$ZDIR/ISD_${D}_$AOI
+# publish the result
 
+ciop-publish -m $ZDIR/ISD_${D}_$AOI.tif
+# s3cmd put --recursive $ZDIR/ISD_${D}_$AOI.tif s3://melodies-wp7/
 done
+#-------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------# 
+ciop-log "INFO" "Upload_to_geoserver"
+#-------------------------------------------------------------------------------------# 
+isd_style=`cat <<EOF	
+<?xml version="1.0" ?>
+<sld:StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc" xmlns:sld="http://www.opengis.net/sld">
+    <sld:UserLayer>
+        <sld:LayerFeatureConstraints>
+            <sld:FeatureTypeConstraint/>
+        </sld:LayerFeatureConstraints>
+        <sld:UserStyle>
+            <sld:Name>${INISD}</sld:Name>
+            <sld:Title/>
+            <sld:FeatureTypeStyle>
+                <sld:Name/>
+                <sld:Rule>
+                    <sld:RasterSymbolizer>
+                        <sld:Geometry>
+                            <ogc:PropertyName>grid</ogc:PropertyName>
+                        </sld:Geometry>
+                        <sld:Opacity>1</sld:Opacity>
+                        <sld:ColorMap>
+                            <sld:ColorMapEntry color="#2b83ba" label="0.000000" opacity="1.0" quantity="0"/>
+                            <sld:ColorMapEntry color="#80bfab" label="0.166667" opacity="1.0" quantity="0.166667"/>
+                            <sld:ColorMapEntry color="#c7e8ad" label="0.333333" opacity="1.0" quantity="0.333333"/>
+                            <sld:ColorMapEntry color="#ffffbf" label="0.500000" opacity="1.0" quantity="0.5"/>
+                            <sld:ColorMapEntry color="#fdc980" label="0.666667" opacity="1.0" quantity="0.666667"/>
+                            <sld:ColorMapEntry color="#f07c4a" label="0.833333" opacity="1.0" quantity="0.833333"/>
+                            <sld:ColorMapEntry color="#d7191c" label="1.000000" opacity="1.0" quantity="1"/>
+                        </sld:ColorMap>
+                    </sld:RasterSymbolizer>
+                </sld:Rule>
+            </sld:FeatureTypeStyle>
+        </sld:UserStyle>
+    </sld:UserLayer>
+</sld:StyledLayerDescriptor>
+EOF`
 
+echo $isd_style > $ZDIR/isd_style.sld
+echo $isd_style
+
+#-------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------# 
+# Em construção...
+# Upload_to_geoserver
+#-------------------------------------------------------------------------------------# 
+# Credenciais para geoserver
+#=`cat <<EOF	
+export -p host_geoserver='http://geoserver.melodies.terradue.int/geoserver/rest'
+export -p workspace_geoserver='melodies-wp7'
+export -p username_geoserver='melodies-wp7'
+#EOF`
+#echo $variables_geoserver > $ZDIR/variables_geoserver.txt
+#-------------------------------------------------------------------------------------# 
+# cat <<EOF | /opt/anaconda/bin/python - 
+# import os
+# import sys
+# from sys import argv
+# import cioppy
+# ciop = cioppy.Cioppy()
+# sys.path.append('ZDIR')
+# tdir=os.environ['ZDIR']
+# target001=os.path.join(tdir,'ISD_${D}_$AOI.tif') 
+# EOF
+#-------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------#
+ciop-log "INFO" "Step01: isd_vx001.sh" 
 #-------------------------------------------------------------------------------------#
 echo "DONE"
 echo 0

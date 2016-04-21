@@ -1,27 +1,23 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: run file for Ix
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions (e.g. ciop-log)
 source ${ciop_job_include}
-
-export -p DIR=$TMPDIR/data/outDIR/ISD
 export -p IDIR=/application
-echo $IDIR
-
 export -p IXDIR=$IDIR/bio_block_p2/bin/
-export -p INP=$IDIR/parameters/AOI
 #-------------------------------------------------------------------------------------# 
 # JOB 1
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
-
 function igcv(){
-exec $IXDIR"vgt_to_geoms_00300.sh" 
+#exec $IXDIR"vgt_to_geoms_00300.sh" &
+#wait
+exec $IXDIR"vgt_to_geoms_00301.sh" 
 }
-
 igcv
+
+ciop-log "INFO" "bio_block_p2/bin/run"
 #-------------------------------------------------------------------------------------#  
-exit "DONE"
 exit 0

@@ -21,19 +21,20 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-
-export -p DIR=$TMPDIR/data/outDIR/ISD
-#export -p DIR=/data/outDIR/ISD
+export -p IDIR=/application
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
 export -p OUTDIR=$DIR/ISD000
 export -p CMDIR=$OUTDIR/CM001
 export -p CMDIR01=$CMDIR/AOI/AOI_CX
-
+export -p CXDIR=$IDIR/cli_block_a/bin
 #-------------------------------------------------------------------------------------# 
+
 export -p Y1=$1
 export -p Y2=$2
 
 #-------------------------------------------------------------------------------------# 
-export -p CXDIR=$IDIR/cli_block_a/bin
+
 IR="$( ciop-getparam aoi )"
 ciop-log "AOI: $IR"
 #-------------------------------------------------------------------------------------# 
@@ -151,7 +152,6 @@ rb = raster(CS_df1)
 sink(paste(CMDIR,'/', 'Cx001.txt',sep = ""))
 rb
 sink()
-
 
 rciop.log("INFO", "Cx001.txt")
 

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: ISD (Cx)
 #-------------------------------------------------------------------------------------# 
@@ -18,64 +18,78 @@ source ${ciop_job_include}
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
 #-------------------------------------------------------------------------------------# 
-#bash /application/bin/ISD5_node/ini.sh
-export -p DIR=$TMPDIR/data/outDIR/ISD
+export -p IDIR=/application
+export PATH=/opt/anaconda/bin/:$PATH
 
-export -p OUTDIR=$DIR/ISD000/
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
+export -p OUTDIR=$DIR/ISD000
 
-export -p ZDIR=$OUTDIR/GEOMS/
+export -p VITO=$OUTDIR/VITO
+export -p ZDIR=$OUTDIR/GEOMS
+
 export -p ISDC=$ZDIR/Cx
 export -p ISDD=$ZDIR/Dx
 
-export -p IDIR=/application
-echo $IDIR
 export -p HDIR=$IDIR/processing_block_p/bin/
-export -p HXDIR=$IDIR/parameters/
+export -p HXDIR=$IDIR/parameters
 
 export -p LDIR=$OUTDIR/COKC
 export -p ADIR=/data/auxdata/AOI
-export -p IR=$IDIR/parameters/AOI
-export -p YR1=$IDIR/parameters/year
-export -p Y2="$(cat $YR1)"
+
+export -p AOIP="$( ciop-getparam aoi )"
+ciop-log "AOI: $AOIP"
+
+export -p Y2=$(awk '{print $2}' $OUTDIR/AOI.txt)
+echo $Y2
 #-------------------------------------------------------------------------------------# 
 cd $ZDIR
 
 CRS32662="$( ciop-getparam aoi )"
-echo $CRS32662
-export -p AOIX=$IDIR/parameters/AOI_ISD.txt
+echo "AOI:" $CRS32662
+
+export -p AOIX=$HXDIR/AOI_ISD.txt
+echo $AOIX
+
+
+ciop-log "INFO" "parametros: $AOIX"
 
 #-------------------------------------------------------------------------------------#
 
 if [[ $CRS32662 == AOI1 ]] ; then
 	grep "Cx_AOI1" $AOIX > $ZDIR/list_isd_cx.txt;
-	echo $NV
+	echo $CRS32662
 
 elif [[ $CRS32662 == AOI2 ]] ; then
 	grep "Cx_AOI2" $AOIX > $ZDIR/list_isd_cx.txt;
-	echo $NV
+	echo $CRS32662
 
 elif [[ $CRS32662 == AOI3 ]] ; then
 	grep "Cx_AOI3" $AOIX > $ZDIR/list_isd_cx.txt;
-	echo $NV
+	echo $CRS32662
 
 elif [[ $CRS32662 == AOI4 ]] ; then 
 	grep "Cx_AOI4" $AOIX > $ZDIR/list_isd_cx.txt;
-	echo $NV
+	echo $CRS32662
 else
 	echo "AOI out of range"
 fi 
+
+ciop-log "INFO" "parametros: $AOIX $CRS32662"
 #-------------------------------------------------------------------------------------# 
 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 echo $line
 filename=$(basename $line .par)
-wine64 $HDIR/krige.exe $line
+ciop-log "INFO" "wine: $line"
+wine64 $HDIR/krige00.exe $line
 mv $ISDC/ISD_Kriging_Variance.out $ISDC/ISD_Kriging_Var_${filename}.out
 mv $ISDC/ISD_Kriging_Mean.out $ISDC/ISD_Kriging_Mean_${filename}.out
 awk 'NR > 3 { print }' $ISDC/ISD_Kriging_Var_${filename}.out > $ISDC/ISDvar_${filename}.txt
 awk 'NR > 3 { print }' $ISDC/ISD_Kriging_Mean_${filename}.out > $ISDC/ISDmean_${filename}.txt
 done < "$ZDIR/list_isd_cx.txt"
 
+ciop-log "INFO" "isd_cx"
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 # .out file to Gtiff
@@ -83,10 +97,13 @@ done < "$ZDIR/list_isd_cx.txt"
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline -q --min-vsize=10M --min-nsize=500k <<'EOF'
 INDIR = Sys.getenv(c('ZDIR'))
+INDIR
 ZDIR = Sys.getenv(c('ISDC'))
+ZDIR
 IDIR= Sys.getenv(c('ADIR'))
+IDIR
 
-## load the package
+# load the package
 xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
 new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -173,17 +190,15 @@ gc()
 EOF
 
 
+export -p AOIP="$( ciop-getparam aoi )"
 #-------------------------------------------------------------------------------------#
-export -p ZDIR=$OUTDIR/GEOMS/Cx
-export -p IDIR=/data/auxdata/AOI
-export -p AOIP=$IDIR/parameters/AOI
-export AOI=$(awk '{ print $1}' $AOIP)
-echo $AOI
 
 R --vanilla --no-readline -q --min-vsize=10M --min-nsize=500k <<'EOF'
 SBDIR = Sys.getenv(c('ISDC'))
-IDIR = Sys.getenv(c('IDIR'))
-AOIP = Sys.getenv(c('AOI'))
+SBDIR
+IDIR = Sys.getenv(c('ADIR'))
+IDIR
+AOIP = Sys.getenv(c('AOIP'))
 AOIP
 Y2 = Sys.getenv(c('Y2'))
 Y2
@@ -191,11 +206,13 @@ Y2
 setwd(SBDIR)
 getwd()
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal","RStoolbox")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal") 
 new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
 lapply(xlist, require, character.only = TRUE)
+
+require("RStoolbox")
 
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
@@ -220,28 +237,22 @@ writeRaster(list01,filename=paste(SBDIR, "/" ,"ISD_Cx001_00_",AOIP,Y2,j,".tif",s
 TPmlist02<-list.files(pattern=paste("ISD_Cx001_00_",".*\\.tif",sep=""))
 TPmlist02
 
-tmp1 <-raster(TPmlist02[1])
-tmp2 <-raster(TPmlist02[2])
-tmp3 <-raster(TPmlist02[3])
-tmp4 <-raster(TPmlist02[4])
+tmp3<-raster(TPmlist02[1])
+tmp4 <-raster(TPmlist02[2])
 
+rastD8<-mosaic(tmp3,tmp4, fun=max)
 
-rastD8<-mosaic(tmp1,tmp2,tmp3,tmp4, fun=max)
-
-AOIP=AOI
-Y2 =Y2
+AOIP
 v1="MSC"
 
 #save the raster
 
 tmp.file <- paste(SBDIR, "/" ,"ISD_Cx002",v1,AOIP,Y2,".tif",sep = "")
-
 writeRaster(rastD8,filename=tmp.file,format="GTiff",datatype='FLT4S',overwrite=TRUE)
-
 rciop.publish(tmp.file, recursive=FALSE, metalink=TRUE)
 
 EOF
-
+ciop-log "INFO" "isd_cx"
 #-------------------------------------------------------------------------------------# 
 echo "DONE"
 exit 0

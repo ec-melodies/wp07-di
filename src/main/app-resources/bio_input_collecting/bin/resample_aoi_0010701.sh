@@ -8,22 +8,29 @@
 # awk
 # unzip
 #-------------------------------------------------------------------------------------# 
-export -p PATH=/opt/anaconda/bin/:$PATH 
-export -p IDIR=/application
-echo $IDIR
+export PATH=/opt/anaconda/bin/:$PATH
+export -p IDIR=/application/
+export -p ODIR=/data/outDIR
+export -p DIR=$ODIR/ISD
+export -p OUTDIR=$DIR/ISD000
+export -p VITO=$OUTDIR/VITO
 
-export -p DIR=$TMPDIR/data/outDIR/ISD
-#export -p DIR=/data/outDIR/ISD
-
-#export -p AOIP=$IDIR/parameters/AOI
 export -p AOIP="$( ciop-getparam AOI)"
 export AOI=$(awk '{ print $1}' $AOIP)
 echo $AOI
 
-export -p OUTDIR=/data/auxdata/ISD/ISD000/VITO; mkdir -p $OUTDIR
+#Year
+export -p Y2=$1
+echo $Y2
 
+#List of images
+export -p INP2=$IDIR/parameters/vito
+export -p y3=$(grep $Y2 $INP2)
+cd $VITO
+ciop-copy -o . $y3
+
+export -p Cx001=$OUTDIR/CM001/AOI/AOI_CX/Cx001_info.txt
 #-------------------------------------------------------------------------------------# 
-cd $OUTDIR
 #-------------------------------------------------------------------------------------# 
 # set the environment variables to use ESA BEAM toolbox
 
@@ -61,15 +68,13 @@ export PATH=${SNAP}/bin:${PATH}
 
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
-OUTDIR=/data/auxdata/ISD/ISD000/VITO/
-
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 echo $line
 export -p INSPOT=$line
 export -p OUTSPOT=$line.tif
 export -p filename=$(basename $line .HDF5)
-export -p OUTSPOT=$OUTDIR/${filename}.tif
+export -p OUTSPOT=$VITO/${filename}.tif
 echo $filename
 #-------------------------------------------------------------------------------------# 
 #the ESA toolbox
@@ -125,19 +130,18 @@ subset_aoi_probav=`cat <<EOF
 </graph>
 EOF`
 
-echo $subset_aoi_probav > $OUTDIR/subset_aoi_probav.xml
+echo $subset_aoi_probav > $VITO/subset_aoi_probav.xml
 echo $subset_aoi_probav
 
-#gpt $OUTDIR/subset_aoi_probav.xml  -Ssource=$(ciop-copy -o $line) -f GeoTIFF -t $OUTSPOT
-done < "/data/auxdata/ISD/ISD000/list.txt"
+done < "$VITO/list.txt"
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 export PATH=/opt/anaconda/bin/:$PATH
 
-cd $OUTDIR
+cd $VITO
 
 for file in /data/auxdata/ESA/AOI/RAD/PROBAV_S1*.tif; do 
-#for file in $OUTDIR/PROBAV_S1*.tif; do 
+#for file in $VITO/PROBAV_S1*.tif; do 
 filename=$(basename $file .tif )
 echo $file >> list_proba_RAD.txt
 gdalbuildvrt V2KRNS0210_RAD.vrt --optfile list_proba_RAD.txt
@@ -146,7 +150,7 @@ gdal_translate V2KRNS0210_RAD.vrt V2KRNS0310_RAD.tif
 done
 
 for file in /data/auxdata/ESA/AOI/NDV/PROBAV_S1*.tif; do 
-#for file in $OUTDIR/PROBAV_S1*.tif; do 
+#for file in $VITO/PROBAV_S1*.tif; do 
 filename=$(basename $file .tif )
 echo $file >> list_proba_NDV.txt
 gdalbuildvrt V2KRNS0210_NDV.vrt --optfile list_proba_NDV.txt
@@ -155,45 +159,41 @@ gdal_translate V2KRNS0210_NDV.vrt V2KRNS0310_NDV.tif
 done
 
 
-#gdalwarp -t_srs '+init=epsg:32662' $OUTDIR/V2KRNS0310.tif $OUTDIR/V2KRNS10.tif
-gdalwarp -t_srs '+init=epsg:32662' $OUTDIR/V2KRNS0310_NDV.tif $OUTDIR/V2KRNS10_NDV.tif
-gdalwarp -t_srs '+init=epsg:32662' $OUTDIR/V2KRNS0310_RAD.tif $OUTDIR/V2KRNS10_RAD.tif
+#gdalwarp -t_srs '+init=epsg:32662' $VITO/V2KRNS0310.tif $VITO/V2KRNS10.tif
+gdalwarp -t_srs '+init=epsg:32662' $VITO/V2KRNS0310_NDV.tif $VITO/V2KRNS10_NDV.tif
+gdalwarp -t_srs '+init=epsg:32662' $VITO/V2KRNS0310_RAD.tif $VITO/V2KRNS10_RAD.tif
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: NDVI, NIR, RED
 #-------------------------------------------------------------------------------------# 
 # extract band
 #-------------------------------------------------------------------------------------# 
-#for file in $OUTDIR/PROBAV_S1*.tif; do 
+#for file in $VITO/PROBAV_S1*.tif; do 
 #rm $file
 #done
 
-gdal_translate -of Gtiff -b 2 V2KRNS10_RAD.tif $OUTDIR/RED001.tif
-gdal_translate -of Gtiff -b 3 V2KRNS10_RAD.tif $OUTDIR/NIR001.tif
-gdal_translate -of Gtiff -b 1 V2KRNS10_NDV.tif $OUTDIR/NDV001.tif
+gdal_translate -of Gtiff -b 2 V2KRNS10_RAD.tif $VITO/RED001.tif
+gdal_translate -of Gtiff -b 3 V2KRNS10_RAD.tif $VITO/NIR001.tif
+gdal_translate -of Gtiff -b 1 V2KRNS10_NDV.tif $VITO/NDV001.tif
 #-------------------------------------------------------------------------------------# 
 # echo "FASE 1"
 #-------------------------------------------------------------------------------------# 
 # PURPOSE: RESAMPLE_AOI NDVI, NIR, RED
 #-------------------------------------------------------------------------------------#
-export -p Cx001=/data/auxdata/ISD/ISD000/CM001/AOI/AOI_CX/Cx001_info.txt
 #-------------------------------------------------------------------------------------# 
-for file in $OUTDIR/*001.tif ; do 
+for file in $VITO/*001.tif ; do 
 filename=$(basename $file .tif )
-# Get the same boundary information_globcover
+# Getting the same boundary information_globcover
 ulx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $3 }')
 uly=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $6 }')
 lrx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $4 }')
 lry=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $5 }')
 
 echo $ulx $uly $lrx $lry $filename
-gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $OUTDIR/${filename}.tif $OUTDIR/${filename}_01.tif 
+gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $VITO/${filename}.tif $VITO/${filename}_01.tif 
 done
 
-#rm $OUTDIR/NDV001.tif $OUTDIR/NIR001.tif $OUTDIR/RED001.tif $OUTDIR/V2KRNS10.tif $OUTDIR/subset_aoi.xml
+ciop-log "INFO" "Getting the same boundary information of GlobCover: $VITO/${filename}_01.tif "
+#rm $VITO/NDV001.tif $VITO/NIR001.tif $VITO/RED001.tif $VITO/V2KRNS10.tif $VITO/subset_aoi.xml
 #-------------------------------------------------------------------------------------#
 exit 0
-
-
-
-
