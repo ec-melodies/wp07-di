@@ -27,19 +27,19 @@ ciop-log "INFO" "AOI: $AOI"
 #-------------------------------------------------------------------------------------# 
 export -p D=$(date +"%d%m%Y")
 
-# for file in $ISDC/ISD_Cx002MSCAOI*.tif; do 
-# filename=$(basename $file .tif )
-# isd01=$ISDC/${filename}.tif
-# isd02=$ISDD/${filename/#ISD_Cx002MSCAOI/ISD_Dx002MSCAOI}.tif 
-# gdal_calc.py -A $isd01 -B $isd02 --outfile=$ZDIR/ISD_${D}_$AOI.tif --calc="((0.5*A)+(0.5*B))*10000" --NoDataValue=0 --overwrite  --type=UInt32
+for file in $ISDC/ISD_Cx002MSCAOI*.tif; do 
+filename=$(basename $file .tif )
+isd01=$ISDC/${filename}.tif
+isd02=$ISDD/${filename/#ISD_Cx002MSCAOI/ISD_Dx002MSCAOI}.tif 
+gdal_calc.py -A $isd01 -B $isd02 --outfile=$ZDIR/ISD_${D}_$AOI.tif --calc="((0.5*A)+(0.5*B))*10000" --NoDataValue=0 --overwrite  --type=UInt32
 
-# export -p INISD=$ZDIR/ISD_${D}_$AOI
+export -p INISD=$ZDIR/ISD_${D}_$AOI
 export -p INISD2=$ZDIR/ISD_${D}_$AOI.tif
-# # publish the result
+# publish the result
 
-# ciop-publish -m $ZDIR/ISD_${D}_$AOI.tif
-# # s3cmd put --recursive $ZDIR/ISD_${D}_$AOI.tif s3://melodies-wp7/
-# done
+ciop-publish -m $ZDIR/ISD_${D}_$AOI.tif
+#s3cmd put --recursive $ZDIR/ISD_${D}_$AOI.tif s3://melodies-wp7/
+done
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
@@ -101,7 +101,7 @@ import sys
 from sys import argv
 import subprocess
 import cioppy
-ciop = cioppy.Cioppy()
+import urllib
 
 sys.path.append('ZDIR')
 D=int(os.environ['D'])
@@ -112,17 +112,18 @@ file = os.environ['INISD2']
 username = os.environ['username_geoserver']
 passw = 'changeme'
 host = os.environ['host_geoserver']
+print host
 workspace = os.environ['workspace_geoserver']
 #img.name = sub(".tif", "", basename(ISD)) 
 gfile = os.environ['isd_style']
+style=gfile
 jobid = '2010'
 
 subprocess.call("curl -v -u \""+username+":"+passw+"\" -XPUT -H \"Content-type:image/tiff\" --data-binary @"+file+" "+host+"/workspaces/"+workspace+"/coveragestores/"+jobid+"--"+gfile+"/file.geotiff", shell=True)
-subprocess.call("curl -v -u \""+username+":"+passw+"\" -XPUT -H \"Content-type:application/xml\" -d \"<coverage><title>"+gfile[:-9]+"</title><enabled>true</enabled><advertised>true</advertised></coverage>\" "+host+"/workspaces/"+workspace+"/coveragestores/"+jobid+"--"+gfile+"/coverages/"+jobid+"--"+gfile[:-9]+".xml", shell=True)
-subprocess.call("curl -v -u \""+username+":"+passw+"\" -XPUT -H \"Content-type:application/xml\" -d \"<layer><defaultStyle><name>"+workspace+":"+style+"</name></defaultStyle><enabled>false</enabled><styles><style><name>raster</name></style><style><name>raster</name></style></styles><advertised>true</advertised></layer>\" "+host+"/layers/"+jobid+"--"+gfile[:-9]+".xml", shell=True)
+subprocess.call("curl -v -u \""+username+":"+passw+"\" -XPUT -H \"Content-type:application/xml\" -d \"<coverage><title>"+gfile[:-9]+"</title><enabled>true</enabled><advertised>true</advertised></coverage>\" "+host+"/workspaces/"+workspace+"/coveragestores/"+jobid+"--"+gfile[:-9]+"/coverages/"+jobid+"--"+gfile+".xml", shell=True)
+subprocess.call("curl -v -u \""+username+":"+passw+"\" -XPUT -H \"Content-type:application/xml\" -d \"<layer><defaultStyle><name>"+workspace+":"+style+"</name></defaultStyle><enabled>false</enabled><styles><style><name>raster</name></style><style><name>raster</name></style></styles><advertised>true</advertised></layer>\" "+host+"/layers/"+jobid+"--"+gfile+".xml", shell=True)
 
 EOF
-#-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
 ciop-log "INFO" "Step01: isd_vx001.sh" 
