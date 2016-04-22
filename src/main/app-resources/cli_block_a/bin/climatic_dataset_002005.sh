@@ -137,7 +137,7 @@ export -p HDIR=$IDIR/parameters/
 #-------------------------------------------------------------------------------------#
 for file in $CMDIR01/*.dat; do 
 filename=$(basename $file .dat )
-awk 'NR > 1 { print $1 }' $HDIR/header.txt > $CMDIR01/${filename}_01.dat
+awk 'NR > 1 { print $1 }' $CRS32662/header.txt > $CMDIR01/${filename}_01.dat
 cat $file >> $CMDIR01/${filename}_01.dat
 #add space
 sed -i -e 's/^/ /' $CMDIR01/${filename}_01.dat

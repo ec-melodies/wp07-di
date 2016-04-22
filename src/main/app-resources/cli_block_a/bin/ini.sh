@@ -13,7 +13,7 @@ anaconda=/opt/anaconda/bin/
 #-------------------------------------------------------------------------------------# 
 # Define parameter path + filename
 
-#rm -rf /data/outDIR/ISD/ISD000/
+rm -rf /data/outDIR/ISD/ISD000/
 
 export -p ODIR=/data/outDIR
 export -p DIR=$ODIR/ISD

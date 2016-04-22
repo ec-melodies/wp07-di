@@ -13,13 +13,18 @@ echo "path ~bin:" $IDIR
 
 rm -rf /tmp/snap-mapred/*
 
+# Setup environment variables
+# bash /application/cli_block_a/bin/ini.sh
+
 export -p ODIR=/data/outDIR
 export -p DIR=$ODIR/ISD
 export -p OUTDIR=$DIR/ISD000 && cd $OUTDIR && echo $OUTDIR
-export -p CXDIR=$IDIR/cli_block_a/bin/
+export -p CXDIR=$IDIR/cli_block_a/bin
 export -p SXDIR=$IDIR/bio_input_collecting/
 
 ciop-log "creating tmp/dir: $OUTDIR" 
+
+
 #-------------------------------------------------------------------------------------# 
 while read Year; do
 
@@ -28,7 +33,7 @@ echo ${Year}
 #------------------JOB----------------------------------------------------------------# 
 ciop-log "INFO" "Generating AOI and year"
 
-IR="$( ciop-getparam aoi )"
+export -p IR="$( ciop-getparam aoi )"
 ciop-log "AOI: $IR"
 
 export -p Y2=${Year}
@@ -43,39 +48,34 @@ else
 fi
 
 echo "Here:" $Y2
-
 cd $OUTDIR
-
 echo "$Y1 $Y2" > $OUTDIR/AOI.txt
-
 ciop-log "Generating $OUTDIR/AOI.txt"
-
-
-ciop-log "INFO" "Generating ecmwf.grib 00"
-
 #-------------------------------------------------------------------------------------# 
+ciop-log "INFO" "Generating ecmwf.grib $IR"
+
 if [[ $IR == AOI1 ]] ; then
 
 	for file in $(eval echo {$Y2..$Y1..5}); do
 	h=$(expr $file - 5)
-	echo $h $file			
+	echo $h $file $IR			
 	echo "$h $file 44.00 -9.75 36.00 3.50 0.75" > $OUTDIR/AOI_$file.txt
 	aoi=$(cat $OUTDIR/AOI_$file.txt ); echo "$aoi" 
 	years=$(awk '{print $1, $2}' $OUTDIR/AOI_$file.txt)
-	#bash $IDIR/cli_block_a/bin/ini.sh
-	#bash $CXDIR"climatic_dataset_000001.sh" $h $file 44.00 -9.75 36.00 3.50 0.75
+	ciop-log "climatic_dataset_000001.sh"
+	#bash $CXDIR/climatic_dataset_000001.sh $h $file 44.00 -9.75 36.00 3.50 0.75
 		
 	done
 elif [[ $IR == AOI2 ]] ; then
 
 	for file in $(eval echo {$Y2..$Y1..5}); do
 	h=$(expr $file - 5)
-	echo $h $file			
+	echo $h $file $IR			
 	echo "$h $file 37.5 -19.0 12.0 25.5 0.75" > $OUTDIR/AOI_$file.txt
 	aoi=$(cat $OUTDIR/AOI_$file.txt ); echo "$aoi" 
 	years=$(awk '{print $1, $2}' $OUTDIR/AOI_$file.txt)
-	#bash $IDIR/cli_block_a/bin/ini.sh
-	#bash $CXDIR"climatic_dataset_000001.sh" $h $file 37.5 -19.0 12.0 25.5 0.75
+	ciop-log "climatic_dataset_000001.sh"
+	#bash $CXDIR/climatic_dataset_000001.sh $h $file 37.5 -19.0 12.0 25.5 0.75
 		
 	done
 
@@ -83,12 +83,12 @@ elif [[ $IR == AOI3 ]] ; then
 
 	for file in $(eval echo {$Y2..$Y1..5}); do
 	h=$(expr $file - 5)
-	echo $h $file			
+	echo $h $file $IR			
 	echo "$h $file -9.0 21.0 -31.5 41.0 0.75" > $OUTDIR/AOI_$file.txt
 	aoi=$(cat $OUTDIR/AOI_$file.txt ); echo "$aoi" 
 	years=$(awk '{print $1, $2}' $OUTDIR/AOI_$file.txt)
-	#bash $IDIR/cli_block_a/bin/ini.sh
-	#bash $CXDIR"climatic_dataset_000001.sh" $h $file -9.0 21.0 -31.5 41.0 0.75
+	ciop-log "climatic_dataset_000001.sh"
+	#bash $CXDIR/climatic_dataset_000001.sh $h $file -9.0 21.0 -31.5 41.0 0.75
 		
 	done
 
@@ -96,48 +96,47 @@ elif [[ $IR == AOI4 ]] ; then
 		
 	for file in $(eval echo {$Y2..$Y1..5}); do
 	h=$(expr $file - 5)
-	echo $h $file			
+	echo $h $file $IR 			
 	echo "$h $file 42.5 25.5 36.0 45.0 0.75" > $OUTDIR/AOI_$file.txt
 	aoi=$(cat $OUTDIR/AOI_$file.txt ); echo "$aoi" 
 	years=$(awk '{print $1, $2}' $OUTDIR/AOI_$file.txt)
-	#bash $IDIR/cli_block_a/bin/ini.sh
-	#bash $CXDIR"climatic_dataset_000001.sh" $h $file 42.5 25.5 36.0 45.0 0.75
+	ciop-log "climatic_dataset_000001.sh"
+	#bash $CXDIR/climatic_dataset_000001.sh $h $file 42.5 25.5 36.0 45.0 0.75
 		
 	done	
 else
-	echo "AOI out of range"
+	echo "ECMWF out of range $IR"
 fi 
 
 
-ciop-log "INFO" "Generating ecmwf.grib 01"
+ciop-log "INFO" "Generating ecmwf.grib 01 and $IR"
 
 
 fcx(){
 years=$(awk '{print $1, $2}' $OUTDIR/AOI.txt)
-#exec $CXDIR"climatic_dataset_001000.sh" $Y1 $Y2 &
+#exec $CXDIR"/climatic_dataset_001000.sh" $Y1 $Y2 &
 #wait
-#exec $CXDIR"climatic_dataset_001001.sh" $Y1 $Y2 &
+#exec $CXDIR"/climatic_dataset_001001.sh" $Y1 $Y2 &
 #wait
-#exec $CXDIR"climatic_dataset_001005.sh" &
+#exec $CXDIR"/climatic_dataset_001005.sh" &
 #wait
-#exec $CXDIR"climatic_dataset_002000.sh" $Y1 $Y2 &
+#exec $CXDIR"/climatic_dataset_002000.sh" $Y1 $Y2 &
 #wait
-#exec $CXDIR"climatic_dataset_002001.sh" $Y1 $Y2 &
+#exec $CXDIR"/climatic_dataset_002001.sh" $Y1 $Y2 &
 #wait
-#exec $CXDIR"climatic_dataset_002005.sh" &
+#exec $CXDIR"/climatic_dataset_002005.sh" &
 #wait
-#exec $IDIR"/bio_input_collecting/run.sh" $Y2 $IR &
-#wait
-#exec $IDIR"/bio_block_p1/run.sh" $Y2 $IR &
-#wait 
-#exec $IDIR"/bio_block_a/run.sh" $Y2 $IR &
-#wait
-#exec $IDIR"/bio_block_p2/run.sh" $Y2 $IR & 
-#wait
+exec $IDIR"/bio_input_collecting/run.sh" $Y2 $IR &
+wait
+exec $IDIR"/bio_block_p1/run.sh" $Y2 $IR &
+wait 
+exec $IDIR"/bio_block_a/run.sh" $Y2 $IR &
+wait
+exec $IDIR"/bio_block_p2/run.sh" $Y2 $IR & 
+wait
 exec $IDIR"/processing_block_p/run.sh" $Y2 $IR &
-#wait 
-#exec $IDIR"/processing_block_a/run.sh" $Y2 $IR 
-   
+wait 
+exec $IDIR"/processing_block_a/run.sh" $Y2 $IR    
 }
 
 ciop-log "INFO" "Generating ecmwf.dat"
