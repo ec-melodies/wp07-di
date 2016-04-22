@@ -90,6 +90,7 @@ echo $ulx $uly $lrx $lry
 output003=$NVDIR/${filename/#Vx001__crop/Vx002__crop}.tif 
 echo $output003 
 gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $input001 $output003
+
 done
 
 #-------------------------------------------------------------------------------------# 
@@ -117,6 +118,7 @@ echo $ulx $uly $lrx $lry
 output003=$SBDIR/${filename/#Sx001__crop/Sx002__crop}.tif 
 echo $output003 
 gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $input001 $output003
+
 done
 
 #-------------------------------------------------------------------------------------# 
@@ -241,7 +243,10 @@ output004=$ZDIR/${filename/#Bx001_/Bx002_}.tif
 echo $output003 
 gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input001 $output003
 cp $output003 $output004
+
 done
+
+rm $Cx001
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#
 #  ASCII to geoMS (.OUT or .dat)

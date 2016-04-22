@@ -23,7 +23,7 @@ export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------# 
 #auxiliar data files (tmp): The intermediate indicators:
 export PATH=/opt/anaconda/bin/:$PATH
-export -p IDIR=/application/
+export -p IDIR=/application
 export -p ODIR=/data/outDIR
 export -p DIR=$ODIR/ISD
 export -p OUTDIR=$DIR/ISD000
@@ -45,7 +45,7 @@ export -p CRS32662=$2
 echo $CRS32662
 
 export -p C2=$IDIR/parameters/CRS32662_01.txt
-export -p C1=$(cat IDIR/parameters/CRS32662_01.txt ); echo "$C1"
+export -p C1=$(cat $IDIR/parameters/CRS32662_01.txt ); echo "$C1"
 
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#
@@ -105,6 +105,7 @@ lry1=$(awk "BEGIN {print ($lry+6184.416)}")
 output003=$VITO/${filename/#LANDC002/LANDC003}.tif 
 echo $output003 
 gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input001 $output003
+rm $Cx001
 done
 
 #-------------------------------------------------------------------------------------# 
@@ -113,10 +114,11 @@ export PATH=/opt/anaconda/bin/:$PATH
 for file in $VITO/LANDC003*.tif; do
 filename=$(basename $file .tif )
 echo $filename
-ls *${filename}.tif >> list_LC.txt
-gdalbuildvrt $VITO/${filename}.vrt --optfile list_LC.txt
+ls *${filename}.tif >> $VITO/list_LC.txt
+gdalbuildvrt $VITO/${filename}.vrt --optfile $VITO/list_LC.txt
 gdal_translate $VITO/${filename}.vrt $VITO/LC_004.tif
 done
+rm $VITO/list_LC.txt
 
 # ASCII to geoMS (.OUT or .dat)
 #-------------------------------------------------------------------------------------#
@@ -147,7 +149,6 @@ echo $line
 echo $COUNT
 gdal_translate -projwin $line -of GTiff $VITO/${filename}.tif  $VITO/${filename}_crop_$COUNT.tif
 done < $CRS326620
-#done < "/home/melodies-ist/wp07-di/src/main/app-resources/parameters/AOI4_32662_01.txt"
 done
 
 ciop-log "INFO" "vgt_to_geoms_00501.sh"

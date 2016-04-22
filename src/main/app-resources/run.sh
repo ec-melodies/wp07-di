@@ -126,12 +126,12 @@ years=$(awk '{print $1, $2}' $OUTDIR/AOI.txt)
 #wait
 #exec $CXDIR"/climatic_dataset_002005.sh" &
 #wait
-exec $IDIR"/bio_input_collecting/run.sh" $Y2 $IR &
-wait
-exec $IDIR"/bio_block_p1/run.sh" $Y2 $IR &
-wait 
-exec $IDIR"/bio_block_a/run.sh" $Y2 $IR &
-wait
+#exec $IDIR"/bio_input_collecting/run.sh" $Y2 $IR &
+#wait
+#exec $IDIR"/bio_block_p1/run.sh" $Y2 $IR &
+#wait 
+#exec $IDIR"/bio_block_a/run.sh" $Y2 $IR &
+#wait
 exec $IDIR"/bio_block_p2/run.sh" $Y2 $IR & 
 wait
 exec $IDIR"/processing_block_p/run.sh" $Y2 $IR &

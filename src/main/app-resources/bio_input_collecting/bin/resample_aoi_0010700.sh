@@ -126,7 +126,7 @@ echo $subset_aoi
 echo $INSPOT
 echo $OUTSPOT
 
-gpt $VITO/subset_aoi.xml -Ssource=$INSPOT -f GeoTIFF -t $OUTSPOT
+#gpt $VITO/subset_aoi.xml -Ssource=$INSPOT -f GeoTIFF -t $OUTSPOT
 
 gdalinfo $OUTSPOT
 

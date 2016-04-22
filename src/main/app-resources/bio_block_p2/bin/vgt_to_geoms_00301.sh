@@ -181,6 +181,7 @@ output004=$ZDIR/${filename/#Cx001_/Cx002_}.tif
 echo $output003 
 gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input001 $output003
 cp $output003 $output004
+rm $Cx001
 done
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#
