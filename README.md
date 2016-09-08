@@ -1,6 +1,6 @@
-#The biophysical indicator of vulnerability to drought
+#The Integrated Biophysical  and Climate Susceptibility sub-service
 
-The biophysical indicator of vulnerability to drought is a geographic map representing the susceptibility to desertification of the covered areas with a range between 0 and 1. The higher values correspond to places whose history indicates a dynamic drift towards the advancement of desertification processes.
+The Integrated Biophysical  and Climate Susceptibility is a geographic map representing the susceptibility to desertification of the covered areas with a range between 0 and 1. The higher values correspond to places whose history indicates a dynamic drift towards the advancement of desertification processes.
 
 This indicator is comprised of two fundamental components:
 
