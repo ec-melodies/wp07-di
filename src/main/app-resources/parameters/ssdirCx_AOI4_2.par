@@ -11,8 +11,8 @@
 # here we define the hardata parameters 
 #-------------------------------------------------------------------------------------# 
 
-[HARDDATAZ1] 
-DATAFILE  =  /data/outDIR/ISD/ISD000/GEOMS/Cx0111103_1_001.dat  # Hard Data file
+[HARDDATA1] 
+DATAFILE  = /data/outDIR/ISD/ISD000/GEOMS/Cx0111103_1_001.dat  # Hard Data file
 
 COLUMNS   = 4                 # Number of columns in the data file (to eliminate) 
 XCOLUMN   = 1                 # Column number of X coordinate 
@@ -25,7 +25,7 @@ MINVAL    = 0   # Minimun threshold value
 MAXVAL    = 1   # Maximum threshold value
 
 USETRANS  = 1                 # Check if transformation file will be used 
-TRANSFILE = Cluster.trn       # Transformation file 
+TRANSFILE = /data/outDIR/ISD/ISD000/GEOMS/Cluster.trn       # Transformation file 
 
 [HARDDATA] 
 
@@ -43,7 +43,7 @@ UTPAR   = 1    # Parameter for the utail=2
 # here we define some parameters for the simulation 
 #-------------------------------------------------------------------------------------# 
 [SIMULATION] 
-OUTFILE   =  /data/outDIR/ISD/ISD000/GEOMS/Cx/ISD_  # Filename of the resultant simulations
+OUTFILE   = /data/outDIR/ISD/ISD000/GEOMS/Cx/ISD_  # Filename of the resultant simulations
 
 NSIMS     = 1                 # Number of Simulations to generate 
 NTRY      = 5                 # Number of simulation for bias correction  
@@ -54,16 +54,16 @@ VARCORR   = 1                 # Average correction flag
 #-------------------------------------------------------------------------------------# 
 [GRID] 
 # NX, NY and NZ are the number of blocks per direction  
-NX        =3658
+NX        =1890
 
-NY        =2380
+NY        =1729
 
 NZ        =1
 
 # ORIGX, ORIGY and ORIGZ are the start coordinate for each direction 
-ORIGX     =3895375.922
+ORIGX     =3296105.996
 
-ORIGY     =3987590.069
+ORIGY     =3931930.323
 
 ORIGZ     =0.0
 
@@ -74,7 +74,7 @@ SIZEY     =309.2208
 
 SIZEZ     =1.0
 
-#-------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------#
 # here we define some general parameters 
 #-------------------------------------------------------------------------------------# 
 [GENERAL] 
@@ -156,7 +156,7 @@ AUXILIARYFILE = T_DSS_1_1.out        # auxiliary image
 #-------------------------------------------------------------------------------------# 
 [DEBUG]   
 DBGLEVEL  = 1                 # 1 to 3, use higher than 1 only if REALLY needed 
-DBGFILE   = debug.dbg         # File to write debug 
+DBGFILE   = /data/outDIR/ISD/ISD000/GEOMS/debug.dbg         # File to write debug 
 #-------------------------------------------------------------------------------------# 
 # here we define parameters for COVARIANCE TABLE - reduce if memory is a problem  
 #-------------------------------------------------------------------------------------# 

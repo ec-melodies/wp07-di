@@ -1,0 +1,4 @@
+/application/parameters/AOI1_Cx001.txt
+/application/parameters/AOI2_Cx001.txt
+/application/parameters/AOI3_Cx001.txt
+/application/parameters/AOI4_Cx001.txt

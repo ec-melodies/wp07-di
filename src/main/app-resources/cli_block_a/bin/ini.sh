@@ -13,7 +13,7 @@ anaconda=/opt/anaconda/bin/
 #-------------------------------------------------------------------------------------# 
 # Define parameter path + filename
 
-rm -rf /data/outDIR/ISD/ISD000/
+#rm -rf /data/outDIR/ISD/ISD000/
 
 export -p ODIR=/data/outDIR
 export -p DIR=$ODIR/ISD
@@ -40,6 +40,8 @@ export -p ISDD=$ZDIR/Dx && mkdir -pm 777 $ISDD
 export -p LDIR=$OUTDIR/COKC && mkdir -pm 777 $LDIR
 export -p CMDIR01=$CMDIR/AOI_CX && mkdir -pm 777 $CMDIR01
 export -p CMDIR02=$CMDIR/AOI_DX && mkdir -pm 777 $CMDIR02
+export -p NVDIR1=$NVDIR/ndv_msc && mkdir -pm 777 $NVDIR1
+export -p SBDIR1=$SBDIR/soil_msc && mkdir -pm 777 $SBDIR1
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 exit 0

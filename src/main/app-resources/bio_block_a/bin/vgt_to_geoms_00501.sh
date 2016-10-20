@@ -43,10 +43,6 @@ echo $Y2
 #-------------------------------------------------------------------------------------#
 export -p CRS32662=$2
 echo $CRS32662
-
-export -p C2=$IDIR/parameters/CRS32662_01.txt
-export -p C1=$(cat $IDIR/parameters/CRS32662_01.txt ); echo "$C1"
-
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#
 R --vanilla --no-readline   -q  <<'EOF'
@@ -108,7 +104,8 @@ gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input001 $output003
 rm $Cx001
 done
 
-#-------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------#
+
 export PATH=/opt/anaconda/bin/:$PATH
 
 for file in $VITO/LANDC003*.tif; do
@@ -123,18 +120,19 @@ rm $VITO/list_LC.txt
 # ASCII to geoMS (.OUT or .dat)
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
+export -p C3=$IDIR/parameters/CRS32662_01.txt
 #-------------------------------------------------------------------------------------# 
 if [[ $CRS32662 == AOI1 ]] ; then
-	export -p CRS326620=$(grep AOI1 $C2);
+	export -p CRS326620=$(grep AOI1 $C3);
 
 elif [[ $CRS32662 == AOI2 ]] ; then
-	export -p CRS326620=$(grep AOI2 $C2);
+	export -p CRS326620=$(grep AOI2 $C3);
 
 elif [[ $CRS32662 == AOI3 ]] ; then
-	export -p CRS326620=$(grep AOI3 $C2);
+	export -p CRS326620=$(grep AOI3 $C3);
 
 elif [[ $CRS32662 == AOI4 ]] ; then 
-	export -p CRS326620=$(grep AOI4 $C2);
+	export -p CRS326620=$(grep AOI4 $C3);
 else
 	echo "AOI out of range"
 fi 
@@ -152,6 +150,13 @@ done < $CRS326620
 done
 
 ciop-log "INFO" "vgt_to_geoms_00501.sh"
+
+for file in $VITO/LANDC*; do
+echo $file
+rm $file
+done
+
+rm $VITO/LC_004.tif
 
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#

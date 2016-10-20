@@ -19,7 +19,7 @@ export -p DIR=$ODIR/ISD
 export -p OUTDIR=$DIR/ISD000
 export -p VITO=$OUTDIR/VITO
 
-export AOI=$2
+export -p AOI=$2
 echo $AOI
 
 #Year
@@ -28,21 +28,22 @@ echo $Y2
 
 #List of images
 export -p INP2=$IDIR/parameters/vito
-export -p y3=$(grep $Y2 $INP2)
-
+export -p y3=$(grep $Y2'09' $INP2)
+echo $y3
 cd $VITO
 ciop-copy -o . $y3
 export -p SPOT=$(ls | grep $Y2)
 export -p INSPOT=$VITO/$SPOT
-export -p Cx001=$VITO/Cx001_32662.txt
+#export -p Cx001=$VITO/Cx001_32662.txt
 export -p OUTSPOT=$VITO/V2KRNS10.tif
+export -p CR=$IDIR/parameters/AOI_Cx001_32662.txt
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 # set the environment variables to use ESA BEAM toolbox
 
-export SNAP=/opt/snap-2.0
+export SNAP=/opt/snap-3.0
 export PATH=${SNAP}/bin:${PATH}
-
+rm -rf /tmp/snap-mapred/*
 #-------------------------------------------------------------------------------------# 
 #the ESA toolbox
 						
@@ -126,75 +127,21 @@ echo $subset_aoi
 echo $INSPOT
 echo $OUTSPOT
 
-#gpt $VITO/subset_aoi.xml -Ssource=$INSPOT -f GeoTIFF -t $OUTSPOT
-
-gdalinfo $OUTSPOT
-
 ciop-log "INFO" "SNAP toolbox"
-#-------------------------------------------------------------------------------------# 
-#-------------------------------------------------------------------------------------# 
-ciop-log "INFO" "Gdalwarp -> epsg:32662"
-ciop-log "DEBUG" "Gdalwarp -> epsg:32662"
+gpt $VITO/subset_aoi.xml -Ssource=$INSPOT -f GeoTIFF -t $OUTSPOT
 
-gdalwarp -t_srs '+init=epsg:32662' $OUTSPOT $VITO/V2KRNS100.tif
-#-------------------------------------------------------------------------------------# 
-#-------------------------------------------------------------------------------------# 
-# PURPOSE: NDVI, NIR, RED
-
-gdal_translate -of Gtiff -b 2 $VITO/V2KRNS100.tif $VITO/RED001.tif
-gdal_translate -of Gtiff -b 3 $VITO/V2KRNS100.tif $VITO/NIR001.tif
-gdal_translate -of Gtiff -b 5 $VITO/V2KRNS100.tif $VITO/NDV001.tif
-
-ciop-log "INFO" "BAND: NDV, RED, NIR"
 
 #-------------------------------------------------------------------------------------# 
-# echo "FASE 1"
-#-------------------------------------------------------------------------------------# 
-# PURPOSE: RESAMPLE_AOI NDVI, NIR, RED
-#-------------------------------------------------------------------------------------#
-R --vanilla --no-readline   -q  <<'EOF'
+rm -rf /tmp/snap-mapred/*
 
-#R version  3.2.1
-# set working directory
-CMDIR = Sys.getenv(c('VITO'))
-
-setwd(CMDIR)
-getwd()
-
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-
-lapply(xlist, require, character.only = TRUE)
-
-rb = raster("/data/outDIR/ISD/ISD000/CM001/AOI/AOI_CX/Cx001_32662.tif")
-rb
-sink(paste(CMDIR,'/', 'Cx001_32662.txt',sep = ""))
-rb
-sink()
-
-EOF
-
-#-------------------------------------------------------------------------------------# 
-ciop-log "INFO" "Getting the same boundary information of GlobCover: $VITO/${filename}_01.tif "
-
-for file in $VITO/*001.tif ; do 
-filename=$(basename $file .tif )
-echo $Cx001
-# Get the same boundary information_globcover
-ulx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $3 }')
-uly=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $6 }')
-lrx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $4 }')
-lry=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $5 }')
-echo $ulx $uly $lrx $lry $filename
-gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $VITO/${filename}.tif $VITO/${filename}_01.tif 
+for file in $VITO/*.ZIP; do 
+rm -rf $file 
 done
 
-
-rm -rf /tmp/snap-mapred/*
 rm -rf $INSPOT
 
-ciop-log "INFO" "remover /tmp/snap-mapred/"
-#rm $VITO/NDV001.tif $VITO/NIR001.tif $VITO/RED001.tif $VITO/V2KRNS10.tif $VITO/subset_aoi.xml
+ciop-log "INFO" "remover $INSPOT"
+
 #-------------------------------------------------------------------------------------#
+echo "DONE"
 exit 0

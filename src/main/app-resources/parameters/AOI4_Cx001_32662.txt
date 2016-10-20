@@ -1,0 +1,8 @@
+class       : RasterLayer 
+dimensions  : 10, 27, 270  (nrow, ncol, ncell)
+resolution  : 83490, 83490  (x, y)
+extent      : 2838647, 5092867, 3924012, 4758908  (xmin, xmax, ymin, ymax)
+coord. ref. : +init=epsg:32662 +proj=eqc +lat_ts=0 +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs +towgs84=0,0,0 
+data source : in memory
+names       : Cs_sa2_2014 
+values      : 0, 1  (min, max)

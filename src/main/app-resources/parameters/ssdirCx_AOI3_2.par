@@ -11,8 +11,8 @@
 # here we define the hardata parameters 
 #-------------------------------------------------------------------------------------# 
 
-[HARDDATAZ1] 
-DATAFILE  =  /data/auxdata/ISD/ISD000/CM001/AOI/AOI_CX/Cx01111031_01.dat # Hard Data file
+[HARDDATA1] 
+DATAFILE  = /data/outDIR/ISD/ISD000/GEOMS/Cx0111103_1_001.dat  # Hard Data file
 
 COLUMNS   = 4                 # Number of columns in the data file (to eliminate) 
 XCOLUMN   = 1                 # Column number of X coordinate 
@@ -25,7 +25,7 @@ MINVAL    = 0   # Minimun threshold value
 MAXVAL    = 1   # Maximum threshold value
 
 USETRANS  = 1                 # Check if transformation file will be used 
-TRANSFILE = Cluster.trn       # Transformation file 
+TRANSFILE = /data/outDIR/ISD/ISD000/GEOMS/Cluster.trn       # Transformation file 
 
 [HARDDATA] 
 
@@ -43,7 +43,7 @@ UTPAR   = 1    # Parameter for the utail=2
 # here we define some parameters for the simulation 
 #-------------------------------------------------------------------------------------# 
 [SIMULATION] 
-OUTFILE   = /data/auxdata/ISD/ISD000/GEOMS/Cx/ISD_   # Filename of the resultant simulations
+OUTFILE   = /data/outDIR/ISD/ISD000/GEOMS/Cx/ISD_  # Filename of the resultant simulations
 
 NSIMS     = 1                 # Number of Simulations to generate 
 NTRY      = 5                 # Number of simulation for bias correction  
@@ -54,16 +54,16 @@ VARCORR   = 1                 # Average correction flag
 #-------------------------------------------------------------------------------------# 
 [GRID] 
 # NX, NY and NZ are the number of blocks per direction  
-NX        =3793
+NX        =2278
 
-NY        =4254
+NY        =2084
 
 NZ        =1
 
 # ORIGX, ORIGY and ORIGZ are the start coordinate for each direction 
-ORIGX     =2343728.069
+ORIGX     =2892793.716
 
-ORIGY     =-3581251.829
+ORIGY     =-3401130.678
 
 ORIGZ     =0.0
 
@@ -74,7 +74,7 @@ SIZEY     =309.2208
 
 SIZEZ     =1.0
 
-#-------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------#
 # here we define some general parameters 
 #-------------------------------------------------------------------------------------# 
 [GENERAL] 
@@ -82,21 +82,21 @@ NULLVAL   = -999.0           # Definition of the null value
 
 SEED      =178132354            # Seed for the pseudorandom number generator - if you want repeatable simulations 
 USEHEADERS      = 1            # Seed for the pseudorandom number generator - if you want repeatable simulations 
-FILETYPE = GEOEAS #SGEMS
+FILETYPE = GEOEAS
 #-------------------------------------------------------------------------------------# 
 # here we define the parameters for search 
 #-------------------------------------------------------------------------------------# 
 [SEARCH] 
 NDMIN   = 1                   # Minimum number of original data that should be used to simulate a node 
-NDMAX   = 32                  # Maximum number of original data that should be used to simulate a node 
+NDMAX   = 16                  # Maximum number of original data that should be used to simulate a node 
 NODMAX  = 12                  # Maximum number of previouly simulated nodes to be used to simulate a new node 
 SSTRAT  = 0                   # Two-part search / data nodes flag  
 MULTS   = 0                   # Multiple grid simulation flag  
 NMULTS  = 1                   # Number of multiple grid refinements  
 NOCT    = 0 #2                   # Number of original data to use per octant 
-RADIUS1 =7245706                # Search radii in the maximum horizontal direction
+RADIUS1 =7245706                  # Search radii in the maximum horizontal direction
 
-RADIUS2 =7245706                # Search radii in the maximum horizontal direction
+RADIUS2 =7245706                 # Search radii in the maximum horizontal direction
 
 RADIUS3 =0                # Search radii in the maximum horizontal direction
 
@@ -113,10 +113,10 @@ SANG3   =0                   # Orientation angle parameter of direction I (degre
 KTYPE     =5               # Kriging type ;0=simple,1=ordinary,2=simple with locally varying mean, 
 # 3=external drif, 4=collo-cokrig global CC,5=local CC (KTYPE) 
 COLOCORR =0.75                # Global CC to ktype=4  
-SOFTFILE  =/data/auxdata/ISD/ISD000/GEOMS/Bx0100003_2_01.dat    # Filename of the soft data 
+SOFTFILE  = /data/outDIR/ISD/ISD000/GEOMS/Bx0100003_2_01.dat    # Filename of the soft data 
 NVARIL  = 1                   # Number of columns in the secundary data file 
 ICOLLVM = 1                   # Column number of secundary variable  
-CCFILE    =/data/auxdata/ISD/ISD000/GEOMS/CRx0100003_2_01.dat      # Filename of correlation file for local correlations (ktype=5) 
+CCFILE    = /data/outDIR/ISD/ISD000/GEOMS/Cx0100003_2_001.dat      # Filename of correlation file for local correlations (ktype=5) 
 RESCALE = 0
 #-------------------------------------------------------------------------------------# 
 # here we define the variogram to use. if more than 1, use [VARIOGRAM2] 
@@ -156,7 +156,7 @@ AUXILIARYFILE = T_DSS_1_1.out        # auxiliary image
 #-------------------------------------------------------------------------------------# 
 [DEBUG]   
 DBGLEVEL  = 1                 # 1 to 3, use higher than 1 only if REALLY needed 
-DBGFILE   = debug.dbg         # File to write debug 
+DBGFILE   = /data/outDIR/ISD/ISD000/GEOMS/debug.dbg         # File to write debug 
 #-------------------------------------------------------------------------------------# 
 # here we define parameters for COVARIANCE TABLE - reduce if memory is a problem  
 #-------------------------------------------------------------------------------------# 

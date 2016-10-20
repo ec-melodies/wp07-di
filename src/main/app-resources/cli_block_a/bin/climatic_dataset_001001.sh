@@ -76,10 +76,10 @@ TPmlist01
 assign(paste("TPm_",1,sep=""),readGDAL(paste(INDIR,'/',TPmlist01[[1]] ,sep = "")))
 xy001=geometry(TPm_1)
 
-TPmlist06<-mixedsort(list.files(path=INDIR, pattern="*.txt"))
+TPmlist06<-mixedsort(list.files(path=CMDIR, pattern="*.txt"))
 TPmlist06
 for (i in 1:(length(TPmlist06))){ww=assign(paste("RL100401_",i,sep=""),
-read.table(paste(INDIR,'/',TPmlist06[[i]] ,sep = ""), header=FALSE, sep="", na.strings="NA", dec=".", strip.white=TRUE))
+read.table(paste(CMDIR,'/',TPmlist06[[i]] ,sep = ""), header=FALSE, sep="", na.strings="NA", dec=".", strip.white=TRUE))
 }
 ls()
 #-------------------------------------------------------------------------------------# 
@@ -88,7 +88,9 @@ file.names <- names(TPmlist09)
 RL100501<-do.call(cbind, mget(file.names, envir=.GlobalEnv))
 #-------------------------------------------------------------------------------------# 
 y10=substr(y1, start = 3, stop = 4)
+y10
 y20=substr(y2, start = 3, stop = 4)
+y20
 en <- as.Date(paste('30/09','/',y20,sep=""), "%d/%m/%y")
 st <- as.Date(paste('01/10','/',y10,sep=""), "%d/%m/%y")
 years <- seq(st, en, by="1 day")

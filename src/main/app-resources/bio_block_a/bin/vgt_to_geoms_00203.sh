@@ -65,6 +65,8 @@ gdal_translate -projwin $line -of GTiff $CDIR/${filename}.tif  $CDIR/${filename}
 done < $CRS326620
 done
 
+#rm -rf /data/outDIR/ISD/ISD000/SM001/class_SOIL001/
+
 ciop-log "INFO" "vgt_to_geoms_00203.sh"
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#

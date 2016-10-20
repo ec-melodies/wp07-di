@@ -29,6 +29,8 @@ export -p VITO=$OUTDIR/VITO
 #-------------------------------------------------------------------------------------#
 # Sample
 #-------------------------------------------------------------------------------------#
+rm -rf /data/outDIR/ISD/ISD000/VITO/V2KRNS100.tif
+
 for file in $VITO/GLOBCOVER_01_crop_*.tif; do 
 filename=$(basename $file .tif )
 gdal_translate  -of AAIGrid $VITO/${filename}.tif $VITO/${filename}.asc
@@ -56,7 +58,7 @@ lapply(xlist, require, character.only = TRUE)
 #gcinfo(TRUE) 
 
 # create a list from these files
-list.filenames<-mixedsort(list.files(pattern='GLOBCOVER_01_crop_.*\\.txt'))
+list.filenames<-mixedsort(list.files(pattern='GLOBCOVER_01_crop_.*\\.tif'))
 
 # reclassify the values
 reclass_function = function(x00){
@@ -73,45 +75,22 @@ reclass_function = function(x00){
 	for(i in c(190)) {x00 <- ifelse(x00==i,1,x00)}
 	return(x00)}
 
-
 for (i in 1:length(list.filenames[])){
-LANDCrc <-read.table(paste(path=INDIR,'/', list.filenames[i],sep =""), header=FALSE, sep="", na.strings="NA", dec=",", strip.white=TRUE)
-LANDCrc01<-as.matrix(LANDCrc)
-x00=LANDCrc01 
-x01b=reclass_function(x00)
-#write.table(x01b,paste(CMDIR,'/' ,'x00_',i,'.txt',sep = ""),row.names = TRUE, col.names = TRUE, quote = FALSE, append = FALSE) 
-x001<-data.frame(t(x01b))
-x0001<-stack(x001)
-
-#list all files from the current directory
-list.filenames02<-mixedsort(list.files(pattern='GLOBCOVER_01_crop_.*\\.tif'))
-
-x01=list.filenames02[i]
-list.files(pattern=x01) 
-list.filename<-list.files(path=INDIR, pattern=x01)
-file<-readGDAL(list.filename)
-xy_sa=geometry(file)
-xy<-data.frame(xy_sa)
-
-rm("LANDCrc")
-
-# df_to_raster=function(x){
-r0<-x0001[1]
-r1<-cbind(r0,xy)
-r10<-data.frame(r1)
-coordinates(r10)=~x+y
-proj4string(r10)=CRS("+init=epsg:32662") # set it to lat-long
-r10 = spTransform(r10,CRS("+init=epsg:32662"))
-gridded(r10) = TRUE
-rD3 = raster(r10)
-projection(rD3) = CRS("+init=epsg:32662")
-writeRaster(rD3,paste(CMDIR, '/' ,'LANDC002_',i,'.tif',sep = ""),overwrite=TRUE)
-gc()
-rm(rD3)
+LANDCrc01<- raster(list.filenames[[i]])
+x01b <- calc(LANDCrc01,fun=reclass_function)
+rm(LANDCrc01)
+projection(x01b) = CRS("+init=epsg:32662")
+writeRaster(x01b,paste(CMDIR, '/' ,'LANDC002_',i,'.tif',sep = ""),overwrite=TRUE)
 }
-EOF
 
+EOF
+#-------------------------------------------------------------------------------------#
 ciop-log "INFO" "resample_aoi_00105.sh"
+
+for file in $VITO/GLOBCOVER_01_crop_*; do 
+echo $file
+rm $file
+done
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
 echo "DONE"

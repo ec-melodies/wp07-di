@@ -66,6 +66,9 @@ echo $COUNT
 gdal_translate -projwin $line -of GTiff $VDIR/${filename}.tif  $VDIR/${filename}_crop_$COUNT.tif 
 done < $CRS326620
 done
+
+#rm -rf /data/outDIR/ISD/ISD000/VM001/class_NDV001/
+
 ciop-log "INFO" "vgt_to_geoms_00103.sh"
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#

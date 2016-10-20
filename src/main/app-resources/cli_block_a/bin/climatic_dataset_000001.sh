@@ -18,7 +18,7 @@ export -p DIR=$ODIR/ISD
 export -p OUTDIR=$DIR/ISD000
 export -p CMDIR=$OUTDIR/CM001
 
-s3cmd get --skip-existing s3://melodies-wp7/.ecmwfapirc $HOME
+s3cmd -f get --skip-existing s3://melodies-wp7/.ecmwfapirc $HOME
 #-------------------------------------------------------------------------------------#
 export y1=$1
 export y2=$2

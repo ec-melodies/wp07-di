@@ -1,18 +1,9 @@
 #!/bin/bash
 #-------------------------------------------------------------------------------------# 
-# PURPOSE: LANDCOVER
+# PURPOSE: LANDCOVER Subset
 #-------------------------------------------------------------------------------------# 
 # Requires:
-# gdalinfo
-# gdal_calc
-# pktools
 # gdal_translate 
-# R packages: 
-# zoo
-# rgdal
-# raster
-# sp
-# maptools
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
 source ${ciop_job_include}
@@ -26,24 +17,27 @@ export -p DIR=$ODIR/ISD
 export -p OUTDIR=$DIR/ISD000
 export -p VITO=$OUTDIR/VITO
 
-CRS32662="$( ciop-getparam aoi )"
-echo $CRS32662
+export -p ISR=$2
+echo $ISR
 
-export -p C2=$IDIR/parameters/CRS32662.txt
-echo "$(cat $IDIR/parameters/CRS32662.txt )"
+#Year
+export -p Y2=$1
+echo $Y2
+
+export -p C2=$IDIR/parameters/CRS32662.txt; echo "$(cat $IDIR/parameters/CRS32662.txt )"
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
-if [[ $CRS32662 == AOI1 ]] ; then
+if [[ $ISR == AOI1 ]] ; then
 	export -p CRS326620=$(grep AOI1 $C2);
 
-elif [[ $CRS32662 == AOI2 ]] ; then
+elif [[ $ISR == AOI2 ]] ; then
 	export -p CRS326620=$(grep AOI2 $C2);
 
-elif [[ $CRS32662 == AOI3 ]] ; then
+elif [[ $ISR == AOI3 ]] ; then
 	export -p CRS326620=$(grep AOI3 $C2);
 
-elif [[ $CRS32662 == AOI4 ]] ; then 
+elif [[ $ISR == AOI4 ]] ; then 
 	export -p CRS326620=$(grep AOI4 $C2);
 else
 	echo "AOI out of range"
@@ -59,6 +53,8 @@ gdal_translate -projwin $line -of GTiff $VITO/GLOBCOVER_01.tif $VITO/GLOBCOVER_0
 
 ciop-log "INFO" "Retrieving: $VITO/GLOBCOVER_01_crop_$COUNT.tif"
 done < $CRS326620
+
+rm $VITO/GLOBCOVER_01.tif
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#
 echo "DONE"

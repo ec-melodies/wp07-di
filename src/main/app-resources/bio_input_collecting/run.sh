@@ -13,10 +13,10 @@ export -p IXDIR=$IDIR/bio_input_collecting/bin/
 export -p YR=$IDIR/parameters/LULC
 
 export -p ODIR=/data/outDIR
-export -p DIR=$ODIR/ISD
+export -p DIR=$ODIR/ISD/ISD000
 export -p INP2=$IDIR/parameters/vito
 #-------------------------------------------------------------------------------------# 
-IR="$( ciop-getparam aoi )"
+export -p IR=$2
 ciop-log "AOI: $IR"
 
 export -p Y2=$1
@@ -26,54 +26,70 @@ ciop-log "INFO" "Step00: Bio_input_collecting"
 
 function probav(){
 if [[ $IR == AOI1 ]] ; then
-	grep "X16Y03" $INP2 > $DIR/list.txt
-	grep "X17Y03" $INP2 >> $DIR/list.txt
-	grep "X18Y03" $INP2 >> $DIR/list.txt
+	grep $Y2 $INP2 | grep "X16Y03" > $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X17Y03" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X18Y03" >> $DIR/list1.txt
 	echo "${AOI=$(echo AOI1 )}"
 	igcx $AOI
 	echo "AOI1"
 
 elif [[ $IR == AOI2 ]] ; then
-	grep "Y03" $INP2 > $DIR/list.txt
-	grep "Y04" $INP2 >> $DIR/list.txt
-	grep "Y05" $INP2 >> $DIR/list.txt
+	grep $Y2 $INP2 | grep "X16Y03" > $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X16Y04" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X16Y05" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X17Y03" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X17Y04" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X17Y05" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X18Y03" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X18Y04" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X18Y05" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X19Y03" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X19Y04" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X19Y05" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X20Y03" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X20Y04" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X20Y05" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X21Y03" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X21Y04" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X21Y05" >> $DIR/list1.txt
 	echo "${AOI=$(echo AOI2 )}"
 	igcx $AOI
 	echo "AOI2"
 
 elif [[ $IR == AOI3 ]] ; then
-	grep "X20Y06" $INP2 > $DIR/list.txt
-	grep "X21Y06" $INP2 >> $DIR/list.txt
-	grep "X22Y06" $INP2 >> $DIR/list.txt
-	grep "X20Y07" $INP2 >> $DIR/list.txt
-	grep "X21Y07" $INP2 >> $DIR/list.txt
-	grep "X22Y07" $INP2 >> $DIR/list.txt
-	grep "X20Y08" $INP2 >> $DIR/list.txt
-	grep "X21Y08" $INP2 >> $DIR/list.txt
-	grep "X22Y08" $INP2 >> $DIR/list.txt
-	grep "X20Y09" $INP2 >> $DIR/list.txt
-	grep "X21Y09" $INP2 >> $DIR/list.txt
-	grep "X22Y09" $INP2 >> $DIR/list.txt
-	grep "X20Y10" $INP2 >> $DIR/list.txt
-	grep "X21Y10" $INP2 >> $DIR/list.txt
-	grep "X22Y10" $INP2 >> $DIR/list.txt
+	grep $Y2 $INP2 | grep "X20Y06" > $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X21Y06" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X22Y06" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X20Y07" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X21Y07" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X22Y07" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X20Y08" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X21Y08" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X22Y08" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X20Y09" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X21Y09" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X22Y09" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X20Y10" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X21Y10" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X22Y10" >> $DIR/list1.txt
 	echo "${AOI=$(echo AOI3 )}"
 	igcx $AOI
 	echo "AOI3"
 
 elif [[ $IR == AOI4 ]] ; then
-	grep "X20Y03" $INP2 > $DIR/list.txt
-	grep "X21Y03" $INP2 >> $DIR/list.txt
-	grep "X19Y03" $INP2 >> $DIR/list.txt
+	grep $Y2 $INP2 | grep "X22Y03" > $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X20Y03" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X21Y03" >> $DIR/list1.txt
+	grep $Y2 $INP2 | grep "X19Y03" >> $DIR/list1.txt
 	echo "${AOI=$(echo AOI4 )}"
 	igcx $AOI
 	echo "AOI4"
 else
 	echo "PROBA-V out of range"
-fi 
+fi
 }
 
-ciop-log "INFO" "Step02: Bio_input_collecting" 
+ciop-log "INFO" "Step02: Bio_input_collecting $Y2" 
 
 
 function spot_v(){
@@ -110,31 +126,44 @@ fi
 }
 
 function igcx(){
-exec $IXDIR"resample_aoi_0010100.sh" &
+exec $IXDIR"resample_aoi_0010100.sh" $Y2 $IR &
 wait
-exec $IXDIR"resample_aoi_0010300.sh" &
+exec $IXDIR"resample_aoi_0010300.sh" $Y2 $IR &
 wait
 exec $IXDIR"resample_aoi_0010701.sh" $Y2 $IR &
+wait
+exec $IXDIR"resample_aoi_0010704.sh" $Y2 $IR &
 wait
 exec $IXDIR"resample_aoi_0010900.sh" $Y2 $IR
 }
 
 function igcxs(){
-exec $IXDIR"resample_aoi_0010100.sh" &
+exec $IXDIR"resample_aoi_0010100.sh" $Y2 $IR &
 wait
-exec $IXDIR"resample_aoi_0010300.sh" &
+exec $IXDIR"resample_aoi_0010300.sh" $Y2 $IR &
 wait
 exec $IXDIR"resample_aoi_0010700.sh" $Y2 $IR &
+wait
+exec $IXDIR"resample_aoi_0010702.sh" $Y2 $IR &
 wait
 exec $IXDIR"resample_aoi_0010900.sh" $Y2 $IR
 }
 
-if ((Y2<2014)) ; then
-    spot_v 
-else
+if echo "$Y2" | grep -qE ^\-?[0-9]?\.?[0-9]+$; then
+if (($Y2 < 2014 || $Y2 <1999)) ; then 
+    echo "spot_v"
+    spot_v
+elif (($Y2 < 2018)) ; then  
+    echo "probav"
     probav
+else
+    echo "IBCS need new satellite images"; res=3 && exit ${res}
+fi
+else
+   echo "Year is NOT numeric." >&2; res=1 && exit ${res}
 fi
 
-#-------------------------------------------------------------------------------------# 
-#-------------------------------------------------------------------------------------#
 exit 0
+#-------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------#  
+

@@ -144,7 +144,7 @@ sed -i -e 's/^/ /' $CMDIR01/${filename}_01.dat
 sed -i 's/$/\r/' $CMDIR01/${filename}_01.dat
 cp $CMDIR01/${filename}_01.dat $ZDIR/${filename}_001.dat
 
-ciop-publish -m $ZDIR/${filename}_001.dat
+#ciop-publish -m $ZDIR/${filename}_001.dat
 done 
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 

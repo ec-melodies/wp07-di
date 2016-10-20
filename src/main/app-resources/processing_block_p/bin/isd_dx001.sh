@@ -40,33 +40,41 @@ export -p ADIR=/data/auxdata/AOI
 export -p AOIP="$( ciop-getparam aoi )"
 ciop-log "AOI: $AOIP"
 
+export -p AOIP=$(awk '{print $1}' $OUTDIR/AOI0.txt)
+echo $AOIP
+#Year
+#export -p Y2=$1
+#echo $Y2
+
 export -p Y2=$(awk '{print $2}' $OUTDIR/AOI.txt)
 echo $Y2
 #-------------------------------------------------------------------------------------# 
 cd $ZDIR
 
-CRS32662="$( ciop-getparam aoi )"
-echo "AOI:" $CRS32662
+#CRS32662="$( ciop-getparam aoi )"
+#echo "AOI:" $CRS32662
 
 export -p AOIX=$HXDIR/AOI_ISD.txt
 echo $AOIX
 #-------------------------------------------------------------------------------------#
+#umask 000; touch $ZDIR/list_isd_dx.txt
 
-if [[ $CRS32662 == AOI1 ]] ; then
+
+if [[ $AOIP == AOI1 ]] ; then
 	grep "Dx_AOI1" $AOIX > $ZDIR/list_isd_dx.txt;
-	echo $CRS32662
+	echo $AOIP
 
-elif [[ $CRS32662 == AOI2 ]] ; then
+elif [[ $AOIP == AOI2 ]] ; then
 	grep "Dx_AOI2" $AOIX > $ZDIR/list_isd_dx.txt;
-	echo $CRS32662
+	echo $AOIP
 
-elif [[ $CRS32662 == AOI3 ]] ; then
+elif [[ $AOIP == AOI3 ]] ; then
 	grep "Dx_AOI3" $AOIX > $ZDIR/list_isd_dx.txt;
-	echo $CRS32662
+	echo $AOIP
 
-elif [[ $CRS32662 == AOI4 ]] ; then 
+elif [[ $AOIP == AOI4 ]] ; then 
 	grep "Dx_AOI4" $AOIX > $ZDIR/list_isd_dx.txt;
-	echo $CRS32662
+	echo $AOIP
 else
 	echo "AOI out of range"
 fi
@@ -75,7 +83,7 @@ fi
 while IFS='' read -r line || [[ -n "$line" ]]; do
 echo $line
 filename=$(basename $line .par)
-wine64 $HDIR/krige01.exe $line
+/usr/bin/wine64 $HDIR/krige.6401.exe $line
 mv $ISDD/ISD_Kriging_Variance.out $ISDD/ISD_Kriging_Var_${filename}.out
 mv $ISDD/ISD_Kriging_Mean.out $ISDD/ISD_Kriging_Mean_${filename}.out
 awk 'NR > 3 { print }' $ISDD/ISD_Kriging_Var_${filename}.out > $ISDD/ISDvar_${filename}.txt
@@ -125,7 +133,7 @@ list.filenames03=list.filenames01[]
 
 # load raster data 
 file<-readGDAL(list.filenames03[i])
-xy=assign(paste("xy_sa",i,sep=""),data.frame(geometry(file)))
+xy=assign(paste("xy_sa",sep=""),data.frame(geometry(file)))
 
 #-------------------------------------------------------------------------------------# 
 gc()
@@ -142,10 +150,10 @@ ls()
 rm(file)
 rm(x)
 rm(y)
-rm(xy_sa2)
+rm(xy_sa)
 rm(xy)
 #-------------------------------------------------------------------------------------# 
-list.filenames04=list.files(path=ZDIR, pattern=paste("ISDmean",".*\\.txt",sep=""))
+list.filenames04=mixedsort(list.files(path=ZDIR, pattern=paste("ISDmean",".*\\.txt",sep="")))
 list.filenames04
 ISD <-read.table(paste(path=ZDIR,'/', list.filenames04[i],sep =""), header=FALSE, sep="", na.strings="NA", dec=".", strip.white=TRUE)
 file_out000<-as.matrix(ISD)
@@ -209,7 +217,7 @@ options("scipen"=100, "digits"=4)
 
 # list all files from the current directory
 list.files(pattern=".tif$") 
-list.filenames=assign(paste("list.filenames",sep=""),list.files(pattern=paste("ISDmeanDx001_")))
+list.filenames=assign(paste("list.filenames",sep=""),mixedsort(list.files(pattern=paste("ISDmeanDx001_"))))
 list.filenames 
 
 AOI.sub<-readOGR(paste(IDIR,sep = ""),AOIP)
@@ -219,25 +227,62 @@ AOI.sub01 = spTransform(AOI.sub,CRS("+init=epsg:32662"))
 for (j in 1:length(list.filenames)){ 
 list00=assign(paste("isd.sub00_",j,sep=""), crop(raster(list.filenames[j]), extent(AOI.sub01)))
 list01=assign(paste("isd.sub_",j,sep=""), mask(list00, AOI.sub01))
-writeRaster(list01,filename=paste(SBDIR, "/" ,"ISD_Dx001_00_",AOIP,j,".tif",sep = ""),format="GTiff",overwrite=TRUE)
+writeRaster(list01,filename=paste(SBDIR, "/" ,"ISD_Dx001_00_",AOIP,Y2,j,".tif",sep = ""),format="GTiff",overwrite=TRUE)
 }
 
-TPmlist02<-list.files(pattern=paste("ISD_Dx001_00_",".*\\.tif",sep=""))
-TPmlist02
+#-------------------------------------------------------------------------------------# 
+EOF
 
-tmp1 <-raster(TPmlist02[1])
-tmp2 <-raster(TPmlist02[2])
 
-rastD7<-mosaic(tmp1,tmp2,fun=max)
+R --vanilla --no-readline -q --min-vsize=10M --min-nsize=500k <<'EOF'
+SBDIR = Sys.getenv(c('ISDD'))
+SBDIR
+IDIR = Sys.getenv(c('ADIR'))
+IDIR
+AOIP = Sys.getenv(c('AOIP'))
+AOIP
+Y2 = Sys.getenv(c('Y2'))
+Y2
+
+setwd(SBDIR)
+getwd()
+
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal") 
+new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
+lapply(xlist, require, character.only = TRUE)
+
+require("RStoolbox")
+
+options(max.print=99999999) 
+options("scipen"=100, "digits"=4)
+
+ofl<-list.files(pattern=paste("ISD_Dx001_00_",".*\\.tif",sep=""))
+s<-lapply(ofl,raster)
+len=length(s)
+if(len == 6) {
+rastD7 <- mosaic(s[[1]],s[[2]],s[[3]],s[[4]],s[[5]],s[[6]], fun=max)
+} else if (len == 18) {
+rastD7 <- mosaic(s[[1]],s[[2]],s[[3]],s[[4]],s[[5]],s[[6]],s[[7]],s[[8]],s[[9]],s[[10]],s[[11]],s[[12]],s[[13]],s[[14]],s[[15]],s[[16]],s[[17]],s[[18]],fun=max)
+} else if (len == 20) {
+rastD7 <- mosaic(s[[1]],s[[2]],s[[3]],s[[4]],s[[5]],s[[6]],s[[7]],s[[8]],s[[9]],s[[10]],s[[11]],s[[12]],s[[13]],s[[14]],s[[15]],s[[16]],s[[17]],s[[18]],s[[19]],s[[20]],fun=max)
+} else if (len == 10) {
+rastD7 <- mosaic(s[[1]],s[[2]],s[[3]],s[[4]],s[[5]],s[[6]],s[[7]],s[[8]],s[[9]],s[[10]],fun=max)
+}
 
 AOIP
 v1="MSC"
+
+#save the raster
 
 tmp.file1 <- paste(SBDIR, "/" ,"ISD_Dx002",v1,AOIP,Y2,".tif",sep = "")
 writeRaster(rastD7,filename=tmp.file1,format="GTiff",datatype='FLT4S',overwrite=TRUE)
 rciop.publish(tmp.file1, recursive=FALSE, metalink=TRUE)
 
 EOF
+
+
 ciop-log "INFO" "isd_dx"
 #-------------------------------------------------------------------------------------# 
 echo "DONE"

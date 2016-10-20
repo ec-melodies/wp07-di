@@ -16,7 +16,9 @@ exec $IXDIR"vgt_to_geoms_00300.sh" &
 wait
 exec $IXDIR"vgt_to_geoms_00301.sh" 
 }
+
 igcv
+res=$?
 
 ciop-log "INFO" "bio_block_p2/bin/run"
 #-------------------------------------------------------------------------------------#  

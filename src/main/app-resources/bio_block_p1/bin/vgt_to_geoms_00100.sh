@@ -201,6 +201,14 @@ done
 
 ciop-log "INFO" "vgt_to_geoms_00100.sh"
 
+for file in $VITO/NDV001_0*.tif; do 
+rm $file
+done
+
+for file in $VITO/NDV02_001_crop*.tif; do 
+rm $file
+done
+
 #-------------------------------------------------------------------------------------#
 echo "DONE"
 exit 0

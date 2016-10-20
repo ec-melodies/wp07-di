@@ -16,7 +16,7 @@
 # rciop
 #-------------------------------------------------------------------------------------# 
 # source the ciop functions
-#source ${ciop_job_include}
+source ${ciop_job_include}
 export PATH=/opt/anaconda/bin/:$PATH
 #-------------------------------------------------------------------------------------# 
 # the environment variables 
@@ -134,7 +134,7 @@ h=1
 for file in $SBDIR/NIRRED_Bx*.tif; do 
 filename=$(basename $file .tif )
 input001=$SBDIR/${filename}.tif
-input002=$VITO/${filename/#NIRRED_Bx/LANDC001}.tif 
+input002=$VITO/${filename/#NIRRED_Bx/LANDC002}.tif 
 echo $input001
 echo $input002
 # Get the same boundary information_globcover
@@ -219,6 +219,31 @@ done
 done
 
 ciop-log "INFO" "vgt_to_geoms_00200.sh"
+
+
+for file in $VITO/RED001_0*.tif; do 
+rm $file
+done
+
+for file in $VITO/NIR001_0*.tif; do 
+rm $file
+done
+
+for file in $SBDIR/NIRRED_Bx*.tif; do 
+rm $file
+done
+
+for file in $SBDIR/NIR02_001_crop*.tif; do 
+rm $file
+done
+
+for file in $SBDIR/RED02_001_crop*.tif; do 
+rm $file
+done
+
+for file in $VITO/LANDC01_*.tif; do
+rm $file
+done
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------#
 echo "DONE"

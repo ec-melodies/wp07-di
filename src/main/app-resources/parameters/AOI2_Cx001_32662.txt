@@ -1,0 +1,8 @@
+class       : RasterLayer 
+dimensions  : 3813, 9641, 36761133  (nrow, ncol, ncell)
+resolution  : 309.2208, 309.2208  (x, y)
+extent      : -1541311, 1439887, 3011965, 4191024  (xmin, xmax, ymin, ymax)
+coord. ref. : NA 
+data source : U:\Melodies\SANDBOX\AOI2_tiles\V03\GLOBCOVER_01_v03.tif 
+names       : GLOBCOVER_01_v03 
+values      : 0, 255  (min, max)

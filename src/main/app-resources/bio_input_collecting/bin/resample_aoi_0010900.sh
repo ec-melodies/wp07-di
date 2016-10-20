@@ -30,7 +30,7 @@ export -p VITO=$OUTDIR/VITO
 export -p CXDIR=$IDIR/bio_input_collecting/bin/
 export -p CRS32662=$IDIR/parameters
 export -p C2=$IDIR/parameters/CRS32662.txt
-export -p DAOI="$( ciop-getparam aoi)"
+export -p DAOI=$2
 
 export -p Y2=$1
 echo $Y2
@@ -65,6 +65,8 @@ gdal_translate -projwin $line -of GTiff $VITO/${filename}.tif  $VITO/${filename}
 ciop-log "INFO" "Retrieving: $LAND001/${filename}_crop_$COUNT.tif"
 done < $CRS326620
 done
+
+rm $VITO/NDV001_01.tif $VITO/NIR001_01.tif $VITO/RED001_01.tif
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#
 echo "DONE"

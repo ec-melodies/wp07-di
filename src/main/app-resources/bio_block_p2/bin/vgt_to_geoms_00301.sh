@@ -39,18 +39,17 @@ CDIR = Sys.getenv(c('VITO'))
 setwd(CDIR)
 getwd()
 
-require("zoo")
-require("rgdal")
-require("raster")
-require("sp")
-require("rciop")
-require("gtools")
-library(digest)
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
+new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+lapply(xlist, require, character.only = TRUE)
+
+file.remove(list.files(path=CDIR, pattern=paste("INFO_LC_005_*",".*\\.txt",sep="")))
 
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
 
-TPmlist01<-list.files(path=CDIR, pattern=paste("LC_004_crop*",".*\\.tif",sep=""))
+TPmlist01<-mixedsort(list.files(path=CDIR, pattern=paste("LC_004_crop*",".*\\.tif",sep="")))
 TPmlist01
 
 for (i in 1:(length(TPmlist01))){
@@ -107,8 +106,15 @@ echo $output003
 gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A*0)" --overwrite --type=Float32;
 done
 done
-#-------------------------------------------------------------------------------------#  
+#-------------------------------------------------------------------------------------#
+for file in $NVDIR/Vx002__crop*.tif; do 
+rm $file
+done
 
+for file in $CDIR/Sx002__crop*.tif; do 
+rm $file
+done
+#-------------------------------------------------------------------------------------#
 R --vanilla --no-readline   -q  <<'EOF'
 
 INDIR = Sys.getenv(c('NVDIR'))
@@ -117,11 +123,10 @@ VITO = Sys.getenv(c('VITO'))
 
 setwd(OUTDIR)
 
-require(sp)
-require(rgdal)
-require(raster)
-require("rciop")
-require("gtools")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
+new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+lapply(xlist, require, character.only = TRUE)
 
 # list all files from the current directory
 list.files(pattern=".tif$") 
@@ -136,7 +141,7 @@ n03 <- length(n02)
 setwd(OUTDIR)
 # create a list from these files
 for (j in 1:n03){ 
-list.filenames=assign(paste("list.filenames_",j,sep=""),mixedsort(list.files(pattern=paste("CVSx002__crop_",j,".*\\.tif",sep=""))))
+list.filenames=assign(paste("list.filenames_",j,sep=""),mixedsort(list.files(pattern=paste("CVSx002__crop_",j,"_",".*\\.tif",sep=""))))
 rstack003<-stack(raster(list.filenames[1]),
 raster(list.filenames[2]), raster(list.filenames[3]), raster(list.filenames[4]), raster(list.filenames[5]),
 raster(list.filenames[6]), raster(list.filenames[7]), raster(list.filenames[8]), raster(list.filenames[9]),
@@ -148,6 +153,16 @@ writeRaster(rastD6, filename=paste("Cx001_", j,".tif", sep=""), format="GTiff", 
 
 EOF
 #-------------------------------------------------------------------------------------#
+
+for file in $LDIR/CVSx002__crop*.tif; do 
+rm $file
+done
+
+for file in $VITO/LC_004_crop*.tif; do 
+rm $file
+done
+
+
 #-------------------------------------------------------------------------------------#
 # AREA
 #-------------------------------------------------------------------------------------#
@@ -180,10 +195,14 @@ output003=$LDIR/${filename/#Cx001_/Cx002_}.tif
 output004=$ZDIR/${filename/#Cx001_/Cx002_}.tif  
 echo $output003 
 gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input001 $output003
-cp $output003 $output004
+#cp $output003 $output004
 rm $Cx001
 done
 #-------------------------------------------------------------------------------------# 
+for file in $LDIR/Cx001_*.tif; do 
+rm $file
+done
+
 #-------------------------------------------------------------------------------------#
 #  ASCII to geoMS (.OUT or .dat)
 #-------------------------------------------------------------------------------------#
@@ -194,10 +213,14 @@ for file in $LDIR/Cx002_*.tif; do
 filename=$(basename $file .tif)
 gdal_translate  -of AAIGrid  $LDIR/${filename}.tif   $LDIR/${filename}.asc 
 awk '$1 ~ /^[+-]?[0-9]/' $LDIR/${filename}.asc > $LDIR/${filename}.txt
-cp $LDIR/${filename}.txt $ZDIR/${filename}.txt
+#cp $LDIR/${filename}.txt $ZDIR/${filename}.txt
 done
 
 #-------------------------------------------------------------------------------------#
+
+#for file in $LDIR/Cx002_*.tif; do
+#rm $file
+#done
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
 
@@ -206,12 +229,10 @@ OUTDIR = Sys.getenv(c('PBDIR'))
 setwd(INDIR)
 
 # load the package
-require("zoo")
-require("rgdal")
-require("raster")
-require("sp")
-require("gtools")
-require("rciop")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
+new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+lapply(xlist, require, character.only = TRUE)
 
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
@@ -253,7 +274,6 @@ rm(file004)
 sdf003<-stack(file006)
 rm(file006)
 #-------------------------------------------------------------------------------------#
-
 x=xy[1]
 B=xy[2]
 y= matrix(, nrow = dim(B)[1], ncol = dim(B)[2])
@@ -265,9 +285,11 @@ rm(sdf003)
 write.table(sdf0111103[,c(3:3)],paste(path=OUTDIR,'/' ,'Cx0100003_',h,'.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
 #write.table(sdf0111103,paste(path=OUTDIR,'/' ,'Cx0100004_',h,'.dat',sep = ""),  row.names = FALSE, col.names = FALSE)
 rm(sdf0111103)
+file.remove(list.filename)
 }
 EOF
 #-------------------------------------------------------------------------------------#
+#
 #-------------------------------------------------------------------------------------# 
 for file in $PBDIR/*.dat; do 
 filename=$(basename $file .dat )
@@ -279,11 +301,25 @@ sed -i -e 's/^/ /' $PBDIR/${filename}_001.dat
 # To convert the line endings in a text file from UNIX to DOS format (LF to CRLF)
 sed -i 's/$/\r/' $PBDIR/${filename}_001.dat
 cp $PBDIR/${filename}_001.dat $ZDIR/${filename}_001.dat
+rm $PBDIR/${filename}_001.dat
+rm $file
 done
+
+#ciop-publish -m $ZDIR/${filename}_001.dat
 
 ciop-log "INFO" "Step01: vgt_to_geoms_00301.sh" 
 
-#rm -rf $LDIR
+rm -rf $OUTDIR/PM001/
+rm -rf $OUTDIR/COKC/
+
+for file in $ZDIR/Cx002_*.txt; do
+rm $file
+done
+
+rm -rf $OUTDIR/SM001/
+rm -rf $OUTDIR/VITO/
+rm -rf $OUTDIR/VM001/
+rm -rf $LDIR
 #-------------------------------------------------------------------------------------# 
 # here we publish the results
 #-------------------------------------------------------------------------------------#

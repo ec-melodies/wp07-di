@@ -51,11 +51,12 @@ if(length(new.packages)) install.packages(new.packages)
 
 lapply(xlist, require, character.only = TRUE)
 
+file.remove(list.files(path=SBDIR, pattern=paste("INFO_LC_004_*",".*\\.txt",sep="")))
 
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
 
-TPmlist01<-list.files(path=SBDIR, pattern=paste("LC_004_crop*",".*\\.tif",sep=""))
+TPmlist01<-mixedsort(list.files(path=SBDIR, pattern=paste("LC_004_crop*",".*\\.tif",sep="")))
 TPmlist01
 
 for (i in 1:(length(TPmlist01))){
@@ -70,7 +71,7 @@ EOF
 cd $SBDIR
 
 h=1
-for file in $NVDIR/Vx001__crop*.tif; do
+for file in $NVDIR/Vx001*.tif; do
 filename=$(basename $file .tif )
 input001=$NVDIR/${filename}.tif
 echo $input001
@@ -94,6 +95,9 @@ gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $input001 $output003
 done
 
 #-------------------------------------------------------------------------------------# 
+for file in $NVDIR/Vx001__crop*.tif; do 
+rm $file
+done
 #-------------------------------------------------------------------------------------# 
 cd $SBDIR
 
@@ -121,7 +125,10 @@ gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $input001 $output003
 
 done
 
-#-------------------------------------------------------------------------------------# 
+#-------------------------------------------------------------------------------------#
+for file in $SBDIR/Sx001__crop*.tif; do 
+rm $file
+done 
 #-------------------------------------------------------------------------------------# 
 export PATH=/opt/anaconda/bin/:$PATH
 
@@ -133,6 +140,7 @@ for i in {3,4,5}; do
 output003=$LDIR/${filename/#Vx002__crop/VSx002__crop}_0$i.tif
 echo $output003
 gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A)" --overwrite --type=Float32;
+#rm $input001
 done
 done
 
@@ -144,6 +152,7 @@ for i in {2,6,7}; do
 output003=$LDIR/${filename/#Sx002__crop/VSx002__crop}_0$i.tif   
 echo $output003
 gdal_calc.py -A $input003 -B $input002 --outfile=$output003 --calc="(B==$i)*(A)" --overwrite --type=Float32;
+#rm $input001
 done
 done
 
@@ -155,6 +164,7 @@ for i in {1,8,9}; do
 output003=$LDIR/${filename/#Vx002__crop/VSx002__crop}_0$i.tif   
 echo $output003
 gdal_calc.py -A $input001 -B $input002  --outfile=$output003 --calc="(B==$i)*(A)" --overwrite --type=Float32;
+#rm $input001
 done
 done
 
@@ -166,6 +176,7 @@ for i in {10,11}; do
 output003=$LDIR/${filename/#Vx002__crop/VSx002__crop}_$i.tif
 echo $output003
 gdal_calc.py -A $input001 -B $input002 --outfile=$output003 --calc="(B==$i)*(A)" --overwrite --type=Float32;
+#rm $input001
 done
 done
 #-------------------------------------------------------------------------------------#  
@@ -198,18 +209,23 @@ n03 <- length(n02)
 setwd(OUTDIR)
 # create a list from these files
 for (j in 1:n03){ 
-list.filenames=assign(paste("list.filenames_",j,sep=""),mixedsort(list.files(pattern=paste("VSx002__crop_",j,".*\\.tif",sep=""))))
+list.filenames=assign(paste("list.filenames_",j,sep=""),mixedsort(list.files(pattern=paste("VSx002__crop_",j,"_",".*\\.tif",sep=""))))
 rstack003<-stack(raster(list.filenames[1]),
 raster(list.filenames[2]), raster(list.filenames[3]), raster(list.filenames[4]), raster(list.filenames[5]),
 raster(list.filenames[6]), raster(list.filenames[7]), raster(list.filenames[8]), raster(list.filenames[9]),
 raster(list.filenames[10]), raster(list.filenames[11]))
-
 rastD6<-sum(rstack003, na.rm=TRUE)
+file.remove(list.filenames)
 writeRaster(rastD6, filename=paste("Bx001_", j,".tif", sep=""), format="GTiff", overwrite=TRUE)
 }
 
 EOF
 #-------------------------------------------------------------------------------------#
+
+for file in $LDIR/VSx002__crop_*.tif; do 
+rm $file
+done
+
 #-------------------------------------------------------------------------------------#
 # AREA
 #-------------------------------------------------------------------------------------#
@@ -243,11 +259,16 @@ output004=$ZDIR/${filename/#Bx001_/Bx002_}.tif
 echo $output003 
 gdal_translate -projwin $ulx1 $uly1 $lrx1 $lry1 -of GTiff $input001 $output003
 cp $output003 $output004
-
+rm $input001
 done
 
 rm $Cx001
 #-------------------------------------------------------------------------------------# 
+
+for file in $LDIR/Bx001_*.tif; do 
+rm $file
+done
+
 #-------------------------------------------------------------------------------------#
 #  ASCII to geoMS (.OUT or .dat)
 #-------------------------------------------------------------------------------------#
@@ -261,11 +282,17 @@ awk '$1 ~ /^[+-]?[0-9]/' $LDIR/${filename}.asc > $LDIR/${filename}.txt
 cp $LDIR/${filename}.txt $ZDIR/${filename}.txt
 done
 
+ciop-log "INFO" "Step01: vgt_to_geoms_00300.sh: Bx.tif to Bx.dat" 
+
+for file in $LDIR/Bx002_*; do 
+rm $file
+done
+
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  <<'EOF'
 
-INDIR = Sys.getenv(c('LDIR'))
+INDIR = Sys.getenv(c('ZDIR'))
 OUTDIR = Sys.getenv(c('LDIR'))
 setwd(INDIR)
 
@@ -288,20 +315,21 @@ list.filenames02<-mixedsort(list.files(pattern=paste("Bx002_",".*\\.txt",sep="")
 list.filenames02
 
 for (h in 1:length(list.filenames[])){
-dt<-paste(path=OUTDIR,'/',list.filenames[h],sep ="")
+dt<-paste(path=INDIR,'/',list.filenames[h],sep ="")
 dt
 file001<-readGDAL(dt)
+#file.remove(dt)
 xy001=geometry(file001)
 rm(file001)
 rm(dt)
 xy<-data.frame(xy001)
 rm(xy001)
 z<- rep(0,dim(xy)[1])
-dt<-paste(path=OUTDIR,'/',list.filenames02[h],sep ="")
+dt<-paste(path=INDIR,'/',list.filenames02[h],sep ="")
 
 #-------------------------------------------------------------------------------------#
 file003<-read.table(dt)
-list.filename = paste(path=OUTDIR,'/',list.filenames[h],sep ="")
+list.filename = paste(path=INDIR,'/',list.filenames[h],sep ="")
 list.filename 
 file<-readGDAL(list.filename)
 rm(dt)
@@ -332,6 +360,9 @@ rm(sdf0111103)
 EOF
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
+
+ciop-log "INFO" "Step01: vgt_to_geoms_00300.sh: Bx01.dat to Bx02.dat" 
+
 for file in $LDIR/*.dat; do 
 filename=$(basename $file .dat )
 awk 'NR > 1 { print $2 }' $HDIR/header.txt > $LDIR/${filename}_01.dat
@@ -342,8 +373,18 @@ sed -i -e 's/^/ /' $LDIR/${filename}_01.dat
 # To convert the line endings in a text file from UNIX to DOS format (LF to CRLF)
 sed -i 's/$/\r/' $LDIR/${filename}_01.dat
 cp $LDIR/${filename}_01.dat $ZDIR/${filename}_01.dat
+rm $LDIR/${filename}_01.dat
 done
 
+for file in $LDIR/Bx002_*; do 
+rm $file
+done
+
+for file in $LDIR/Bx0100003_*.dat; do 
+rm $file
+done
+
+ciop-publish -m $ZDIR/${filename}_01.dat
 
 ciop-log "INFO" "Step01: vgt_to_geoms_00300.sh" 
 

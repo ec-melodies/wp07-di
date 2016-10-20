@@ -108,11 +108,11 @@ for (i in 1:(length(TPmlist05))){ww=assign(paste("RL1001",i,sep=""),as.matrix(TP
 str(ww)
 }
 
+setwd(CMDIR)
 TPmlist06<-mget(mixedsort(ls(pattern="RL1001*")))
 for (i in 1:(length(TPmlist06)-1)){ww=assign(paste("RL100401_",i,sep=""),as.data.frame(TPmlist06[[i]]))
 write.table(ww,paste("RL100401_",i,".txt", sep=""),row.names = FALSE, col.names = FALSE, quote = FALSE, append = FALSE)
 str(ww)
-setwd(CMDIR)
 #rciop.publish(paste(CMDIR,"ww", sep="/"), FALSE,TRUE)
 }
 

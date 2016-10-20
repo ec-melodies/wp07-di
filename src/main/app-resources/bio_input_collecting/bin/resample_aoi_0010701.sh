@@ -8,6 +8,9 @@
 # awk
 # unzip
 #-------------------------------------------------------------------------------------# 
+# source the ciop functions
+source ${ciop_job_include}
+#-------------------------------------------------------------------------------------# 
 export PATH=/opt/anaconda/bin/:$PATH
 export -p IDIR=/application/
 export -p ODIR=/data/outDIR
@@ -15,26 +18,21 @@ export -p DIR=$ODIR/ISD
 export -p OUTDIR=$DIR/ISD000
 export -p VITO=$OUTDIR/VITO
 
-export -p AOIP="$( ciop-getparam AOI)"
-export AOI=$(awk '{ print $1}' $AOIP)
-echo $AOI
+export -p AOI=$2; echo $AOI
 
 #Year
-export -p Y2=$1
-echo $Y2
+export -p Y2=$1; echo $Y2
+
+cd $VITO
 
 #List of images
-export -p INP2=$IDIR/parameters/vito
-export -p y3=$(grep $Y2 $INP2)
-cd $VITO
-ciop-copy -o . $y3
-
-export -p Cx001=$OUTDIR/CM001/AOI/AOI_CX/Cx001_info.txt
+export -p y3=$DIR/list1.txt; echo $y3
+export -p CR=$IDIR/parameters/AOI_Cx001.txt; echo $CR
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 # set the environment variables to use ESA BEAM toolbox
 
-export SNAP=/opt/snap-2.0
+export SNAP=/opt/snap-3.0
 export PATH=${SNAP}/bin:${PATH}
 
 #-------------------------------------------------------------------------------------# 
@@ -59,23 +57,18 @@ fi
 echo $POLYGON
 
 #-------------------------------------------------------------------------------------# 
-cd $OUTDIR
-#-------------------------------------------------------------------------------------# 
-# set the environment variables to use ESA BEAM toolbox
-
-export SNAP=/opt/snap-2.0
-export PATH=${SNAP}/bin:${PATH}
-
-#-------------------------------------------------------------------------------------# 
+cd $VITO
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 while IFS='' read -r line || [[ -n "$line" ]]; do
-echo $line
-export -p INSPOT=$line
-export -p OUTSPOT=$line.tif
-export -p filename=$(basename $line .HDF5)
-export -p OUTSPOT=$VITO/${filename}.tif
+ciop-copy -o . $line
+
+export -p filename=$(basename $line)
 echo $filename
+export -p INSPOT=$VITO/${filename}
+echo $INSPOT
+export -p OUTSPOT=$VITO/$(basename $line .HDF5).tif
+echo $OUTSPOT
 #-------------------------------------------------------------------------------------# 
 #the ESA toolbox
 
@@ -129,71 +122,37 @@ subset_aoi_probav=`cat <<EOF
   </applicationData>
 </graph>
 EOF`
-
+#-------------------------------------------------------------------------------------# 
 echo $subset_aoi_probav > $VITO/subset_aoi_probav.xml
-echo $subset_aoi_probav
+#-------------------------------------------------------------------------------------# 
+gpt $VITO/subset_aoi_probav.xml  -Ssource=$INSPOT -f GeoTIFF -t $OUTSPOT
 
-done < "$VITO/list.txt"
+done < "$OUTDIR/list1.txt"
 #-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------# 
 export PATH=/opt/anaconda/bin/:$PATH
 
 cd $VITO
 
-for file in /data/auxdata/ESA/AOI/RAD/PROBAV_S1*.tif; do 
-#for file in $VITO/PROBAV_S1*.tif; do 
+for file in $VITO/PROBAV_S1*.tif; do 
 filename=$(basename $file .tif )
-echo $file >> list_proba_RAD.txt
-gdalbuildvrt V2KRNS0210_RAD.vrt --optfile list_proba_RAD.txt
-gdal_translate V2KRNS0210_RAD.vrt V2KRNS0310_RAD.tif
-#gdal_merge.py -ot Int32 -o V2KRNS0210.tif -a_nodata 0 --optfile list_proba.txt
+echo $file >> list_proba.txt
+gdalbuildvrt V2KRNS02110.vrt --optfile list_proba.txt
+gdal_translate V2KRNS02110.vrt V2KRNS0310.tif
 done
 
-for file in /data/auxdata/ESA/AOI/NDV/PROBAV_S1*.tif; do 
-#for file in $VITO/PROBAV_S1*.tif; do 
-filename=$(basename $file .tif )
-echo $file >> list_proba_NDV.txt
-gdalbuildvrt V2KRNS0210_NDV.vrt --optfile list_proba_NDV.txt
-gdal_translate V2KRNS0210_NDV.vrt V2KRNS0310_NDV.tif
-#gdal_merge.py -ot Int32 -o V2KRNS0210.tif -a_nodata 0 --optfile list_proba.txt
+gdalwarp -t_srs '+init=epsg:32662' $VITO/V2KRNS0310.tif $VITO/V2KRNS110.tif
+
+for file in $VITO/PROBAV_S1*.tif; do 
+rm $file 
 done
 
-
-#gdalwarp -t_srs '+init=epsg:32662' $VITO/V2KRNS0310.tif $VITO/V2KRNS10.tif
-gdalwarp -t_srs '+init=epsg:32662' $VITO/V2KRNS0310_NDV.tif $VITO/V2KRNS10_NDV.tif
-gdalwarp -t_srs '+init=epsg:32662' $VITO/V2KRNS0310_RAD.tif $VITO/V2KRNS10_RAD.tif
-#-------------------------------------------------------------------------------------# 
-#-------------------------------------------------------------------------------------# 
-# PURPOSE: NDVI, NIR, RED
-#-------------------------------------------------------------------------------------# 
-# extract band
-#-------------------------------------------------------------------------------------# 
-#for file in $VITO/PROBAV_S1*.tif; do 
-#rm $file
-#done
-
-gdal_translate -of Gtiff -b 2 V2KRNS10_RAD.tif $VITO/RED001.tif
-gdal_translate -of Gtiff -b 3 V2KRNS10_RAD.tif $VITO/NIR001.tif
-gdal_translate -of Gtiff -b 1 V2KRNS10_NDV.tif $VITO/NDV001.tif
-#-------------------------------------------------------------------------------------# 
-# echo "FASE 1"
-#-------------------------------------------------------------------------------------# 
-# PURPOSE: RESAMPLE_AOI NDVI, NIR, RED
-#-------------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------------# 
-for file in $VITO/*001.tif ; do 
-filename=$(basename $file .tif )
-# Getting the same boundary information_globcover
-ulx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $3 }')
-uly=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $6 }')
-lrx=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $4 }')
-lry=$(cat $Cx001  | grep "extent" | awk '{ gsub ("[(),]","") ; print  $5 }')
-
-echo $ulx $uly $lrx $lry $filename
-gdal_translate -projwin $ulx $uly $lrx $lry -of GTiff $VITO/${filename}.tif $VITO/${filename}_01.tif 
+for file in $VITO/PROBAV_S1*.HDF5; do 
+rm $file 
 done
 
-ciop-log "INFO" "Getting the same boundary information of GlobCover: $VITO/${filename}_01.tif "
-#rm $VITO/NDV001.tif $VITO/NIR001.tif $VITO/RED001.tif $VITO/V2KRNS10.tif $VITO/subset_aoi.xml
+rm $VITO/V2KRNS0310.tif
+
+#-------------------------------------------------------------------------------------# 
 #-------------------------------------------------------------------------------------#
 exit 0
