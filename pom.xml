@@ -194,8 +194,7 @@
 						<require>wine &gt;= 1.6.1</require>
 						<require>R</require>
 						<require>miniconda-3.8.3</require>
-						<require>snap = 3.0</require>
-						<require>python</require>  						
+						<require>snap = 3.0</require>					
 					</requires>
 				
 				</configuration>
