@@ -91,6 +91,13 @@
 						<configuration>
 							<target>
 								<chmod dir="/application" includes="**/run*" perm="755" />
+								<chmod dir="/application/cli_block_a/bin/" includes="*.sh" perm="755" />
+								<chmod dir="/application/bio_block_p1/bin/" includes="*.sh" perm="755" />
+								<chmod dir="/application/bio_block_p2/bin/" includes="*.sh" perm="755" />
+								<chmod dir="/application/bio_block_a/bin/" includes="*.sh" perm="755" />
+								<chmod dir="/application/processing_block_a/bin/" includes="*.sh" perm="755" />
+								<chmod dir="/application/processing_block_p/bin/" includes="*.sh" perm="755" />
+								<chmod dir="/application" includes="**/**/*.sh" perm="755" />
 								<chmod dir="/application" includes="**/*.sh" perm="755" />
 								<chmod dir="/application" includes="**/*.exe" perm="755" />
 								<chmod file="/application/application.xml" perm="664"/>
@@ -123,7 +130,7 @@
 					<packager>Terradue</packager>
 					<name>${project.artifactId}</name>
 					<defaultDirmode>775</defaultDirmode>
-					<defaultFilemode>644</defaultFilemode>
+					<defaultFilemode>755</defaultFilemode>
 					<defaultUsername>root</defaultUsername>
 					<defaultGroupname>ciop</defaultGroupname>
 					<autoRequires>false</autoRequires>
