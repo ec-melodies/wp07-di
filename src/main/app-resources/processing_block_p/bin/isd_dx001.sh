@@ -106,11 +106,11 @@ IDIR
 
 
 ## load the package
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
-lapply(xlist, require, character.only = TRUE)
 #-------------------------------------------------------------------------------------# 
 setwd(INDIR)
 getwd()
@@ -204,13 +204,10 @@ Y2
 setwd(SBDIR)
 getwd()
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal") 
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-
-lapply(xlist, require, character.only = TRUE)
-
-require("RStoolbox")
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
@@ -247,13 +244,10 @@ Y2
 setwd(SBDIR)
 getwd()
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal") 
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-
-lapply(xlist, require, character.only = TRUE)
-
-require("RStoolbox")
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)

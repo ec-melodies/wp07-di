@@ -80,10 +80,10 @@ AOI = Sys.getenv(c('AOI'))
 setwd(INDIR)
 print(AOI)
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-lapply(xlist, require, character.only = TRUE)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
 # create a list from these files
 list.filenames=assign(paste("list.filenames",sep=""),list.files(pattern=paste("SOIL_Mosaic2_",".*\\.tif",sep="")))
@@ -288,11 +288,10 @@ LINE1 = Sys.getenv(c('CRS326620'))
 IDIR = "/data/outDIR/ISD/ISD000/SM001"
 setwd(INDIR)
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-lapply(xlist, require, character.only = TRUE)
-
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
 list.filenames=assign(paste("list.filenames",sep=""),mixedsort(list.files(pattern=paste("Sr_HSLS",".*\\.tif",sep=""))))
 list.filenames 

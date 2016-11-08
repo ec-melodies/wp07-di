@@ -20,10 +20,11 @@ export -p CMDIR01=$CMDIR/AOI/AOI_CX
 export -p LULC=$IDIR/parameters/LULC.txt
 export -p CR=$IDIR/parameters/AOI_Cx001.txt
 
-export -p ISR=$2
-echo $ISR
+export -p INP2=$OUTDIR/AOI.txt
+export -p Y2=$(cat $INP2| awk '{ print  $2 }')
+export -p ISR=$(cat $INP2| awk '{ print  $3 }')
 
-export -p Y2=$1
+echo $ISR
 echo $Y2
 
 export -p LAND001=$(cat $LULC | awk 'NR == 2')
@@ -44,7 +45,7 @@ elif [[ "$ISR" == AOI3 ]] ; then
 elif [[ "$ISR" == AOI4 ]] ; then 
 	export -p Cx000=$(grep AOI4_Cx001.txt $CR);
 else
-	echo "AOI out of range"
+	echo "AOI out of range _globcover"
 fi 
 #-------------------------------------------------------------------------------------# 
 # Get the same boundary information_globcover

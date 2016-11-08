@@ -16,11 +16,13 @@ export -p ODIR=/data/outDIR
 export -p DIR=$ODIR/ISD/ISD000
 export -p INP2=$IDIR/parameters/vito
 #-------------------------------------------------------------------------------------# 
-export -p IR=$2
-ciop-log "AOI: $IR"
+export -p INP=$DIR/AOI.txt
+export -p Y2=$(cat $INP| awk '{ print  $2 }')
+export -p IR=$(cat $INP| awk '{ print  $3 }')
 
-export -p Y2=$1
+ciop-log "AOI: $IR"
 ciop-log "Year: $Y2"
+
 #-------------------------------------------------------------------------------------# 
 ciop-log "INFO" "Step00: Bio_input_collecting" 
 
@@ -121,7 +123,7 @@ elif [[ $IR == AOI4 ]] ; then
 	echo "AOI4"
 	echo $Y2
 else
-	echo "AOI out of range"
+	echo "SPOT-VGT AOI out of range"
 fi 
 }
 

@@ -24,19 +24,20 @@ export -p SXDIR=$IDIR/bio_input_collecting/
 ciop-log "creating tmp/dir: $OUTDIR" 
 
 #-------------------------------------------------------------------------------------# 
-while read Year; do
+while read tiles; do
 
-echo ${Year}
+export aoi=${tiles}
+echo $aoi
 
 #------------------JOB----------------------------------------------------------------# 
 ciop-log "INFO" "Generating AOI and year"
 
-export -p IR="$( ciop-getparam aoi )"
-ciop-log "AOI: $IR"
-echo $IR > $OUTDIR/AOI0.txt
+export -p Y2="$( ciop-getparam Year )"
+export -p IR=$aoi
 
-export -p Y2=${Year}
-ciop-log "Year: ${Year}"
+ciop-log "AOI: $aoi"
+ciop-log "Year: $Y2"
+echo $IR > $OUTDIR/AOI0.txt
 
 res=$? 
 
@@ -65,7 +66,7 @@ fi
 
 echo "Here:" $Y2
 cd $OUTDIR
-echo "$Y1 $Y2" > $OUTDIR/AOI.txt
+echo "$Y1 $Y2 $IR" > $OUTDIR/AOI.txt
 ciop-log "Generating $OUTDIR/AOI.txt"
 #-------------------------------------------------------------------------------------# 
 ciop-log "INFO" "Generating ecmwf.grib $IR"
@@ -158,7 +159,7 @@ elif [[ $IR == AOI4 ]] ; then
 	echo "${AOI4=$(echo $Y1 $Y2 42.5 25.5 36.0 45.0 0.75)}" 
 	fcx
 else
-	echo "AOI out of range"
+	echo "AOI out of range run 00"
 fi 
 
 #----------------ENDJOB----------------------------------------------------------------# 

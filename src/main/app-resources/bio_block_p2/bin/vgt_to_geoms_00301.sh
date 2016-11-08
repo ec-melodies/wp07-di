@@ -39,10 +39,11 @@ CDIR = Sys.getenv(c('VITO'))
 setwd(CDIR)
 getwd()
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-lapply(xlist, require, character.only = TRUE)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
+
 
 file.remove(list.files(path=CDIR, pattern=paste("INFO_LC_005_*",".*\\.txt",sep="")))
 
@@ -123,10 +124,10 @@ VITO = Sys.getenv(c('VITO'))
 
 setwd(OUTDIR)
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-lapply(xlist, require, character.only = TRUE)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
 # list all files from the current directory
 list.files(pattern=".tif$") 
@@ -229,10 +230,11 @@ OUTDIR = Sys.getenv(c('PBDIR'))
 setwd(INDIR)
 
 # load the package
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-lapply(xlist, require, character.only = TRUE)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
+
 
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)

@@ -16,9 +16,6 @@ echo $IDIR
 export -p IXDIR=$IDIR/processing_block_p/bin/
 export -p HXDIR=$IDIR/parameters
 
-export -p IR="$( ciop-getparam aoi )"
-ciop-log "AOI: $IR"
-
 export -p IDIR=/application
 export -p ODIR=/data/outDIR
 export -p DIR=$ODIR/ISD
@@ -26,8 +23,11 @@ export -p OUTDIR=$DIR/ISD000
 export -p VITO=$OUTDIR/VITO
 export -p INP2=$OUTDIR/AOI.txt
 
-#Year
+
 export -p Y2=$(cat $INP2| awk '{ print  $2 }')
+export -p IR=$(cat $INP2| awk '{ print  $3 }')
+
+ciop-log "AOI: $IR"
 
 if ((Y2<=2003)) ; then
     export -p Y1=$(($Y2-20))

@@ -73,11 +73,11 @@ AOI = Sys.getenv(c('AOI'))
 setwd(INDIR)
 getwd()
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
-lapply(xlist, require, character.only = TRUE)
 
 # list all files from the current directory
 list.files(pattern=".tif$")
@@ -318,10 +318,10 @@ LINE1 = Sys.getenv(c('CRS326620'))
 IDIR="/data/outDIR/ISD/ISD000/VM001"
 setwd(INDIR)
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-lapply(xlist, require, character.only = TRUE)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
 # load raster data  
 list.filenames0=assign(paste("list.filenames",sep=""),list.files(pattern=paste("Nr",".*\\.tif",sep="")))

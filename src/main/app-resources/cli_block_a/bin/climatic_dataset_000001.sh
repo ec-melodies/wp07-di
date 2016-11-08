@@ -13,6 +13,8 @@ source ${ciop_job_include}
 # Set environment variable 
 #-------------------------------------------------------------------------------------#
 export PATH=/opt/anaconda/bin/:$PATH
+export PYTHONPATH=/opt/anaconda/bin/:$PATH
+
 export -p ODIR=/data/outDIR
 export -p DIR=$ODIR/ISD
 export -p OUTDIR=$DIR/ISD000

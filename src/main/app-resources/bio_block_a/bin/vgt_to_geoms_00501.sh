@@ -51,11 +51,10 @@ SBDIR = Sys.getenv(c('VITO'))
 setwd(SBDIR)
 getwd()
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-
-lapply(xlist, require, character.only = TRUE)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
 
 options(max.print=99999999) 

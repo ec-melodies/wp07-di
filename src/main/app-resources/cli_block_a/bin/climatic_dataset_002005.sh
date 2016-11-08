@@ -36,31 +36,6 @@ export -p C2=$IDIR/CRS32662_01.txt
 # Sample
 #-------------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------------# 
-#while IFS='' read -r line || [[ -n "$line" ]]; do
-#	if [[ "$line" == AOI1 ]] ; then
-#		export -p CRS326620=$(grep AOI1_32662_01.txt $C2);
-#
-#	elif [[ "$line" == AOI2 ]] ; then
-#		export -p CRS326620=$(grep AOI2_32662_01.txt $C2);
-#
-#	elif [[ "$line" == AOI3 ]] ; then
-#		export -p CRS326620=$(grep AOI3_32662_01.txt $C2);
-#
-#	elif [[ "$line" == AOI4 ]] ; then 
-#		export -p CRS326620=$(grep AOI4_32662_01.txt $C2);
-#	else
-#		echo "AOI out of range"
-#	fi 
-#done < "$IDIR/parameters/AOI"
-#-------------------------------------------------------------------------------------#
-#export -p COUNT=0
-#while read -r line; do
-#COUNT=$(( $COUNT + 1 ))
-#echo $line
-#echo $COUNT
-#gdal_translate -projwin $line -of GTiff $CMDIR01/Dx001.tif $CMDIR01/Dx001_32662_$COUNT.tif
-#done < "$CRS326620"
-#-------------------------------------------------------------------------------------# 
 
 for file in $CMDIR01/*.tif ; do 
 filename=$(basename $file .tif )
@@ -76,11 +51,11 @@ setwd(CMDIR)
 getwd()
 
 # load the package
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
-lapply(xlist, require, character.only = TRUE)
 
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)

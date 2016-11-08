@@ -32,8 +32,8 @@ export -p y2=$(awk '{print $2}' $OUTDIR/AOI.txt)
 echo $y2
 
 #-------------------------------------------------------------------------------------# 
-AOI="$( ciop-getparam aoi )"
-ciop-log "INFO" "AOI: $AOI"
+#AOI="$( ciop-getparam aoi )"
+#ciop-log "INFO" "AOI: $AOI"
 
 #export -p AOI=$1
 #echo $AOI
@@ -50,15 +50,6 @@ export -p INISD1=$ZDIR/BIVD1_${D}_${AOI}_${y1}${y2}.tif
 export -p INISD2=$ZDIR/BIVD2_${D}_${AOI}_${y1}${y2}.tif
 export -p INISD3=$ZDIR/IBCS_${D}_${AOI}_${y1}${y2}.tif
 #-------------------------------------------------------------------------------------# 
-#for file in $ISDC/ISD_Cx002MSCAOI*.tif; do 
-#filename=$(basename $file .tif )
-#isd01=$ISDC/${filename}.tif
-#isd02=$ISDD/${filename/#ISD_Cx002MSCAOI/ISD_Dx002MSCAOI}.tif 
-#echo $isd01 $isd02
-#gdal_calc.py -A $isd01 -B $isd02 --outfile=$INISD1  --calc="((0.5*A)+(0.5*B))*10000" --NoDataValue=0 --overwrite  --type=UInt32
-#gdalwarp -t_srs '+init=epsg:4326' $INISD1 $INISD2 
-#gdal_calc.py -A $INISD2 --outfile=$INISD3 --calc="A*0.0001" --overwrite --NoDataValue=255 --type=Float64
-
 #-------------------------------------------------------------------------------------# 
 R --vanilla --no-readline   -q  --min-vsize=10M --min-nsize=500k <<'EOF'
 
@@ -69,11 +60,11 @@ ZDIR= Sys.getenv(c('ZDIR'))
 tmp.file =Sys.getenv(c('INISD3'))
 tmp.file
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
-lapply(xlist, require, character.only = TRUE)
  
 # create a list from these files
 
@@ -158,8 +149,11 @@ getwd()
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal","uuid","RColorBrewer", "colorRamps", "rasterVis") 
-lapply(xlist, require, character.only = TRUE)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
+
 
 uuid<-UUIDgenerate(TRUE)
 capture.output(uuid, file=paste(ZDIR,'/','uuid','.txt',sep = ""), append=FALSE)

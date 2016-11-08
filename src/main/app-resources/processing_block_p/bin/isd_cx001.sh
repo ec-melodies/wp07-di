@@ -37,29 +37,18 @@ export -p HXDIR=$IDIR/parameters
 export -p LDIR=$OUTDIR/COKC
 export -p ADIR=/data/auxdata/AOI
 
-export -p AOIP="$( ciop-getparam aoi )"
-ciop-log "AOI: $AOIP"
-
 export -p AOIP=$(awk '{print $1}' $OUTDIR/AOI0.txt)
 echo $AOIP
-#Year
-#export -p Y2=$1
-#echo $Y2
 
 export -p Y2=$(awk '{print $2}' $OUTDIR/AOI.txt)
 echo $Y2
 #-------------------------------------------------------------------------------------# 
 cd $ZDIR
 
-#CRS32662="$( ciop-getparam aoi )"
-#echo "AOI:" $CRS32662
-
 export -p AOIX=$HXDIR/AOI_ISD.txt
 echo $AOIX
 
-
 ciop-log "INFO" "parametros: $AOIX"
-
 #-------------------------------------------------------------------------------------#
 #umask 000; touch $ZDIR/list_isd_cx.txt
 
@@ -112,11 +101,11 @@ IDIR= Sys.getenv(c('ADIR'))
 IDIR
 
 # load the package
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal")
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
-lapply(xlist, require, character.only = TRUE)
 
 #-------------------------------------------------------------------------------------# 
 setwd(INDIR)
@@ -213,11 +202,10 @@ Y2
 setwd(SBDIR)
 getwd()
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal") 
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-
-lapply(xlist, require, character.only = TRUE)
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
 require("RStoolbox")
 
@@ -257,13 +245,10 @@ Y2
 setwd(SBDIR)
 getwd()
 
-xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal") 
-new.packages <- xlist[!(xlist %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-
-lapply(xlist, require, character.only = TRUE)
-
-require("RStoolbox")
+load("/application/parameters/WSP.RData")
+xlist <- c("raster", "sp", "zoo", "rciop", "gtools", "digest", "rgdal",
+"uuid", "RColorBrewer", "colorRamps", "rasterVis", "RStoolbox")
+lapply(xlist, library, character.only = TRUE)
 
 options(max.print=99999999) 
 options("scipen"=100, "digits"=4)

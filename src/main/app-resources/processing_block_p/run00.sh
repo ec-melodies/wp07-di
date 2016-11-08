@@ -26,7 +26,7 @@ export -p INP2=$OUTDIR/AOI.txt
 #Year
 export -p Y2=$(cat $INP2| awk '{ print  $2 }')
 
-export -p IR="$( ciop-getparam aoi )"
+export -p IR=$(cat $INP2| awk '{ print  $3 }')
 ciop-log "AOI: $IR"
 
 ciop-log "Year: ${Year}"

@@ -5,7 +5,7 @@
       <streamingExecutable>/application/run00.sh</streamingExecutable>
       <defaultParameters>
         <parameter id="JobID" title="JobID" abstract="teste" scope="runtime" maxOccurs="1" />
-        <parameter id="aoi" title="Tiles" abstract="Select the AOI you want to process" scope="runtime" maxOccurs="1">AOI1</parameter>
+        <parameter id="Year" title="Year" abstract="Select the Year you want to process" scope="runtime" maxOccurs="1">2010</parameter>
       </defaultParameters>
 	  <defaultJobconf>
         <property id="mapred.task.timeout">990000000000000</property>
@@ -15,7 +15,7 @@
       <streamingExecutable>/application/run01.sh</streamingExecutable>
       <defaultParameters>
         <parameter id="JobID" title="JobID" abstract="teste" scope="runtime" maxOccurs="1" />
-        <parameter id="aoi" title="Tiles" abstract="Select the AOI you want to process" scope="runtime" maxOccurs="1">AOI1</parameter>
+        <parameter id="Year" title="Year" abstract="Select the Year you want to process" scope="runtime" maxOccurs="1">2010</parameter>
       </defaultParameters>
 	  <defaultJobconf>
         <property id="mapred.task.timeout">990000000000000</property>
@@ -25,7 +25,7 @@
       <streamingExecutable>/application/run03.sh</streamingExecutable>
       <defaultParameters>
         <parameter id="JobID" title="JobID" abstract="teste" scope="runtime" maxOccurs="1" />
-        <parameter id="aoi" title="Tiles" abstract="Select the AOI you want to process" scope="runtime" maxOccurs="1">AOI1</parameter>
+        <parameter id="Year" title="Year" abstract="Select the Year you want to process" scope="runtime" maxOccurs="1">2010</parameter>
       </defaultParameters>
 	  <defaultJobconf>
         <property id="mapred.task.timeout">990000000000000</property>
@@ -35,7 +35,7 @@
       <streamingExecutable>/application/processing_block_p/run00.sh</streamingExecutable>
       <defaultParameters>
         <parameter id="JobID" title="JobID" abstract="teste" scope="runtime" maxOccurs="1" />
-        <parameter id="aoi" title="Tiles" abstract="Select the AOI you want to process" scope="runtime" maxOccurs="1">AOI1</parameter>
+        <parameter id="Year" title="Year" abstract="Select the Year you want to process" scope="runtime" maxOccurs="1">2010</parameter>
       </defaultParameters>
 	  <defaultJobconf>
         <property id="mapred.task.timeout">990000000000000</property>
@@ -45,7 +45,7 @@
       <streamingExecutable>/application/processing_block_p/run01.sh</streamingExecutable>
       <defaultParameters>
         <parameter id="JobID" title="JobID" abstract="teste" scope="runtime" maxOccurs="1" />
-        <parameter id="aoi" title="Tiles" abstract="Select the AOI you want to process" scope="runtime" maxOccurs="1">AOI1</parameter>
+        <parameter id="Year" title="Year" abstract="Select the Year you want to process" scope="runtime" maxOccurs="1">2010</parameter>
       </defaultParameters>
 	  <defaultJobconf>
         <property id="mapred.task.timeout">990000000000000</property>
@@ -55,7 +55,7 @@
       <streamingExecutable>/application/processing_block_a/run.sh</streamingExecutable>
       <defaultParameters>
         <parameter id="JobID" title="JobID" abstract="teste" scope="runtime" maxOccurs="1" />
-        <parameter id="aoi" title="Tiles" abstract="Select the AOI you want to process" scope="runtime" maxOccurs="1">AOI1</parameter>
+        <parameter id="Year" title="Year" abstract="Select the Year you want to process" scope="runtime" maxOccurs="1">2010</parameter>
       </defaultParameters>
 	  <defaultJobconf>
         <property id="mapred.task.timeout">990000000000000</property>
@@ -68,33 +68,19 @@
     <node id="node_cli_block_a">
       <job id="ISD_00"/>
       <sources>
-        <source id="Year" title="Year" abstract="Select the year(s) you want to process" refid="string:list" scope="runtime"/>
+        <source id="tiles" title="Tile(s)" abstract="Select the tile(s) you want to process" refid="string:list" scope="runtime"/>
       </sources>
       <parameters>
-           <parameter id="aoi">
-    <options>
-        <option>AOI1</option>
-        <option>AOI2</option>
-        <option>AOI3</option>
-        <option>AOI4</option>
-    </options>
-           </parameter>
+           <parameter id="Year"></parameter>
       </parameters>
     </node>
     <node id="node_bio_block_a">
       <job id="ISD_01"/>
       <sources>
-        <source id="Year" title="Year" abstract="Select the year(s) you want to process" refid="string:list" scope="runtime"/>
+        <source id="tiles" title="Tile(s)" abstract="Select the tile (s) you want to process" refid="string:list" scope="runtime"/>
       </sources>
       <parameters>
-           <parameter id="aoi">
-    <options>
-        <option>AOI1</option>
-        <option>AOI2</option>
-        <option>AOI3</option>
-        <option>AOI4</option>
-    </options>
-           </parameter>
+           <parameter id="Year"></parameter>
       </parameters>
     </node>
 		<node id="node_join_CxB">
@@ -103,48 +89,18 @@
         <source refid="wf:node">node_bio_block_a</source>
 		<source refid="wf:node">node_cli_block_a</source>
       </sources>
-      <parameters>
-           <parameter id="aoi">
-    <options>
-        <option>AOI1</option>
-        <option>AOI2</option>
-        <option>AOI3</option>
-        <option>AOI4</option>
-    </options>
-           </parameter>
-      </parameters>
     </node>
 		    <node id="node_cokrig_S">
       <job id="ISD_02"/>
       <sources>
         <source refid="wf:node">node_join_CxB</source>
       </sources>
-      <parameters>
-           <parameter id="aoi">
-    <options>
-        <option>AOI1</option>
-        <option>AOI2</option>
-        <option>AOI3</option>
-        <option>AOI4</option>
-    </options>
-           </parameter>
-      </parameters>
     </node>
 		    <node id="node_cokrig_D">
       <job id="ISD_03"/>
       <sources>
         <source refid="wf:node">node_join_CxB</source>
       </sources>
-      <parameters>
-           <parameter id="aoi">
-    <options>
-        <option>AOI1</option>
-        <option>AOI2</option>
-        <option>AOI3</option>
-        <option>AOI4</option>
-    </options>
-           </parameter>
-      </parameters>
     </node>
 			    <node id="node_BISD">
       <job id="ISD_04"/>
@@ -152,16 +108,6 @@
         <source refid="wf:node">node_cokrig_S</source>
 	<source refid="wf:node">node_cokrig_D</source>
       </sources>
-      <parameters>
-           <parameter id="aoi">
-    <options>
-        <option>AOI1</option>
-        <option>AOI2</option>
-        <option>AOI3</option>
-        <option>AOI4</option>
-    </options>
-           </parameter>
-      </parameters>
     </node>
   </workflow>
 </application>

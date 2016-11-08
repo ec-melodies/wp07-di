@@ -1,6 +1,6 @@
-#The Integrated Biophysical  and Climate Susceptibility sub-service
+#The Integrated Biophysical and Climate Susceptibility sub-service
 
-The Integrated Biophysical  and Climate Susceptibility is a geographic map representing the susceptibility to desertification of the covered areas with a range between 0 and 1. The higher values correspond to places whose history indicates a dynamic drift towards the advancement of desertification processes.
+The Integrated Biophysical and Climate Susceptibility is a geographic map representing the susceptibility to desertification of the covered areas with a range between 0 and 1. The higher values correspond to places whose history indicates a dynamic drift towards the advancement of desertification processes.
 
 This indicator is comprised of two fundamental components:
 
@@ -23,6 +23,3 @@ The ISD is F(CD(x), CS(X) and B(x)) and it is classified as follows:
 -  Low Susceptibility (0 to 0.64)
 -  Medium Susceptibility (0.64 to 0.74)
 -  High Susceptibility (0.74 to 1)
-
-
-
