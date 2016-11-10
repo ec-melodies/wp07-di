@@ -28,8 +28,12 @@ echo $ISR
 echo $Y2
 
 cd $DIR
+if [ ! -d "/data/auxdata" ]; then
 ciop-copy -o . s3://melodies-wp7/auxdata.tar.gz
 tar xopf $DIR/auxdata.tar -C /
+chmod -R 777 /data/auxdata
+rm -rf $DIR/auxdata.tar
+fi
 
 export -p LAND001=$(cat $LULC | awk 'NR == 2')
 #-------------------------------------------------------------------------------------#
