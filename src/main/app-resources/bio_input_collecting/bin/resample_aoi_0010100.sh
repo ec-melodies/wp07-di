@@ -27,6 +27,10 @@ export -p ISR=$(cat $INP2| awk '{ print  $3 }')
 echo $ISR
 echo $Y2
 
+cd $DIR
+ciop-copy -o . s3://melodies-wp7/auxdata.tar.gz
+tar xopf $DIR/auxdata.tar -C /
+
 export -p LAND001=$(cat $LULC | awk 'NR == 2')
 #-------------------------------------------------------------------------------------#
 # CROP LAND/LANDCOVER
