@@ -1,8 +1,0 @@
-class       : RasterLayer 
-dimensions  : 8148, 15595, 127068060  (nrow, ncol, ncell)
-resolution  : 0.00277783, 0.002777868  (x, y)
-extent      : -17.9903747846, 26.4368293379, 23.4214469178, 37.7902444825 (xmin, xmax, ymin, ymax)
-coord. ref. : +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 
-data source : U:\Melodies\SANDBOX\AOI2_tiles\GLOBCOVER02_01_AOI2_reshape.tif 
-names       : GLOBCOVER02_01_AOI2_reshape 
-values      : 0, 255  (min, max)

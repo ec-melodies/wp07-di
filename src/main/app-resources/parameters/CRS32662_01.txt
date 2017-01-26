@@ -1,5 +1,0 @@
-/application/parameters/AOI1_32662_01.txt
-/application/parameters/AOI2_32662_01.txt
-/application/parameters/AOI3_32662_01.txt
-/application/parameters/AOI4_32662_01.txt
-

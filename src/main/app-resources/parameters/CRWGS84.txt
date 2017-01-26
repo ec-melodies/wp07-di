@@ -1,4 +1,0 @@
-/application/parameters/AOI1.txt
-/application/parameters/AOI2.txt
-/application/parameters/AOI3.txt
-/application/parameters/AOI4.txt

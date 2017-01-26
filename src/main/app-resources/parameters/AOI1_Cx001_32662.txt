@@ -1,8 +1,0 @@
-class       : RasterLayer
-dimensions  : 12, 19, 228  (nrow, ncol, ncell)
-resolution  : 83489.62, 83489.62  (x, y)
-extent      : -1085365, 500937.7, 3924012, 4925887  (xmin, xmax, ymin, ymax)
-coord. ref. : +proj=eqc +lat_ts=0 +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs +towgs84=0,0,0
-data source : /data/outDIR/ISD/ISD000/CM001/AOI/AOI_CX/Cx001_32662_AOI1.tif
-names       : Cx001_32662_AOI1
-values      : 0, 1  (min, max)
